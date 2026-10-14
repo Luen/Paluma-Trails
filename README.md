@@ -1,6 +1,6 @@
 # Paluma-Trails
 
-Paluma-Trails is a project concept for a website and Flutter mobile app to help
+Paluma-Trails is a project concept for a website and Flutter/React Native/Kotlin Multiplatform mobile app to help
 people explore Paluma Range National Park. It aims to make useful trail
 information available before and during a walk, including when there is no
 mobile reception.
