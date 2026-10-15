@@ -60,3 +60,5 @@ More information:
 https://wanderstories.space/paluma-maps/
 https://wanderstories.space/hiking-at-paluma-range-national-park/
 See also: http://paluma.org/
+
+Ask me to provide all the hisotrical books and information (PDFs) for use when research these POIs, like Gardes Hut.
