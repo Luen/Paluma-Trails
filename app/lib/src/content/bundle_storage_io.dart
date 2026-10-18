@@ -7,15 +7,18 @@ import 'package:path_provider/path_provider.dart';
 
 import 'models.dart';
 
-/// Copies the packaged bundle into `<documents>/bundle/<version>/` on first run
-/// so MapLibre can read the basemap files from disk.
+/// Copies the packaged bundle into `<app support>/bundle/<version>/` on first
+/// run so MapLibre can read the basemap files from disk.
 ///
-/// Returns the directory, or null if it could not be written (the app then
-/// falls back to reading assets directly).
+/// Application Support rather than Documents: the bundle can be recreated from
+/// the app's assets, so it should not show up in the user's files.
+///
+/// Returns the directory. Throws if the bundle cannot be written; a partial
+/// copy is removed first so the next launch starts clean.
 Future<String?> materialiseBundle(BundleManifest manifest) async {
-  final documents = await getApplicationDocumentsDirectory();
+  final support = await getApplicationSupportDirectory();
   final directory = Directory(
-    p.join(documents.path, 'bundle', manifest.bundleVersion),
+    p.join(support.path, 'bundle', manifest.bundleVersion),
   );
   final marker = File(p.join(directory.path, '.complete'));
   if (marker.existsSync()) return directory.path;
@@ -36,10 +39,14 @@ Future<String?> materialiseBundle(BundleManifest manifest) async {
     }
     marker.writeAsStringSync(manifest.bundleVersion);
     _pruneOldBundles(directory.parent, keep: directory.path);
-  } on FileSystemException catch (error) {
+  } catch (error) {
     debugPrint('Could not materialise the bundle: $error');
-    if (directory.existsSync()) directory.deleteSync(recursive: true);
-    return null;
+    try {
+      if (directory.existsSync()) directory.deleteSync(recursive: true);
+    } on FileSystemException {
+      // Keep the original error; the missing marker forces a retry anyway.
+    }
+    rethrow;
   }
   return directory.path;
 }

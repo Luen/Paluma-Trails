@@ -146,7 +146,7 @@ class _SegmentTile extends StatelessWidget {
       track,
       formatDistance(segment.distanceM),
       formatDuration(segment.walkMinutes),
-      ?formatAscent(segment.ascentM),
+      ?formatAscent(segment.ascentFrom(junction.id)),
     ].join(' · ');
 
     return ListTile(

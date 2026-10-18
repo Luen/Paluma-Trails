@@ -107,12 +107,13 @@ void main() {
       );
     });
 
-    test('reports ascent when the track carries elevations', () {
+    test('reports ascent and descent when the track carries elevations', () {
       final result = buildSegments(
         tracks: _tracks([
           _track('test-track', 'Test Track', [
             [146.00, -18.90, 100],
             [146.01, -18.90, 120],
+            [146.015, -18.90, 110],
             [146.02, -18.90, 160],
           ]),
         ]),
@@ -124,7 +125,8 @@ void main() {
 
       final segment =
           (result['segments'] as List).single as Map<String, Object?>;
-      expect(segment['ascent_m'], 60);
+      expect(segment['ascent_m'], 70);
+      expect(segment['descent_m'], 10);
     });
 
     test('labels the estimate with the pace that was used', () {

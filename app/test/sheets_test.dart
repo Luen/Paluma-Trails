@@ -32,6 +32,22 @@ void main() {
     );
   });
 
+  testWidgets('junction sheet shows the climb for the direction walked', (
+    tester,
+  ) async {
+    final bundle = testBundle();
+    await _pump(
+      tester,
+      JunctionSheet(bundle: bundle, junction: bundle.junctions['j2']!),
+    );
+
+    expect(
+      find.text('Tāngaroa Walking Track · 1.2 km · 20 min · ↑ 30 m'),
+      findsOneWidget,
+    );
+    expect(find.text('W'), findsOneWidget);
+  });
+
   testWidgets('junction sheet says when nothing is mapped yet', (tester) async {
     final bundle = testBundle(withSegment: false);
     await _pump(

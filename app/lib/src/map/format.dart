@@ -7,8 +7,11 @@ library;
 String formatDistance(num meters) {
   final metres = meters.round();
   if (metres < 1000) return '$metres m';
-  final km = metres / 1000;
-  return km < 10 ? '${km.toStringAsFixed(1)} km' : '${km.round()} km';
+  // Round to tenths first so 9.96 km reads `10 km`, not `10.0 km`.
+  final tenths = (metres / 100).round();
+  return tenths < 100
+      ? '${(tenths / 10).toStringAsFixed(1)} km'
+      : '${(metres / 1000).round()} km';
 }
 
 /// Formats minutes as walkers write them: `45 min`, `1 h`, `2 h 15 min`.

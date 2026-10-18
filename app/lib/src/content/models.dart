@@ -196,6 +196,7 @@ class Segment {
     required this.walkMinutes,
     required this.bearingDeg,
     this.ascentM,
+    this.descentM,
   });
 
   final String from;
@@ -205,7 +206,12 @@ class Segment {
   final int distanceM;
   final int walkMinutes;
   final double bearingDeg;
+
+  /// Climb walking `from` → `to`.
   final double? ascentM;
+
+  /// Drop walking `from` → `to`, which is the climb walking the other way.
+  final double? descentM;
 
   /// The junction at the other end of this segment from [junctionId], or null
   /// when the segment does not touch it.
@@ -219,6 +225,10 @@ class Segment {
   double bearingFrom(String junctionId) =>
       from == junctionId ? bearingDeg : (bearingDeg + 180) % 360;
 
+  /// The climb walked when starting at [junctionId].
+  double? ascentFrom(String junctionId) =>
+      from == junctionId ? ascentM : descentM;
+
   factory Segment.fromJson(Map<String, Object?> json) => Segment(
     from: json['from']! as String,
     to: json['to']! as String,
@@ -228,6 +238,7 @@ class Segment {
     walkMinutes: json['walk_minutes']! as int,
     bearingDeg: (json['bearing_deg']! as num).toDouble(),
     ascentM: (json['ascent_m'] as num?)?.toDouble(),
+    descentM: (json['descent_m'] as num?)?.toDouble(),
   );
 }
 

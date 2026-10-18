@@ -22,7 +22,7 @@
       "url": "https://fonts.google.com/noto",
       "licence": "SIL Open Font License 1.1",
       "used_for": ["basemap labels"],
-      "notes": "Latin ranges 0-1023 only, so non-Latin labels are blank offline."
+      "notes": "Latin ranges 0-767 only (Basic Latin, Latin-1 Supplement, Latin Extended-A), so non-Latin labels are blank offline."
     }
   ]
 }

@@ -14,6 +14,11 @@ void main() {
       expect(formatDistance(9300), '9.3 km');
     });
 
+    test('does not show 10.0 km just under 10 km', () {
+      expect(formatDistance(9949), '9.9 km');
+      expect(formatDistance(9960), '10 km');
+    });
+
     test('rounds whole kilometres above 10 km', () {
       expect(formatDistance(12340), '12 km');
       expect(formatDistance(19999), '20 km');

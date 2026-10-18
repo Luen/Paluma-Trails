@@ -50,9 +50,11 @@ deliberately conservative and is labelled in the app as:
 
 > Estimate — flat-terrain pace, elevation not included.
 
-When elevation lands, segments gain `ascent_m` and the estimate becomes
-`naismith-v2` (add 1 minute per 10 m of ascent). Both the method and the pace are
-recorded on each segment so the app can be honest about what it knows.
+When elevation lands, segments gain `ascent_m` and `descent_m`, both measured
+walking `from` → `to`; walking the other way, the app shows `descent_m` as the
+climb. The estimate then becomes `naismith-v2` (add 1 minute per 10 m of ascent),
+which makes walk times directional too. Both the method and the pace are recorded
+on each segment so the app can be honest about what it knows.
 
 ## Adding a new POI
 

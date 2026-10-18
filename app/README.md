@@ -14,7 +14,7 @@ flutter run -d chrome    # web; if the basemap tiles fail to load, use the
 ```
 
 The map stack is MapLibre GL on top of a vector PMTiles archive
-(ADR 0003). On Android and iOS the archive is copied to the app documents
+(ADR 0003). On Android and iOS the archive is copied to the app support
 directory on first launch and read with `pmtiles://file://…`. On the web it is
 fetched from the site origin with HTTP range requests, so the host must support
 `Range`. For a local check, build the web app and serve `build/web` with a

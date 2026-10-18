@@ -120,6 +120,8 @@ void main() {
       distanceM: 1200,
       walkMinutes: 20,
       bearingDeg: 90,
+      ascentM: 80,
+      descentM: 30,
     );
 
     test('otherEnd finds the far end from either side', () {
@@ -131,6 +133,26 @@ void main() {
     test('bearingFrom points away from the starting junction', () {
       expect(segment.bearingFrom('j1'), 90);
       expect(segment.bearingFrom('j2'), 270);
+    });
+
+    test('ascentFrom is the climb in the direction walked', () {
+      expect(segment.ascentFrom('j1'), 80);
+      expect(segment.ascentFrom('j2'), 30);
+    });
+
+    test('parses descent_m', () {
+      final parsed = Segment.fromJson(const {
+        'from': 'j1',
+        'to': 'j2',
+        'track_id': 't',
+        'distance_m': 100,
+        'walk_minutes': 5,
+        'bearing_deg': 0,
+        'ascent_m': 12,
+        'descent_m': 4,
+      });
+      expect(parsed.ascentFrom('j1'), 12);
+      expect(parsed.ascentFrom('j2'), 4);
     });
   });
 

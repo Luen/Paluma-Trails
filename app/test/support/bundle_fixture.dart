@@ -75,6 +75,7 @@ LoadedBundle testBundle({bool withSegment = true}) => LoadedBundle(
             walkMinutes: 20,
             bearingDeg: 90,
             ascentM: 80,
+            descentM: 30,
           ),
         ]
       : const [],

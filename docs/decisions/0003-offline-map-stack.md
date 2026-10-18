@@ -30,7 +30,7 @@ Concretely:
 - Style: generated from `@protomaps/basemaps` (light theme), vendored into
   `app/assets/bundle/basemap/` together with Latin-range fonts (Noto Sans
   Regular/Medium/Italic) and sprites so labels render offline.
-- On device: the PMTiles asset is copied to the app documents directory on first
+- On device: the PMTiles asset is copied to the app support directory on first
   run and loaded with `pmtiles://file://…`. On web the same archive is fetched
   with HTTP range requests from the site origin.
 - Attribution is carried in the style and in the app's About screen:

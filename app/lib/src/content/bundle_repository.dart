@@ -137,7 +137,9 @@ class LoadedBundle {
 }
 
 /// Loads the bundle packaged with the app and materialises it on disk where the
-/// platform needs that (see [materialiseBundle]).
+/// platform needs that (see [materialiseBundle]). On Android and iOS a failure
+/// to materialise is an error: MapLibre Native can only read the basemap from
+/// disk, so there is no working asset fallback.
 class BundleRepository {
   static const _assetRoot = 'assets/bundle';
 
@@ -221,9 +223,11 @@ class BundleRepository {
     String? storageDirectory,
   ) {
     if (storageDirectory != null) {
+      final basemap = Uri.directory(p.join(storageDirectory, 'basemap'));
       return (
-        pmtilesUri: 'file://$storageDirectory/basemap/paluma.pmtiles',
-        assetsBaseUri: 'file://$storageDirectory/basemap',
+        pmtilesUri: basemap.resolve('paluma.pmtiles').toString(),
+        // The style appends `/fonts/...` and `/sprites/...` itself.
+        assetsBaseUri: basemap.toString().replaceFirst(RegExp(r'/$'), ''),
       );
     }
     final base = Uri.base.resolve('assets/$_assetRoot/basemap').toString();

@@ -33,7 +33,7 @@ jobs:
         working-directory: .
         run: |
           dart run tools/paluma_cli/bin/paluma_cli.dart bundle build --out /tmp/bundle
-          diff -r /tmp/bundle/content app/assets/bundle/content
+          diff -r /tmp/bundle app/assets/bundle
 
   app:
     name: App (analyze + test + build)

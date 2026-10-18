@@ -72,6 +72,12 @@ Map<String, Object?> buildSegments({
       // single wiggly vertex does not define the direction.
       final bearingFrom = interpolate(line, from.alongM + distance * 0.25);
       final bearingTo = interpolate(line, from.alongM + distance * 0.75);
+      final climb = _climbBetween(
+        cumulative,
+        elevations,
+        from.alongM,
+        to.alongM,
+      );
       segments.add(
         _Segment(
           from: from.junctionId,
@@ -80,12 +86,8 @@ Map<String, Object?> buildSegments({
           trackName: trackName,
           distanceM: distance,
           bearing: initialBearingDegrees(bearingFrom, bearingTo),
-          ascentM: _ascentBetween(
-            cumulative,
-            elevations,
-            from.alongM,
-            to.alongM,
-          ),
+          ascentM: climb?.ascentM,
+          descentM: climb?.descentM,
         ),
       );
     }
@@ -130,6 +132,7 @@ Map<String, Object?> buildSegments({
           'distance_m': s.distanceM.round(),
           'walk_minutes': walkMinutes(s.distanceM, paceKmh),
           if (s.ascentM != null) 'ascent_m': s.ascentM!.round(),
+          if (s.descentM != null) 'descent_m': s.descentM!.round(),
           'bearing_deg': double.parse(s.bearing.toStringAsFixed(1)),
         },
     ],
@@ -137,16 +140,18 @@ Map<String, Object?> buildSegments({
   };
 }
 
-/// Sum of positive elevation changes between two positions along a track.
+/// Sums of the rises and drops between two positions along a track, walking
+/// from [fromM] towards [toM]. Walking the other way swaps the two.
 ///
 /// Returns null when the track has no usable elevation data for that stretch.
-double? _ascentBetween(
+({double ascentM, double descentM})? _climbBetween(
   List<double> cumulative,
   List<double?> elevations,
   double fromM,
   double toM,
 ) {
   var ascent = 0.0;
+  var descent = 0.0;
   var samples = 0;
   for (var i = 1; i < elevations.length; i++) {
     if (cumulative[i] < fromM || cumulative[i - 1] > toM) continue;
@@ -155,9 +160,13 @@ double? _ascentBetween(
     if (before == null || after == null) continue;
     samples++;
     final delta = after - before;
-    if (delta > 0) ascent += delta;
+    if (delta > 0) {
+      ascent += delta;
+    } else {
+      descent -= delta;
+    }
   }
-  return samples >= 2 ? ascent : null;
+  return samples >= 2 ? (ascentM: ascent, descentM: descent) : null;
 }
 
 /// Naismith on the flat, rounded up to the next five minutes.
@@ -183,6 +192,7 @@ class _Segment {
     required this.distanceM,
     required this.bearing,
     this.ascentM,
+    this.descentM,
   });
 
   final String from;
@@ -192,4 +202,5 @@ class _Segment {
   final double distanceM;
   final double bearing;
   final double? ascentM;
+  final double? descentM;
 }

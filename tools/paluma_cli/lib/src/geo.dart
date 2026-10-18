@@ -78,10 +78,10 @@ class Projection {
 Projection? projectOntoPolyline(List<LatLon> line, LatLon target) {
   if (line.length < 2) return null;
 
-  final latScale = math.cos(_rad(target.lat)) * 111320.0;
-  const lonToMeter = 111320.0; // metres per degree of latitude
-  double x(LatLon p) => (p.lon - target.lon) * latScale;
-  double y(LatLon p) => (p.lat - target.lat) * lonToMeter;
+  const metresPerDegreeLat = 111320.0;
+  final metresPerDegreeLon = math.cos(_rad(target.lat)) * metresPerDegreeLat;
+  double x(LatLon p) => (p.lon - target.lon) * metresPerDegreeLon;
+  double y(LatLon p) => (p.lat - target.lat) * metresPerDegreeLat;
 
   final cum = cumulativeDistances(line);
   var best = Projection(double.infinity, double.infinity, target);

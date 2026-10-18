@@ -45,7 +45,14 @@
           "track_name": { "type": "string" },
           "distance_m": { "type": "integer", "minimum": 1 },
           "walk_minutes": { "type": "integer", "minimum": 5 },
-          "ascent_m": { "type": ["number", "null"] },
+          "ascent_m": {
+            "type": ["number", "null"],
+            "description": "Total climb walking from `from` to `to`."
+          },
+          "descent_m": {
+            "type": ["number", "null"],
+            "description": "Total drop walking from `from` to `to`; the climb when walking the other way."
+          },
           "bearing_deg": { "type": "number", "minimum": 0, "maximum": 360 },
           "notes": { "type": ["string", "null"] }
         }
