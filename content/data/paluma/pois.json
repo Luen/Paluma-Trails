@@ -1,0 +1,836 @@
+{
+  "pois": [
+    {
+      "id": "boulder",
+      "name": "BOULDER",
+      "category": "other",
+      "location": {
+        "lat": -18.886885,
+        "lon": 146.124349
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "big-crystal-creek",
+      "name": "Big Crystal Creek",
+      "category": "water",
+      "location": {
+        "lat": -18.979827,
+        "lon": 146.254165
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "birthday-creek-falls",
+      "name": "Birthday Creek Falls",
+      "category": "waterfall",
+      "location": {
+        "lat": -18.97557,
+        "lon": 146.158124
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "black-hole",
+      "name": "Black Hole",
+      "category": "water",
+      "location": {
+        "lat": -18.884523,
+        "lon": 146.113787
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "bluff-near-crystal-falls",
+      "name": "Bluff near Crystal Falls",
+      "category": "waterfall",
+      "location": {
+        "lat": -18.96885,
+        "lon": 146.18999
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "buttercup-lookout",
+      "name": "Buttercup Lookout",
+      "category": "lookout",
+      "location": {
+        "lat": -18.945686,
+        "lon": 146.190285
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "campsite",
+      "name": "Campsite",
+      "category": "campsite",
+      "location": {
+        "lat": -18.914787,
+        "lon": 146.138707
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "campsite-ledge",
+      "name": "Campsite Ledge",
+      "category": "campsite",
+      "location": {
+        "lat": -18.865408,
+        "lon": 146.123331
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "cliff-face-on-mt-leach",
+      "name": "Cliff Face on Mt Leach",
+      "category": "other",
+      "location": {
+        "lat": -18.96245,
+        "lon": 146.21303
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "cloudy-creek-falls",
+      "name": "Cloudy Creek Falls",
+      "category": "waterfall",
+      "location": {
+        "lat": -19.000424,
+        "lon": 146.201036
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "cloudy-lookout",
+      "name": "Cloudy Lookout",
+      "category": "lookout",
+      "location": {
+        "lat": -18.971275,
+        "lon": 146.20812
+      },
+      "summary": null,
+      "description": "Bullocky Tom's Lookout",
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "crystal-falls",
+      "name": "Crystal Falls",
+      "category": "waterfall",
+      "location": {
+        "lat": -18.966587,
+        "lon": 146.18883
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "culvert-81",
+      "name": "Culvert 81",
+      "category": "water",
+      "location": {
+        "lat": -19.001117,
+        "lon": 146.177607
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "dck-shelter",
+      "name": "DCK Shelter",
+      "category": "other",
+      "location": {
+        "lat": -18.948911,
+        "lon": 146.193867
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "diorite-falls",
+      "name": "Diorite Falls",
+      "category": "waterfall",
+      "location": {
+        "lat": -18.93016,
+        "lon": 146.18578
+      },
+      "summary": null,
+      "description": "Waterfall",
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "dolby-hut-clearing",
+      "name": "Dolby Hut / Clearing",
+      "category": "hut",
+      "location": {
+        "lat": -18.961798,
+        "lon": 146.195343
+      },
+      "summary": null,
+      "description": "Only some glass bottle and other bits remain",
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "ethel-falls",
+      "name": "Ethel Falls",
+      "category": "waterfall",
+      "location": {
+        "lat": -18.999955,
+        "lon": 146.187826
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "exit-logging-road",
+      "name": "Exit Logging Road",
+      "category": "other",
+      "location": {
+        "lat": -18.896211,
+        "lon": 146.127361
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "forgotten-falls",
+      "name": "Forgotten Falls",
+      "category": "waterfall",
+      "location": {
+        "lat": -18.996313,
+        "lon": 146.130095
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "foxlees-lookout",
+      "name": "Foxlees Lookout",
+      "category": "lookout",
+      "location": {
+        "lat": -18.948849,
+        "lon": 146.210022
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "gardes-battery",
+      "name": "Garde's Battery",
+      "category": "mine",
+      "location": {
+        "lat": -18.947575,
+        "lon": 146.193987
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "gardes-clearing",
+      "name": "Garde's Clearing",
+      "category": "history",
+      "location": {
+        "lat": -18.947389,
+        "lon": 146.19414
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "gardes-lookout",
+      "name": "Gardes Lookout",
+      "category": "lookout",
+      "location": {
+        "lat": -18.930199,
+        "lon": 146.19776
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "gold-creek-falls",
+      "name": "Gold Creek Falls",
+      "category": "waterfall",
+      "location": {
+        "lat": -18.966506,
+        "lon": 146.200905
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "johnstones-hut",
+      "name": "Johnstone's Hut",
+      "category": "hut",
+      "location": {
+        "lat": -18.954906,
+        "lon": 146.192316
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "jourama-falls",
+      "name": "Jourama Falls",
+      "category": "waterfall",
+      "location": {
+        "lat": -18.867909,
+        "lon": 146.124382
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "jourama-falls-lookout",
+      "name": "Jourama Falls Lookout",
+      "category": "waterfall",
+      "location": {
+        "lat": -18.865393,
+        "lon": 146.126512
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "jourama-falls-turnoff",
+      "name": "Jourama Falls Turnoff",
+      "category": "waterfall",
+      "location": {
+        "lat": -18.932044,
+        "lon": 146.143263
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "junction-alternate-track-to-creek",
+      "name": "Junction - Alternate Track to Creek",
+      "category": "water",
+      "location": {
+        "lat": -18.868874,
+        "lon": 146.122879
+      },
+      "summary": null,
+      "description": "Coming from Jourama right hand path to avoid steeper descent and having to walk along small cliff at creek edge.",
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "junction-alternate-track-poorly-marked",
+      "name": "Junction - alternate track (poorly marked)",
+      "category": "junction",
+      "location": {
+        "lat": -18.870059,
+        "lon": 146.123468
+      },
+      "summary": null,
+      "description": "This end of the alternate track poorly marked.  If coming from Jourama then head down to creek keeping left to descend creek near a gully.\n\nComing from Mt Spec start at small gully before rock ledge along creek and ascend diagionally up to the right.",
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "lookout-over-top-of-falls",
+      "name": "Lookout over top of falls",
+      "category": "waterfall",
+      "location": {
+        "lat": -18.869226,
+        "lon": 146.12373
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "mcclellands-lookout",
+      "name": "McClellands Lookout",
+      "category": "lookout",
+      "location": {
+        "lat": -19.006612,
+        "lon": 146.213135
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "mine-shaft",
+      "name": "Mine Shaft",
+      "category": "mine",
+      "location": {
+        "lat": -18.944998,
+        "lon": 146.189242
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "mine-shafts",
+      "name": "Mine Shafts",
+      "category": "mine",
+      "location": {
+        "lat": -18.946872,
+        "lon": 146.191375
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "mines",
+      "name": "Mines",
+      "category": "mine",
+      "location": {
+        "lat": -18.946514,
+        "lon": 146.191783
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "mt-spec",
+      "name": "Mt Spec",
+      "category": "other",
+      "location": {
+        "lat": -18.941511,
+        "lon": 146.188565
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "old-hand-dug-tunnels",
+      "name": "Old hand dug tunnels",
+      "category": "mine",
+      "location": {
+        "lat": -18.955084,
+        "lon": 146.196072
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "pughs-track-hoons-track-collins-track-shays-track",
+      "name": "Pughs Track, Hoons Track, Collins Track, Shays Track",
+      "category": "other",
+      "location": {
+        "lat": -18.931489,
+        "lon": 146.189601
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "rock-art",
+      "name": "Rock art",
+      "category": "art",
+      "location": {
+        "lat": -18.975905,
+        "lon": 146.23348
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "shays-clearing",
+      "name": "Shay's Clearing",
+      "category": "history",
+      "location": {
+        "lat": -18.932409,
+        "lon": 146.1885
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "smith-falls",
+      "name": "Smith Falls",
+      "category": "waterfall",
+      "location": {
+        "lat": -19.048401,
+        "lon": 146.266881
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "star-valley-lookout",
+      "name": "Star Valley Lookout",
+      "category": "lookout",
+      "location": {
+        "lat": -19.013906,
+        "lon": 146.18057
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "station-creek-crossing",
+      "name": "Station Creek Crossing",
+      "category": "water",
+      "location": {
+        "lat": -18.914039,
+        "lon": 146.13871
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "swimming-hole",
+      "name": "Swimming hole",
+      "category": "swimming",
+      "location": {
+        "lat": -18.956687,
+        "lon": 146.192142
+      },
+      "summary": null,
+      "description": "Bathing area for Johnstone's Clearing camping area",
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "torstens-rock-garden",
+      "name": "Torsten's Rock Garden",
+      "category": "art",
+      "location": {
+        "lat": -18.964512,
+        "lon": 146.167731
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "tripple-falls",
+      "name": "Tripple Falls",
+      "category": "waterfall",
+      "location": {
+        "lat": -19.020303,
+        "lon": 146.202305
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "upper-crystal-creek-falls",
+      "name": "Upper Crystal Creek Falls",
+      "category": "waterfall",
+      "location": {
+        "lat": -18.966398,
+        "lon": 146.188416
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "waterview-creek-crossing",
+      "name": "Waterview Creek Crossing",
+      "category": "water",
+      "location": {
+        "lat": -18.870312,
+        "lon": 146.123533
+      },
+      "summary": null,
+      "description": "Crossing point not marked - Pick the best route for the conditions. Track on southern side not well marked - follow upstream until you come to a small creek entrance - track continues on right as you turn up the smaller creek.",
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "wilfreds-lookout",
+      "name": "Wilfred's Lookout",
+      "category": "lookout",
+      "location": {
+        "lat": -18.96436,
+        "lon": 146.164287
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "wine-cave",
+      "name": "Wine Cave",
+      "category": "art",
+      "location": {
+        "lat": -18.9476,
+        "lon": 146.192857
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "witts-lookout-lower",
+      "name": "Witt's Lookout lower",
+      "category": "lookout",
+      "location": {
+        "lat": -18.999719,
+        "lon": 146.211119
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "witts-lookout-upper",
+      "name": "Witt's Lookout upper",
+      "category": "lookout",
+      "location": {
+        "lat": -19.000049,
+        "lon": 146.210603
+      },
+      "summary": null,
+      "description": null,
+      "qr_id": null,
+      "photos": [],
+      "sources": [],
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    }
+  ]
+}

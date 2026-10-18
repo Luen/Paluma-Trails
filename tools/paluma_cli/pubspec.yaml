@@ -1,0 +1,20 @@
+name: paluma_cli
+description: >-
+  Content tooling for Paluma Trails: import raw trail data, validate it against
+  the JSON Schema, compute the junction graph, and build the offline bundle the
+  app loads.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.6.0
+
+dependencies:
+  args: ^2.6.0
+  crypto: ^3.0.6
+  json_schema: ^5.2.2
+  path: ^1.9.1
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.25.0

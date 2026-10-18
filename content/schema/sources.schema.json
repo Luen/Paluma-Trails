@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://paluma-trails.example/schema/sources.schema.json",
+  "title": "Sources",
+  "description": "Where the content came from and under what licence. Kept for attribution and governance.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["sources"],
+  "properties": {
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "licence", "used_for"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+          "label": { "type": "string", "minLength": 1 },
+          "url": { "type": ["string", "null"] },
+          "licence": { "type": "string", "minLength": 1 },
+          "used_for": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 1
+          },
+          "notes": { "type": ["string", "null"] }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,550 @@
+{
+  "junctions": [
+    {
+      "id": "j1",
+      "number": 1,
+      "name": null,
+      "location": {
+        "lat": -18.941853,
+        "lon": 146.188682
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j2",
+      "number": 2,
+      "name": null,
+      "location": {
+        "lat": -18.946657,
+        "lon": 146.191757
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j3",
+      "number": 3,
+      "name": null,
+      "location": {
+        "lat": -18.947449,
+        "lon": 146.194086
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j4",
+      "number": 4,
+      "name": null,
+      "location": {
+        "lat": -18.947096,
+        "lon": 146.195248
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j5",
+      "number": 5,
+      "name": null,
+      "location": {
+        "lat": -18.944988,
+        "lon": 146.197305
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j6",
+      "number": 6,
+      "name": null,
+      "location": {
+        "lat": -18.948866,
+        "lon": 146.209198
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j7",
+      "number": 7,
+      "name": null,
+      "location": {
+        "lat": -18.954962,
+        "lon": 146.192366
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j9",
+      "number": 9,
+      "name": null,
+      "location": {
+        "lat": -18.942736,
+        "lon": 146.194752
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j10",
+      "number": 10,
+      "name": null,
+      "location": {
+        "lat": -18.93038,
+        "lon": 146.19775
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j11",
+      "number": 11,
+      "name": null,
+      "location": {
+        "lat": -18.938946,
+        "lon": 146.193499
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j12",
+      "number": 12,
+      "name": null,
+      "location": {
+        "lat": -18.946367,
+        "lon": 146.195674
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j13",
+      "number": 13,
+      "name": null,
+      "location": {
+        "lat": -18.954153,
+        "lon": 146.193283
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j14",
+      "number": 14,
+      "name": null,
+      "location": {
+        "lat": -18.946482,
+        "lon": 146.191086
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j15",
+      "number": 15,
+      "name": null,
+      "location": {
+        "lat": -18.945686,
+        "lon": 146.19136
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j16",
+      "number": 16,
+      "name": null,
+      "location": {
+        "lat": -18.940708,
+        "lon": 146.183997
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j17",
+      "number": 17,
+      "name": null,
+      "location": {
+        "lat": -18.928304,
+        "lon": 146.19625
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j18",
+      "number": 18,
+      "name": null,
+      "location": {
+        "lat": -18.932487,
+        "lon": 146.187768
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j19",
+      "number": 19,
+      "name": null,
+      "location": {
+        "lat": -18.938966,
+        "lon": 146.192736
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j20",
+      "number": 20,
+      "name": null,
+      "location": {
+        "lat": -18.947508,
+        "lon": 146.190976
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j21",
+      "number": 21,
+      "name": null,
+      "location": {
+        "lat": -18.933883,
+        "lon": 146.162555
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j22",
+      "number": 22,
+      "name": null,
+      "location": {
+        "lat": -18.938519,
+        "lon": 146.173736
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j23",
+      "number": 23,
+      "name": null,
+      "location": {
+        "lat": -18.943553,
+        "lon": 146.178616
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j24",
+      "number": 24,
+      "name": null,
+      "location": {
+        "lat": -18.945977,
+        "lon": 146.183239
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j25",
+      "number": 25,
+      "name": null,
+      "location": {
+        "lat": -18.949605,
+        "lon": 146.190813
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j26",
+      "number": 26,
+      "name": null,
+      "location": {
+        "lat": -18.951948,
+        "lon": 146.19194
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j27",
+      "number": 27,
+      "name": null,
+      "location": {
+        "lat": -18.966516,
+        "lon": 146.201111
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j28",
+      "number": 28,
+      "name": null,
+      "location": {
+        "lat": -18.963442,
+        "lon": 146.195114
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j29",
+      "number": 29,
+      "name": null,
+      "location": {
+        "lat": -18.958563,
+        "lon": 146.160411
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j30",
+      "number": 30,
+      "name": null,
+      "location": {
+        "lat": -18.958452,
+        "lon": 146.16188
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j31",
+      "number": 31,
+      "name": null,
+      "location": {
+        "lat": -18.964157,
+        "lon": 146.164368
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j32",
+      "number": 32,
+      "name": null,
+      "location": {
+        "lat": -18.964684,
+        "lon": 146.167694
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j33",
+      "number": 33,
+      "name": null,
+      "location": {
+        "lat": -18.960552,
+        "lon": 146.168335
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j34",
+      "number": 34,
+      "name": null,
+      "location": {
+        "lat": -18.963327,
+        "lon": 146.180862
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j35",
+      "number": 35,
+      "name": null,
+      "location": {
+        "lat": -18.971065,
+        "lon": 146.208082
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j36",
+      "number": 36,
+      "name": null,
+      "location": {
+        "lat": -18.999207,
+        "lon": 146.184467
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j37",
+      "number": 37,
+      "name": null,
+      "location": {
+        "lat": -19.001397,
+        "lon": 146.186329
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j38",
+      "number": 38,
+      "name": null,
+      "location": {
+        "lat": -19.021009,
+        "lon": 146.20298
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j39",
+      "number": 39,
+      "name": null,
+      "location": {
+        "lat": -19.002014,
+        "lon": 146.188599
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    },
+    {
+      "id": "j42",
+      "number": 42,
+      "name": null,
+      "location": {
+        "lat": -18.950463,
+        "lon": 146.194304
+      },
+      "notes": null,
+      "water": null,
+      "reception": null,
+      "unverified": true,
+      "source": "wanderstories-umap-264617"
+    }
+  ]
+}
