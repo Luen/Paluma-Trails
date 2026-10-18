@@ -62,3 +62,10 @@ https://wanderstories.space/hiking-at-paluma-range-national-park/
 See also: http://paluma.org/
 
 Ask me to provide all the hisotrical books and information (PDFs) for use when research these POIs, like Gardes Hut.
+
+## Project docs
+
+- [`docs/roadmap.md`](docs/roadmap.md) — milestones and which issue covers what
+- [`docs/decisions/`](docs/decisions/) — architecture decision records
+- [`docs/content-model.md`](docs/content-model.md) — how the trail data is structured
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) — how to build, test and send changes
