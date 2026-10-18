@@ -1,0 +1,28 @@
+{
+  "sources": [
+    {
+      "id": "wanderstories-umap-264617",
+      "label": "Wanderstories Paluma Range National Park Trails (uMap 264617)",
+      "url": "https://wanderstories.space/paluma-maps/",
+      "licence": "Maintained by the project author and volunteers; used with permission. Field-verify before treating as authoritative.",
+      "used_for": ["tracks", "junctions", "pois"],
+      "notes": "Exported 2026-10-16 and stored at content/sources/umap-264617.geojson. Junction numbering matches the physical markers on the tracks."
+    },
+    {
+      "id": "protomaps-basemap",
+      "label": "Protomaps basemap (derived from OpenStreetMap)",
+      "url": "https://protomaps.com",
+      "licence": "Data © OpenStreetMap contributors under ODbL 1.0; tiles and styles by Protomaps under ISC",
+      "used_for": ["basemap"],
+      "notes": "Extract for the park bounds, zooms 0-15, built from the 2026-10-15 daily build. Regenerate with tools/basemap/build_basemap.sh."
+    },
+    {
+      "id": "noto-sans",
+      "label": "Noto Sans font ranges (Regular, Medium, Italic)",
+      "url": "https://fonts.google.com/noto",
+      "licence": "SIL Open Font License 1.1",
+      "used_for": ["basemap labels"],
+      "notes": "Latin ranges 0-1023 only, so non-Latin labels are blank offline."
+    }
+  ]
+}

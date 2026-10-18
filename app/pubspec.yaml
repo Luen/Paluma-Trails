@@ -1,0 +1,32 @@
+name: paluma_trails
+description: Offline-first trail guide for Paluma Range National Park.
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.13.5
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  maplibre_gl: ^0.27.1
+  path: ^1.9.1
+  path_provider: ^2.1.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/bundle/manifest.json
+    - assets/bundle/content/
+    - assets/bundle/basemap/paluma.pmtiles
+    - assets/bundle/basemap/style.json
+    - assets/bundle/basemap/fonts/Noto-Sans-Regular/
+    - assets/bundle/basemap/fonts/Noto-Sans-Medium/
+    - assets/bundle/basemap/fonts/Noto-Sans-Italic/
+    - assets/bundle/basemap/sprites/
