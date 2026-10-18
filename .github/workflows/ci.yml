@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [dev, main]
+  push:
+    branches: [dev]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  content:
+    name: Content (validate + bundle)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tools/paluma_cli
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - run: dart pub get
+      - run: dart format --output=none --set-exit-if-changed .
+      - run: dart analyze
+      - run: dart test
+      - name: Validate content against schema
+        working-directory: .
+        run: dart run tools/paluma_cli/bin/paluma_cli.dart content validate
+      - name: Rebuild the bundle and check it is committed
+        working-directory: .
+        run: |
+          dart run tools/paluma_cli/bin/paluma_cli.dart bundle build --out /tmp/bundle
+          diff -r /tmp/bundle/content app/assets/bundle/content
+
+  app:
+    name: App (analyze + test + build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      # maplibre_gl compiles its Android module with Java 21.
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+      - run: flutter pub get
+      - run: dart format --output=none --set-exit-if-changed .
+      - run: flutter analyze
+      - run: flutter test --coverage
+      - run: flutter build web --release
+      - run: flutter build apk --debug

@@ -1,0 +1,25 @@
+name: Feature or idea
+description: Propose something the project should do
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve for a walker?
+      description: Describe the situation on or before the track, not the implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Proposed approach
+      description: Optional. Anything about how it could work.
+    validations:
+      required: false
+  - type: input
+    id: offline
+    attributes:
+      label: Does this need to work offline?
+      description: Almost everything on the track does. Note anything that can wait for a connection.
+    validations:
+      required: false
