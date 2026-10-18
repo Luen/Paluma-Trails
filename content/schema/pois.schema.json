@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://paluma-trails.example/schema/pois.schema.json",
+  "title": "Points of interest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["pois"],
+  "properties": {
+    "pois": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "category", "location", "source"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+          "name": { "type": "string", "minLength": 1 },
+          "category": {
+            "enum": [
+              "history", "mine", "hut", "lookout", "waterfall", "campsite",
+              "water", "swimming", "art", "junction", "hazard", "other"
+            ]
+          },
+          "location": { "$ref": "#/$defs/location" },
+          "summary": { "type": ["string", "null"], "description": "One line shown on the map card" },
+          "description": { "type": ["string", "null"], "description": "Markdown, shown on the offline POI page" },
+          "qr_id": {
+            "type": ["string", "null"],
+            "description": "Stable id encoded in a physical QR sign. Never change once installed."
+          },
+          "photos": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["file", "caption"],
+              "properties": {
+                "file": { "type": "string" },
+                "caption": { "type": "string" },
+                "credit": { "type": ["string", "null"] },
+                "licence": { "type": ["string", "null"] }
+              }
+            }
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["label"],
+              "properties": {
+                "label": { "type": "string" },
+                "url": { "type": ["string", "null"] }
+              }
+            }
+          },
+          "unverified": { "type": "boolean" },
+          "source": { "type": "string" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lat", "lon"],
+      "properties": {
+        "lat": { "type": "number", "minimum": -90, "maximum": 90 },
+        "lon": { "type": "number", "minimum": -180, "maximum": 180 }
+      }
+    }
+  }
+}

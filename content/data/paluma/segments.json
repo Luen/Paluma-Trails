@@ -1,0 +1,451 @@
+{
+  "generator": {
+    "tool": "paluma_cli",
+    "schema_version": 1,
+    "generated_from": [
+      "tracks.geojson",
+      "junctions.json"
+    ]
+  },
+  "estimate": {
+    "method": "naismith-flat",
+    "pace_kmh": 4.0,
+    "includes_elevation": false,
+    "label": "Estimate — flat-terrain pace, elevation not included"
+  },
+  "segments": [
+    {
+      "from": "j1",
+      "to": "j16",
+      "track_id": "paluma-track-circuit-5",
+      "track_name": "Paluma Track Circuit 5",
+      "distance_m": 525,
+      "walk_minutes": 10,
+      "bearing_deg": 288.2
+    },
+    {
+      "from": "j1",
+      "to": "j9",
+      "track_id": "paluma-18",
+      "track_name": "Paluma 18",
+      "distance_m": 695,
+      "walk_minutes": 15,
+      "bearing_deg": 93.9
+    },
+    {
+      "from": "j10",
+      "to": "j17",
+      "track_id": "paluma-track-circuit-4",
+      "track_name": "Paluma Track Circuit 4",
+      "distance_m": 287,
+      "walk_minutes": 5,
+      "bearing_deg": 333.2
+    },
+    {
+      "from": "j11",
+      "to": "j10",
+      "track_id": "paluma-track-circuit-4",
+      "track_name": "Paluma Track Circuit 4",
+      "distance_m": 1276,
+      "walk_minutes": 20,
+      "bearing_deg": 37.8
+    },
+    {
+      "from": "j12",
+      "to": "j15",
+      "track_id": "paluma-4",
+      "track_name": "Paluma 4",
+      "distance_m": 484,
+      "walk_minutes": 10,
+      "bearing_deg": 287.9
+    },
+    {
+      "from": "j12",
+      "to": "j4",
+      "track_id": "paluma-track-circuit-3",
+      "track_name": "Paluma Track Circuit 3",
+      "distance_m": 93,
+      "walk_minutes": 5,
+      "bearing_deg": 207.4
+    },
+    {
+      "from": "j13",
+      "to": "j26",
+      "track_id": "paluma-1a",
+      "track_name": "Paluma 1a",
+      "distance_m": 294,
+      "walk_minutes": 5,
+      "bearing_deg": 319.8
+    },
+    {
+      "from": "j14",
+      "to": "j15",
+      "track_id": "paluma-1",
+      "track_name": "Paluma 1",
+      "distance_m": 95,
+      "walk_minutes": 5,
+      "bearing_deg": 17.7
+    },
+    {
+      "from": "j14",
+      "to": "j20",
+      "track_id": "paluma-16",
+      "track_name": "Paluma 16",
+      "distance_m": 115,
+      "walk_minutes": 5,
+      "bearing_deg": 183.3
+    },
+    {
+      "from": "j16",
+      "to": "j19",
+      "track_id": "paluma-14",
+      "track_name": "Paluma 14",
+      "distance_m": 1093,
+      "walk_minutes": 20,
+      "bearing_deg": 102.7
+    },
+    {
+      "from": "j16",
+      "to": "j22",
+      "track_id": "paluma-mountain-bike-track-2",
+      "track_name": "Paluma Mountain Bike Track 2",
+      "distance_m": 1182,
+      "walk_minutes": 20,
+      "bearing_deg": 283.3
+    },
+    {
+      "from": "j16",
+      "to": "j23",
+      "track_id": "paluma-mountain-bike-track-1",
+      "track_name": "Paluma Mountain Bike Track 1",
+      "distance_m": 678,
+      "walk_minutes": 15,
+      "bearing_deg": 244.7
+    },
+    {
+      "from": "j17",
+      "to": "j18",
+      "track_id": "paluma-track-circuit-4",
+      "track_name": "Paluma Track Circuit 4",
+      "distance_m": 1294,
+      "walk_minutes": 20,
+      "bearing_deg": 240.9
+    },
+    {
+      "from": "j18",
+      "to": "j21",
+      "track_id": "paluma-track-circuit-4",
+      "track_name": "Paluma Track Circuit 4",
+      "distance_m": 3330,
+      "walk_minutes": 50,
+      "bearing_deg": 259.8
+    },
+    {
+      "from": "j19",
+      "to": "j11",
+      "track_id": "paluma-14",
+      "track_name": "Paluma 14",
+      "distance_m": 86,
+      "walk_minutes": 5,
+      "bearing_deg": 90.5
+    },
+    {
+      "from": "j19",
+      "to": "j18",
+      "track_id": "paluma-15",
+      "track_name": "Paluma 15",
+      "distance_m": 939,
+      "walk_minutes": 15,
+      "bearing_deg": 324.5
+    },
+    {
+      "from": "j2",
+      "to": "j14",
+      "track_id": "paluma-track-circuit-7",
+      "track_name": "Paluma  Track Circuit 7",
+      "distance_m": 74,
+      "walk_minutes": 5,
+      "bearing_deg": 286.3
+    },
+    {
+      "from": "j20",
+      "to": "j42",
+      "track_id": "paluma-9",
+      "track_name": "Paluma 9",
+      "distance_m": 531,
+      "walk_minutes": 10,
+      "bearing_deg": 139.0
+    },
+    {
+      "from": "j22",
+      "to": "j21",
+      "track_id": "paluma-mountain-bike-track-2",
+      "track_name": "Paluma Mountain Bike Track 2",
+      "distance_m": 1592,
+      "walk_minutes": 25,
+      "bearing_deg": 310.8
+    },
+    {
+      "from": "j23",
+      "to": "j22",
+      "track_id": "paluma-10",
+      "track_name": "Paluma 10",
+      "distance_m": 928,
+      "walk_minutes": 15,
+      "bearing_deg": 340.6
+    },
+    {
+      "from": "j23",
+      "to": "j24",
+      "track_id": "paluma-mountain-bike-track-1",
+      "track_name": "Paluma Mountain Bike Track 1",
+      "distance_m": 1021,
+      "walk_minutes": 20,
+      "bearing_deg": 113.2
+    },
+    {
+      "from": "j24",
+      "to": "j25",
+      "track_id": "paluma-2",
+      "track_name": "Paluma 2",
+      "distance_m": 1145,
+      "walk_minutes": 20,
+      "bearing_deg": 112.7
+    },
+    {
+      "from": "j24",
+      "to": "j29",
+      "track_id": "paluma-mountain-bike-track-1",
+      "track_name": "Paluma Mountain Bike Track 1",
+      "distance_m": 3609,
+      "walk_minutes": 55,
+      "bearing_deg": 246.9
+    },
+    {
+      "from": "j25",
+      "to": "j20",
+      "track_id": "paluma-9",
+      "track_name": "Paluma 9",
+      "distance_m": 291,
+      "walk_minutes": 5,
+      "bearing_deg": 19.9
+    },
+    {
+      "from": "j25",
+      "to": "j26",
+      "track_id": "paluma-2",
+      "track_name": "Paluma 2",
+      "distance_m": 297,
+      "walk_minutes": 5,
+      "bearing_deg": 164.2
+    },
+    {
+      "from": "j26",
+      "to": "j42",
+      "track_id": "paluma-1a",
+      "track_name": "Paluma 1a",
+      "distance_m": 327,
+      "walk_minutes": 5,
+      "bearing_deg": 71.5
+    },
+    {
+      "from": "j27",
+      "to": "j35",
+      "track_id": "bullocky-toms-track",
+      "track_name": "Bullocky Tom's Track",
+      "distance_m": 1161,
+      "walk_minutes": 20,
+      "bearing_deg": 119.5
+    },
+    {
+      "from": "j28",
+      "to": "j27",
+      "track_id": "bullocky-toms-track",
+      "track_name": "Bullocky Tom's Track",
+      "distance_m": 1148,
+      "walk_minutes": 20,
+      "bearing_deg": 101.7
+    },
+    {
+      "from": "j28",
+      "to": "j7",
+      "track_id": "paluma-track-circuit-1",
+      "track_name": "Paluma Track Circuit 1",
+      "distance_m": 1087,
+      "walk_minutes": 20,
+      "bearing_deg": 341.9
+    },
+    {
+      "from": "j29",
+      "to": "j30",
+      "track_id": "paluma-track-circuit-1",
+      "track_name": "Paluma Track Circuit 1",
+      "distance_m": 158,
+      "walk_minutes": 5,
+      "bearing_deg": 79.0
+    },
+    {
+      "from": "j3",
+      "to": "j2",
+      "track_id": "paluma-track-circuit-7",
+      "track_name": "Paluma  Track Circuit 7",
+      "distance_m": 271,
+      "walk_minutes": 5,
+      "bearing_deg": 277.5
+    },
+    {
+      "from": "j3",
+      "to": "j4",
+      "track_id": "paluma-track-circuit-6",
+      "track_name": "Paluma track Circuit 6",
+      "distance_m": 149,
+      "walk_minutes": 5,
+      "bearing_deg": 73.0
+    },
+    {
+      "from": "j30",
+      "to": "j31",
+      "track_id": "paluma-track-circuit-1",
+      "track_name": "Paluma Track Circuit 1",
+      "distance_m": 800,
+      "walk_minutes": 15,
+      "bearing_deg": 151.4
+    },
+    {
+      "from": "j30",
+      "to": "j33",
+      "track_id": "paluma-track-circuit-2",
+      "track_name": "Paluma Track Circuit 2",
+      "distance_m": 731,
+      "walk_minutes": 15,
+      "bearing_deg": 109.5
+    },
+    {
+      "from": "j31",
+      "to": "j32",
+      "track_id": "paluma-track-circuit-1",
+      "track_name": "Paluma Track Circuit 1",
+      "distance_m": 500,
+      "walk_minutes": 10,
+      "bearing_deg": 89.0
+    },
+    {
+      "from": "j32",
+      "to": "j33",
+      "track_id": "paluma-track-circuit-1",
+      "track_name": "Paluma Track Circuit 1",
+      "distance_m": 602,
+      "walk_minutes": 10,
+      "bearing_deg": 355.4
+    },
+    {
+      "from": "j33",
+      "to": "j34",
+      "track_id": "paluma-track-circuit-1",
+      "track_name": "Paluma Track Circuit 1",
+      "distance_m": 1534,
+      "walk_minutes": 25,
+      "bearing_deg": 103.5
+    },
+    {
+      "from": "j34",
+      "to": "j28",
+      "track_id": "paluma-track-circuit-1",
+      "track_name": "Paluma Track Circuit 1",
+      "distance_m": 1972,
+      "walk_minutes": 30,
+      "bearing_deg": 81.6
+    },
+    {
+      "from": "j36",
+      "to": "j34",
+      "track_id": "paluma-village-to-dam-track",
+      "track_name": "Paluma Village to Dam Track",
+      "distance_m": 5358,
+      "walk_minutes": 85,
+      "bearing_deg": 349.2
+    },
+    {
+      "from": "j36",
+      "to": "j37",
+      "track_id": "paluma-village-to-dam-walk-2",
+      "track_name": "Paluma Village to Dam Walk 2",
+      "distance_m": 694,
+      "walk_minutes": 15,
+      "bearing_deg": 99.3
+    },
+    {
+      "from": "j37",
+      "to": "j39",
+      "track_id": "paluma-village-to-dam-walk-2",
+      "track_name": "Paluma Village to Dam Walk 2",
+      "distance_m": 289,
+      "walk_minutes": 5,
+      "bearing_deg": 96.0
+    },
+    {
+      "from": "j4",
+      "to": "j13",
+      "track_id": "paluma-track-circuit-3",
+      "track_name": "Paluma Track Circuit 3",
+      "distance_m": 993,
+      "walk_minutes": 15,
+      "bearing_deg": 194.9
+    },
+    {
+      "from": "j42",
+      "to": "j3",
+      "track_id": "paluma-1a",
+      "track_name": "Paluma 1a",
+      "distance_m": 390,
+      "walk_minutes": 10,
+      "bearing_deg": 343.7
+    },
+    {
+      "from": "j5",
+      "to": "j12",
+      "track_id": "paluma-track-circuit-3",
+      "track_name": "Paluma Track Circuit 3",
+      "distance_m": 258,
+      "walk_minutes": 5,
+      "bearing_deg": 207.8
+    },
+    {
+      "from": "j5",
+      "to": "j6",
+      "track_id": "foxlees-track",
+      "track_name": "Foxlee's Track",
+      "distance_m": 1505,
+      "walk_minutes": 25,
+      "bearing_deg": 97.1
+    },
+    {
+      "from": "j5",
+      "to": "j9",
+      "track_id": "paluma-track-circuit-4",
+      "track_name": "Paluma Track Circuit 4",
+      "distance_m": 373,
+      "walk_minutes": 10,
+      "bearing_deg": 315.1
+    },
+    {
+      "from": "j7",
+      "to": "j13",
+      "track_id": "paluma-track-circuit-1",
+      "track_name": "Paluma Track Circuit 1",
+      "distance_m": 136,
+      "walk_minutes": 5,
+      "bearing_deg": 46.2
+    },
+    {
+      "from": "j9",
+      "to": "j11",
+      "track_id": "paluma-track-circuit-4",
+      "track_name": "Paluma Track Circuit 4",
+      "distance_m": 498,
+      "walk_minutes": 10,
+      "bearing_deg": 337.0
+    }
+  ],
+  "tracks_considered": 60
+}

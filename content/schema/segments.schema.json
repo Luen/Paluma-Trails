@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://paluma-trails.example/schema/segments.schema.json",
+  "title": "Segments",
+  "description": "Generated junction-to-junction graph. Do not edit by hand; see tools/paluma_cli.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["generator", "estimate", "segments"],
+  "properties": {
+    "tracks_considered": {
+      "type": "integer",
+      "description": "How many tracks were examined when the graph was built."
+    },
+    "generator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tool", "schema_version"],
+      "properties": {
+        "tool": { "type": "string" },
+        "schema_version": { "type": "integer" },
+        "generated_from": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "estimate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "pace_kmh", "includes_elevation", "label"],
+      "properties": {
+        "method": { "type": "string" },
+        "pace_kmh": { "type": "number" },
+        "includes_elevation": { "type": "boolean" },
+        "label": { "type": "string" }
+      }
+    },
+    "segments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["from", "to", "track_id", "distance_m", "walk_minutes", "bearing_deg"],
+        "properties": {
+          "from": { "type": "string", "pattern": "^j[0-9]+[a-z]?$" },
+          "to": { "type": "string", "pattern": "^j[0-9]+[a-z]?$" },
+          "track_id": { "type": "string" },
+          "track_name": { "type": "string" },
+          "distance_m": { "type": "integer", "minimum": 1 },
+          "walk_minutes": { "type": "integer", "minimum": 5 },
+          "ascent_m": { "type": ["number", "null"] },
+          "bearing_deg": { "type": "number", "minimum": 0, "maximum": 360 },
+          "notes": { "type": ["string", "null"] }
+        }
+      }
+    }
+  }
+}

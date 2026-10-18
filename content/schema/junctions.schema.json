@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://paluma-trails.example/schema/junctions.schema.json",
+  "title": "Junctions",
+  "description": "The numbered junction markers physically present on the tracks.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["junctions"],
+  "properties": {
+    "junctions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "number", "location", "source"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^j[0-9]+[a-z]?$" },
+          "number": { "type": "integer", "minimum": 1 },
+          "name": { "type": ["string", "null"] },
+          "location": { "$ref": "#/$defs/location" },
+          "notes": { "type": ["string", "null"] },
+          "water": { "type": ["boolean", "null"], "description": "Drinking water available near this junction" },
+          "reception": { "type": ["boolean", "null"], "description": "Phone reception reported at or near this junction" },
+          "unverified": {
+            "type": "boolean",
+            "description": "Imported but not yet checked in the field."
+          },
+          "source": { "type": "string" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lat", "lon"],
+      "properties": {
+        "lat": { "type": "number", "minimum": -90, "maximum": 90 },
+        "lon": { "type": "number", "minimum": -180, "maximum": 180 }
+      }
+    }
+  }
+}
