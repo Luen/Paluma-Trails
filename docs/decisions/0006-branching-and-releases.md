@@ -15,14 +15,16 @@ workflow (AAB/APK + IPA + web, tag, GitHub Release, store uploads).
 - **`dev` is the default branch.** All work lands there via pull requests from
   short-lived feature branches (`feat/…`, `fix/…`, `docs/…`, `chore/…`).
 - **`main` is release-only.** It only receives PRs promoted from `dev` (or hotfix
-  branches), and merging a promotion to `main` triggers the release workflow.
+  branches). A promotion does not release by itself: pushing a `v*` tag on the
+  promotion commit starts the Release workflow. Manual runs build artifacts
+  without publishing.
 - **CI runs on every PR** to `dev` and `main`, and on pushes to `dev`: format,
   analyze, test, content validation, bundle freshness check, web build, debug APK.
 - **iOS builds are skipped on PRs** (macOS runners bill at 10×) and run as part of
   releases only.
-- **Versions** come from git tags and conventional commit messages
-  (`release-please` or equivalent), producing `v<major>.<minor>.<patch>` and a
-  monotonically increasing build number (`github.run_number`).
+- **Versions** come from `v*` tags for now: the tag's semantic version becomes
+  the version name and `github.run_number` the version code. release-please (or
+  equivalent) automation is still tracked in #65.
 - Branch protection on `main` requires a PR and green CI.
 
 ## Rationale
@@ -30,10 +32,9 @@ workflow (AAB/APK + IPA + web, tag, GitHub Release, store uploads).
 - Matches the model the maintainer already uses on other projects (issue #62
   references the Morphe patches template flow).
 - Keeps `main` always releasable; testers can install builds from `dev` releases.
-- The release workflow is deliberately plain (Flutter CLI + fastlane) so it can be
-  debugged locally; no proprietary CI service is required. Issue #67 keeps the
-  fastlane vs. third-party action vs. Codemagic decision open until we wire store
-  uploads.
+- The release workflow is deliberately plain (Flutter CLI + fastlane for store
+  delivery) so it can be debugged locally; no proprietary CI service is required.
+  The store-delivery choice is recorded in ADR 0007.
 
 ## Consequences
 
@@ -42,3 +43,10 @@ workflow (AAB/APK + IPA + web, tag, GitHub Release, store uploads).
   starts; until then the release workflow produces artifacts on the GitHub Release.
 - A release-please (or similar) workflow must be added with the release workflow
   (#65).
+
+## Amendments
+
+- **2026-10-20:** Releases are tag-driven for now (`v*` tag, or a manual run that
+  only builds artifacts). The earlier "merge to `main` triggers a release" step
+  waits for release-please in #65. Store delivery uses in-repo fastlane lanes
+  (ADR 0007).

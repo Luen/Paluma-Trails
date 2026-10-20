@@ -11,6 +11,7 @@ decision, rationale, alternatives, consequences. Keep them under a page.
 | [0004](0004-hosting-and-backend.md) | Hosting and backend | Accepted / Proposed (report intake) |
 | [0005](0005-repo-structure.md) | Monorepo layout | Accepted |
 | [0006](0006-branching-and-releases.md) | Branching model and release flow | Accepted |
+| [0007](0007-release-tooling.md) | Release tooling for store delivery: GitHub Actions + in-repo fastlane | Accepted |
 
 ## Template
 
