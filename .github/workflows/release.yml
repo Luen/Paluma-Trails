@@ -159,6 +159,9 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build image
         uses: docker/build-push-action@v6
+        env:
+          # The buildx build record is an action artifact, not a release asset.
+          DOCKER_BUILD_RECORD_UPLOAD: false
         with:
           context: ./app
           push: false
@@ -201,9 +204,16 @@ jobs:
       contents: write
       actions: read
     steps:
-      - uses: actions/download-artifact@v4
+      - name: Download Android artifacts
+        uses: actions/download-artifact@v4
         with:
-          path: artifacts
+          name: android
+          path: artifacts/android
+      - name: Download web artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: web
+          path: artifacts/web
       - name: Write release notes
         env:
           SIGNED: ${{ needs.android.outputs.signed }}
