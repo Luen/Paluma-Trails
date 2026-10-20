@@ -1,0 +1,182 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version name for the build (e.g. 0.1.0)
+        required: true
+        default: 0.1.0
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  android:
+    name: Android (AAB + per-ABI APKs)
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.name }}
+      signed: ${{ steps.signing.outputs.signed }}
+    env:
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Resolve version
+        id: version
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+          else
+            VERSION="${INPUT_VERSION}"
+          fi
+          echo "name=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Building ${VERSION} (${GITHUB_RUN_NUMBER})"
+      - name: Configure signing
+        id: signing
+        run: |
+          if [[ -n "${ANDROID_KEYSTORE_BASE64}" ]]; then
+            echo "${ANDROID_KEYSTORE_BASE64}" | base64 --decode > android/app/upload-keystore.jks
+            cat > android/key.properties <<EOF
+          storePassword=${ANDROID_KEYSTORE_PASSWORD}
+          keyPassword=${ANDROID_KEY_PASSWORD}
+          keyAlias=${ANDROID_KEY_ALIAS}
+          storeFile=${PWD}/android/app/upload-keystore.jks
+          EOF
+            echo "signed=true" >> "$GITHUB_OUTPUT"
+            echo "Using the upload keystore."
+          else
+            echo "signed=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::No Android signing secrets; the AAB and APKs will be debug-signed."
+          fi
+      - name: Build AAB
+        run: >-
+          flutter build appbundle --release
+          --build-name="${{ steps.version.outputs.name }}"
+          --build-number="${GITHUB_RUN_NUMBER}"
+      - name: Build per-ABI APKs
+        run: >-
+          flutter build apk --release --split-per-abi
+          --build-name="${{ steps.version.outputs.name }}"
+          --build-number="${GITHUB_RUN_NUMBER}"
+      - name: Check Play download budget
+        run: tool/aab_size.sh --aab build/app/outputs/bundle/release/app-release.aab --budget-mb 20
+      - name: Collect artifacts
+        run: |
+          mkdir -p release
+          cp build/app/outputs/bundle/release/app-release.aab release/
+          cp build/app/outputs/flutter-apk/app-*-release.apk release/
+          (cd release && sha256sum * > SHA256SUMS)
+          ls -lh release
+      - name: Size summary
+        run: |
+          {
+            echo "| Artifact | Size |"
+            echo "| --- | --- |"
+            for f in release/*; do
+              printf '| `%s` | %s |\n' "$(basename "$f")" "$(du -h "$f" | cut -f1)"
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android
+          path: app/release/
+          if-no-files-found: error
+
+  web:
+    name: Web
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: flutter build web --release
+      - name: Package the web build
+        run: tar czf paluma-trails-web.tar.gz -C build/web .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web
+          path: app/paluma-trails-web.tar.gz
+          if-no-files-found: error
+
+  release:
+    name: GitHub Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [android, web]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Write release notes
+        env:
+          SIGNED: ${{ needs.android.outputs.signed }}
+          VERSION: ${{ needs.android.outputs.version }}
+        run: |
+          {
+            echo "## Paluma Trails ${VERSION}"
+            echo
+            echo "### Android"
+            echo
+            echo "Download the APK for your phone's ABI:"
+            echo
+            echo "- \`app-arm64-v8a-release.apk\` — most phones, including the Pixel 8"
+            echo "- \`app-armeabi-v7a-release.apk\` — older 32-bit phones"
+            echo "- \`app-x86_64-release.apk\` — emulators only"
+            echo
+            echo "There is no universal APK. The \`.aab\` is the Play Store upload."
+            echo "Check the download with \`sha256sum -c SHA256SUMS\`."
+            echo
+            if [[ "${SIGNED}" != "true" ]]; then
+              echo "> **Debug-signed build.** The upload keystore is not configured yet"
+              echo "> (see #66), so these APKs are for sideload testing and the AAB is"
+              echo "> not ready for Play."
+              echo
+            fi
+            echo "### Web"
+            echo
+            echo "\`paluma-trails-web.tar.gz\` contains the Flutter web build."
+          } > notes.md
+          find artifacts -type f | sort
+          test -n "$(find artifacts -type f -print -quit)"
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Paluma Trails ${{ needs.android.outputs.version }}
+          body_path: notes.md
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          files: artifacts/**

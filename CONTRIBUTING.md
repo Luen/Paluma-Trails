@@ -73,6 +73,13 @@ docs(adr): record offline map stack decision
 - Screenshots for UI changes; offline behaviour tested with the device in flight
   mode where relevant.
 
+## Releasing
+
+Promote `dev` to `main`, then push a `v*` tag. The Release workflow builds the
+AAB, the per-ABI APKs and the web bundle and publishes a GitHub Release. See
+[docs/release.md](docs/release.md) for the tag format, signing secrets and the
+Play download budget.
+
 ## Adding dependencies
 
 Please open an issue first for anything beyond small, well-maintained packages.

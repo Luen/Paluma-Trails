@@ -1,0 +1,88 @@
+# Releases
+
+## Cutting a release
+
+1. Promote `dev` to `main` with a pull request and wait for CI.
+2. Tag the promotion commit and push the tag:
+
+   ```sh
+   git switch main && git pull
+   git tag v0.2.0
+   git push origin v0.2.0
+   ```
+
+   The tag must start with `v`; the rest becomes the Android version name.
+   Tags containing a hyphen (for example `v0.2.0-rc.1`) are published as
+   prereleases.
+
+3. `.github/workflows/release.yml` builds and publishes:
+
+   - `app-release.aab` — Play Store upload
+   - `app-arm64-v8a-release.apk`, `app-armeabi-v7a-release.apk` and
+     `app-x86_64-release.apk` — sideload builds
+   - `paluma-trails-web.tar.gz` — the Flutter web build
+   - `SHA256SUMS`
+
+   The Android `versionCode` is the workflow run number; the `versionName` is
+   the tag without the leading `v`.
+
+To test the build without publishing, run **Release → Run workflow** on `dev`
+in the Actions tab. It uploads the same artifacts to the workflow run but does
+not create a GitHub Release.
+
+## Android sideloading
+
+There is no universal APK. Pick the file that matches the phone:
+
+| ABI | File | Typical device |
+| --- | --- | --- |
+| arm64-v8a | `app-arm64-v8a-release.apk` | most phones, including the Pixel 8 |
+| armeabi-v7a | `app-armeabi-v7a-release.apk` | older 32-bit phones |
+| x86_64 | `app-x86_64-release.apk` | emulators |
+
+```sh
+adb install -r app-arm64-v8a-release.apk
+```
+
+The `.aab` is only for Play; it is not installable with `adb`. Play delivers
+just the phone's ABI, so the store download is much smaller than the AAB.
+
+## Size budget
+
+`app/tool/aab_size.sh` builds split APKs from the AAB with bundletool 1.18.3
+for a Pixel 8 device spec and fails if the arm64 Play download exceeds 20 MB.
+The workflow runs it on every release build and prints the artifact sizes in
+the job summary. Current measurements (see #72) are about 14 MB for a Play
+install and 29 MB for the arm64 sideload APK.
+
+## Signing
+
+`app/android/app/build.gradle.kts` reads `app/android/key.properties` when it
+exists and otherwise falls back to debug signing. The release workflow writes
+that file from the secrets listed in #66:
+
+- `ANDROID_KEYSTORE_BASE64`
+- `ANDROID_KEYSTORE_PASSWORD`
+- `ANDROID_KEY_ALIAS`
+- `ANDROID_KEY_PASSWORD`
+
+Without those secrets the workflow still succeeds, but warns and publishes
+debug-signed artifacts that are only suitable for sideload testing.
+
+Debug keys differ between machines, so uninstall an existing app before
+installing a CI build if the signature does not match:
+
+```sh
+adb uninstall space.wanderstories.paluma_trails
+adb install app-arm64-v8a-release.apk
+```
+
+Do not commit `key.properties` or the keystore; both are ignored by git.
+
+## Not automated yet
+
+- Play Store and App Store uploads, and the iOS IPA, wait for the signing setup
+  in #66.
+- Version bumps and release pull requests (release-please or equivalent) are
+  tracked in #65/#67.
+- Publishing the web image to GHCR is part of #68.
