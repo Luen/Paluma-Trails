@@ -261,4 +261,40 @@ void main() {
       expect(taps, 1);
     });
   });
+
+  group('MapControlButton', () {
+    testWidgets('forwards taps', (tester) async {
+      var taps = 0;
+      await tester.pumpWidget(
+        _wrap(
+          Center(
+            child: MapControlButton(
+              icon: Icons.tune,
+              tooltip: 'Options',
+              onPressed: () => taps++,
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.byType(MapControlButton));
+      expect(taps, 1);
+    });
+
+    testWidgets('is at least a 48 px target, even when disabled', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          const Center(
+            child: MapControlButton(icon: Icons.tune, tooltip: 'Options'),
+          ),
+        ),
+      );
+
+      final size = tester.getSize(find.byType(MapControlButton));
+      expect(size.width, greaterThanOrEqualTo(48));
+      expect(size.height, greaterThanOrEqualTo(48));
+    });
+  });
 }

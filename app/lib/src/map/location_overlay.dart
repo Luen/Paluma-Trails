@@ -5,6 +5,59 @@ import '../location/location_service.dart';
 import '../location/trail_locator.dart';
 import 'format.dart';
 
+/// A round map control sized for gloved, one-handed use (48 px minimum).
+class MapControlButton extends StatelessWidget {
+  const MapControlButton({
+    super.key,
+    required this.icon,
+    required this.tooltip,
+    this.onPressed,
+    this.highlighted = false,
+    this.foregroundColor,
+  });
+
+  final IconData icon;
+  final String tooltip;
+  final VoidCallback? onPressed;
+  final bool highlighted;
+  final Color? foregroundColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final disabled = onPressed == null;
+    final background = disabled
+        ? theme.colorScheme.surface.withValues(alpha: 0.6)
+        : highlighted
+        ? theme.colorScheme.primaryContainer
+        : theme.colorScheme.surface;
+    final foreground = disabled
+        ? theme.colorScheme.onSurface.withValues(alpha: 0.4)
+        : foregroundColor ??
+              (highlighted
+                  ? theme.colorScheme.onPrimaryContainer
+                  : theme.colorScheme.onSurface);
+
+    return Tooltip(
+      message: tooltip,
+      child: Material(
+        color: background,
+        shape: const CircleBorder(),
+        elevation: disabled ? 0 : 3,
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: onPressed,
+          child: SizedBox(
+            width: 48,
+            height: 48,
+            child: Icon(icon, size: 26, color: foreground),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 /// The floating "where am I" button.
 ///
 /// Off means nothing has been asked for yet; a tap starts location. Once
@@ -23,7 +76,6 @@ class LocateButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final tracking =
         status == LocationStatus.starting || status == LocationStatus.tracking;
 
@@ -55,29 +107,11 @@ class LocateButton extends StatelessWidget {
       ),
     };
 
-    return Tooltip(
-      message: tooltip,
-      child: Material(
-        color: following
-            ? theme.colorScheme.primaryContainer
-            : theme.colorScheme.surface,
-        shape: const CircleBorder(),
-        elevation: 3,
-        child: InkWell(
-          customBorder: const CircleBorder(),
-          onTap: onPressed,
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Icon(
-              icon,
-              size: 22,
-              color: tracking && following
-                  ? theme.colorScheme.onPrimaryContainer
-                  : theme.colorScheme.onSurface,
-            ),
-          ),
-        ),
-      ),
+    return MapControlButton(
+      icon: icon,
+      tooltip: tooltip,
+      highlighted: tracking && following,
+      onPressed: onPressed,
     );
   }
 }
