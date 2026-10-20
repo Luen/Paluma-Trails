@@ -1,7 +1,7 @@
 # Web build and Docker image
 
 The Flutter web build is a static site. `app/Dockerfile` builds it in a Flutter
-image and serves it with Caddy.
+build stage and serves it with Caddy.
 
 ## Run locally
 
@@ -11,8 +11,16 @@ From the repository root:
 docker compose up --build
 ```
 
-Then open <http://localhost:8080>. The first build pulls the Flutter image and
-takes a few minutes; `docker compose down` stops it.
+Then open <http://localhost:8080>. The first build downloads the Flutter SDK
+(about 1.6 GB) and takes a few minutes, so allow several GB of free disk;
+`docker compose down` stops it.
+
+### Build notes
+
+The build stage installs Flutter 3.47.7 from the official release archive
+instead of using a registry image: the available Flutter images still carry
+Dart 3.12, while the app needs Dart 3.13.5. Keep `FLUTTER_VERSION` in
+`app/Dockerfile` in sync when the project's Flutter version changes.
 
 Caddy adds an SPA fallback and sets:
 
