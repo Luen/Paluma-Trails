@@ -22,3 +22,6 @@
 # Local development secrets / overrides
 .env
 *.local.json
+
+# Xcode Swift Package Manager scratch files
+app/ios/**/xcshareddata/swiftpm/

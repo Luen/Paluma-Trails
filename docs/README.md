@@ -4,6 +4,7 @@
 - [Content model](content-model.md) — how tracks, junctions, POIs and segments fit together.
 - [Location and the next junction](location.md) — how the blue dot and along-track junction distances work.
 - [Architecture decisions](decisions/) — ADRs, one file per decision.
+- [Store assets](store/) — icon and feature graphic, generated from the artwork in `app/assets/icon/`.
 - [Basemap pipeline](../tools/basemap/README.md) — how the offline PMTiles archive is produced.
 
 ## Working agreements
