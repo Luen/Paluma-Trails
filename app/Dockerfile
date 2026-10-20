@@ -28,6 +28,7 @@ RUN curl -fsSL \
       -o /tmp/flutter.tar.xz \
  && tar -xJf /tmp/flutter.tar.xz -C /opt \
  && rm /tmp/flutter.tar.xz \
+ && git config --global --add safe.directory "${FLUTTER_HOME}" \
  && flutter config --no-analytics \
  && flutter precache --web
 
