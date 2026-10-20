@@ -1,10 +1,15 @@
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
 import '../about_screen.dart';
 import '../content/bundle_repository.dart';
+import '../content/models.dart';
+import '../location/location_service.dart';
+import '../location/trail_locator.dart';
+import 'location_overlay.dart';
 import 'sheets.dart';
 
 /// The offline map: basemap from the bundled PMTiles archive, trail content
@@ -44,6 +49,41 @@ class _MapScreenState extends State<MapScreen> {
 
   MapLibreMapController? _controller;
   var _layersAdded = false;
+
+  late final LocationService _location;
+  late final TrailLocator _trailLocator;
+  TrailFix? _trailFix;
+
+  /// Whether the camera should follow the walker's fixes.
+  var _following = false;
+
+  /// Set when the camera should jump to the next fix (after starting location
+  /// or tapping "follow me" again).
+  var _needsCentre = false;
+
+  bool get _locationEnabled => _location.isTracking;
+
+  @override
+  void initState() {
+    super.initState();
+    _location = LocationService();
+    _trailLocator = TrailLocator.fromGeoJson(
+      tracksGeoJson: widget.bundle.tracksGeoJson,
+      origin: widget.bundle.park.center,
+      junctions: widget.bundle.junctions,
+      paceKmh: widget.bundle.estimate.paceKmh,
+    );
+    _location.fix.addListener(_onFix);
+    _location.status.addListener(_onLocationStatusChanged);
+  }
+
+  @override
+  void dispose() {
+    _location.fix.removeListener(_onFix);
+    _location.status.removeListener(_onLocationStatusChanged);
+    _location.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +126,20 @@ class _MapScreenState extends State<MapScreen> {
             compassEnabled: true,
             attributionButtonPosition: AttributionButtonPosition.bottomRight,
             logoEnabled: true,
+            // The app feeds the puck from its own fixes, so the same path
+            // works on Android, iOS and the web; see LocationService.
+            locationSource: const ManualLocationSource(),
+            myLocationEnabled: _locationEnabled,
+            myLocationTrackingMode: _following
+                ? MyLocationTrackingMode.tracking
+                : MyLocationTrackingMode.none,
+            // A compass puck requires the location component to be enabled, so
+            // it is only requested once tracking starts.
+            myLocationRenderMode: _locationEnabled
+                ? MyLocationRenderMode.compass
+                : MyLocationRenderMode.normal,
+            onCameraIdle: _onCameraIdle,
+            onCameraTrackingDismissed: _onCameraTrackingDismissed,
           ),
           if (!_layersAdded)
             Positioned.fill(
@@ -96,8 +150,33 @@ class _MapScreenState extends State<MapScreen> {
             ),
           Positioned(
             left: 12,
+            right: 64,
             bottom: 12,
-            child: _BundleChip(version: bundle.manifest.bundleVersion),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (_location.status.value != LocationStatus.off) ...[
+                  LocationCard(
+                    status: _location.status.value,
+                    fix: _location.fix.value,
+                    trail: _trailFix,
+                    onJunctionTap: _openJunction,
+                  ),
+                  const SizedBox(height: 6),
+                ],
+                _BundleChip(version: bundle.manifest.bundleVersion),
+              ],
+            ),
+          ),
+          Positioned(
+            right: 12,
+            bottom: 64,
+            child: LocateButton(
+              status: _location.status.value,
+              following: _following,
+              onPressed: _onLocatePressed,
+            ),
           ),
         ],
       ),
@@ -287,6 +366,181 @@ class _MapScreenState extends State<MapScreen> {
           showTrackSheet(context, bundle: widget.bundle, track: track);
         }
     }
+  }
+
+  void _onLocationStatusChanged() {
+    if (!mounted) return;
+    setState(() {
+      // A stopped stream must not leave a stale junction on the card.
+      if (!_location.isTracking) _trailFix = null;
+    });
+  }
+
+  Future<void> _onFix() async {
+    final fix = _location.fix.value;
+    if (fix == null) return;
+
+    final trailFix = _trailLocator.locate(
+      fix.position,
+      bearingDeg: fix.bearingDeg,
+      speedMps: fix.speedMps,
+    );
+    if (mounted) setState(() => _trailFix = trailFix);
+
+    // Push first: on web the manual puck recentres on every fix and would
+    // cancel a camera animation that started before it.
+    await _pushFixToMap(fix);
+    if (_needsCentre) {
+      _needsCentre = false;
+      await _centreOn(fix);
+    }
+  }
+
+  /// Centres on the latest fix once a rebuild has applied the tracking mode.
+  ///
+  /// Enabling the tracking mode also recentres (the web manual puck does it on
+  /// every fix), so centring in the same frame would be undone by it. Without
+  /// a fix yet, the next one centres instead.
+  void _centreAfterFollowingStarts() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_following) return;
+      final fix = _location.fix.value;
+      if (fix == null) {
+        _needsCentre = true;
+      } else {
+        _centreOn(fix);
+      }
+    });
+  }
+
+  /// Drives the map's location puck from the fix.
+  Future<void> _pushFixToMap(GpsFix fix) async {
+    final controller = _controller;
+    if (controller == null) return;
+    try {
+      await controller.updateManualLocation(
+        ManualLocationUpdate(
+          target: LatLng(fix.position.lat, fix.position.lon),
+          horizontalAccuracy: fix.accuracyM > 0 ? fix.accuracyM : null,
+          bearing: fix.bearingDeg,
+          speed: fix.speedMps,
+          altitude: fix.altitudeM,
+          timestamp: fix.timestamp,
+        ),
+      );
+    } catch (_) {
+      // The map may still be initialising or already gone; the next fix is
+      // along in a few seconds.
+    }
+  }
+
+  /// Jumps to the walker at a walking zoom.
+  ///
+  /// A jump rather than an animation on purpose: while the tracking mode is on,
+  /// the web manual puck recentres on every fix and would cancel an animation
+  /// that has not finished. A jump keeps its zoom when that happens.
+  Future<void> _centreOn(GpsFix fix) =>
+      _controller?.moveCamera(
+        CameraUpdate.newLatLngZoom(
+          LatLng(fix.position.lat, fix.position.lon),
+          15,
+        ),
+      ) ??
+      Future<void>.value();
+
+  Future<void> _onLocatePressed() async {
+    if (_location.isTracking) {
+      setState(() => _following = !_following);
+      if (_following) _centreAfterFollowingStarts();
+      return;
+    }
+
+    final status = await _location.start();
+    if (!mounted) return;
+
+    if (status == LocationStatus.servicesDisabled) {
+      _notify(
+        'Location services are off — turn them on to see your position.',
+        actionLabel: 'Settings',
+        onAction: _location.openLocationSettings,
+      );
+      return;
+    }
+    if (status == LocationStatus.permissionDenied) {
+      _notify(
+        'Location permission is needed to show where you are.',
+        actionLabel: 'Ask again',
+        onAction: _onLocatePressed,
+      );
+      return;
+    }
+    if (status == LocationStatus.permissionDeniedForever) {
+      if (kIsWeb) {
+        _notify(
+          'Location permission was denied — allow it in the browser site '
+          'settings.',
+        );
+      } else {
+        _notify(
+          'Location permission was denied — grant it in the app settings.',
+          actionLabel: 'Settings',
+          onAction: _location.openAppSettings,
+        );
+      }
+      return;
+    }
+    if (status == LocationStatus.failed) {
+      _notify('The device did not report a position — tap again to retry.');
+      return;
+    }
+
+    setState(() => _following = true);
+    _centreAfterFollowingStarts();
+  }
+
+  void _onCameraTrackingDismissed() {
+    if (_following) setState(() => _following = false);
+  }
+
+  /// Stops following when the camera settles away from the walker.
+  ///
+  /// Android and iOS report a tracking dismissal for a pan; the web manual
+  /// puck does not, so the same intent is inferred from where the camera
+  /// ended up. Programmatic moves land on the fix and keep following.
+  void _onCameraIdle() {
+    if (!_following || _controller == null) return;
+    final fix = _location.fix.value;
+    final target = _controller!.cameraPosition?.target;
+    if (fix == null || target == null) return;
+    if (_metresBetween(fix.position, target) > 40) {
+      setState(() => _following = false);
+    }
+  }
+
+  /// A quick local equirectangular distance, accurate enough for a gesture
+  /// threshold.
+  static double _metresBetween(GeoPoint a, LatLng b) {
+    const metresPerDegree = 111194.9;
+    final midLat = (a.lat + b.latitude) * math.pi / 360;
+    final dLat = (b.latitude - a.lat) * metresPerDegree;
+    final dLon = (b.longitude - a.lon) * metresPerDegree * math.cos(midLat);
+    return math.sqrt(dLat * dLat + dLon * dLon);
+  }
+
+  void _openJunction(Junction junction) {
+    showJunctionSheet(context, bundle: widget.bundle, junction: junction);
+  }
+
+  void _notify(String message, {String? actionLabel, VoidCallback? onAction}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 6),
+        action: actionLabel == null || onAction == null
+            ? null
+            : SnackBarAction(label: actionLabel, onPressed: onAction),
+      ),
+    );
   }
 
   Future<void> _fitPark() async {
