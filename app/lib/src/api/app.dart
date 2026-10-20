@@ -1,32 +1,60 @@
 import 'package:flutter/material.dart';
 
 import '../content/bundle_repository.dart';
+import '../map/map_options.dart';
 import '../map/map_screen.dart';
 import '../pmtiles_protocol.dart';
 
 /// Root of the Paluma Trails app.
-class PalumaTrailsApp extends StatelessWidget {
+class PalumaTrailsApp extends StatefulWidget {
   const PalumaTrailsApp({super.key, required this.repository});
 
   final BundleRepository repository;
 
   @override
+  State<PalumaTrailsApp> createState() => _PalumaTrailsAppState();
+}
+
+class _PalumaTrailsAppState extends State<PalumaTrailsApp> {
+  final _options = MapOptions();
+
+  @override
+  void dispose() {
+    _options.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Paluma Trails',
-      debugShowCheckedModeBanner: false,
-      theme: _theme(Brightness.light),
-      darkTheme: _theme(Brightness.dark),
-      home: _BundleLoader(repository: repository),
+    return MapOptionsScope(
+      options: _options,
+      child: ListenableBuilder(
+        listenable: _options,
+        builder: (context, _) => MaterialApp(
+          title: 'Paluma Trails',
+          debugShowCheckedModeBanner: false,
+          theme: _theme(Brightness.light, sunlight: _options.sunlight),
+          darkTheme: _theme(Brightness.dark),
+          // Sunlight mode is for a bright day, so it overrides a dark system
+          // theme rather than following it.
+          themeMode: _options.sunlight ? ThemeMode.light : ThemeMode.system,
+          home: _BundleLoader(repository: widget.repository),
+        ),
+      ),
     );
   }
 
-  static ThemeData _theme(Brightness brightness) {
+  static ThemeData _theme(Brightness brightness, {bool sunlight = false}) {
     final scheme = ColorScheme.fromSeed(
       seedColor: const Color(0xFF2E6B4F),
       brightness: brightness,
+      contrastLevel: sunlight ? 1.0 : 0.0,
     );
-    return ThemeData(colorScheme: scheme, useMaterial3: true);
+    return ThemeData(
+      colorScheme: scheme,
+      useMaterial3: true,
+      scaffoldBackgroundColor: sunlight ? const Color(0xFFFFFFFF) : null,
+    );
   }
 }
 

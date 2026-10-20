@@ -21,6 +21,7 @@ class _FakeDriver implements LocationDriver {
   bool appSettingsOpened = false;
   bool locationSettingsOpened = false;
   bool settingsThrow = false;
+  LocationSettings? lastSettings;
 
   final StreamController<Position> positionsController =
       StreamController<Position>.broadcast();
@@ -39,8 +40,10 @@ class _FakeDriver implements LocationDriver {
   }
 
   @override
-  Stream<Position> positions({LocationSettings? settings}) =>
-      positionsController.stream;
+  Stream<Position> positions({LocationSettings? settings}) {
+    lastSettings = settings;
+    return positionsController.stream;
+  }
 
   @override
   Future<bool> openAppSettings() async {
@@ -209,6 +212,26 @@ void main() {
     expect(service.fix.value, isNull);
     expect(service.isTracking, isFalse);
   });
+
+  test(
+    'battery saver restarts with a coarser fix and no loss of tracking',
+    () async {
+      final driver = _FakeDriver();
+      final service = LocationService(driver: driver);
+
+      await service.start();
+      expect(driver.lastSettings?.accuracy, LocationAccuracy.high);
+      expect(driver.lastSettings?.distanceFilter, 5);
+
+      service.batterySaver = true;
+      await pumpEventQueue();
+
+      expect(driver.lastSettings?.accuracy, LocationAccuracy.medium);
+      expect(driver.lastSettings?.distanceFilter, 20);
+      expect(service.isTracking, isTrue);
+      expect(driver.positionsController.hasListener, isTrue);
+    },
+  );
 
   test('settings requests reach the driver', () async {
     final driver = _FakeDriver();

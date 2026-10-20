@@ -138,8 +138,25 @@ class LocationService {
 
   StreamSubscription<Position>? _subscription;
   var _disposed = false;
+  var _batterySaver = false;
 
   bool get isTracking => _subscription != null;
+
+  /// When true, ask for a coarser fix less often; the map screen also stops
+  /// the compass puck. An in-flight stream restarts so the change takes effect.
+  bool get batterySaver => _batterySaver;
+
+  set batterySaver(bool value) {
+    if (value == _batterySaver) return;
+    _batterySaver = value;
+    if (_subscription != null) unawaited(_restart());
+  }
+
+  Future<void> _restart() async {
+    if (_subscription == null) return;
+    await stop();
+    if (!_disposed) await start();
+  }
 
   /// Asks for permission when needed, then starts reporting fixes.
   ///
@@ -222,7 +239,8 @@ class LocationService {
   }
 
   /// Walking wants accuracy, not the power-hungry `best`; five metres between
-  /// updates keeps the countdown moving without a fix storm.
+  /// updates keeps the countdown moving without a fix storm. Battery saver
+  /// trades that detail for a coarser fix every twenty metres.
   ///
   /// Android goes through the platform's own `LocationManager` rather than the
   /// fused provider, so the app keeps working on devices without Google Play
@@ -230,16 +248,17 @@ class LocationService {
   LocationSettings _settingsFor() {
     final settings = this.settings;
     if (settings != null) return settings;
+    final accuracy = _batterySaver
+        ? LocationAccuracy.medium
+        : LocationAccuracy.high;
+    final distanceFilter = _batterySaver ? 20 : 5;
     if (defaultTargetPlatform == TargetPlatform.android) {
       return AndroidSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 5,
+        accuracy: accuracy,
+        distanceFilter: distanceFilter,
         forceLocationManager: true,
       );
     }
-    return const LocationSettings(
-      accuracy: LocationAccuracy.high,
-      distanceFilter: 5,
-    );
+    return LocationSettings(accuracy: accuracy, distanceFilter: distanceFilter);
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../content/bundle_repository.dart';
 import '../content/models.dart';
 import 'format.dart';
+import 'map_options.dart';
 
 /// Bottom sheets for the map's tappable features: junctions, POIs and tracks.
 
@@ -23,6 +24,43 @@ Future<void> showTrackSheet(
   required LoadedBundle bundle,
   required TrackSummary track,
 }) => _show(context, TrackSheet(bundle: bundle, track: track));
+
+/// Outdoor display choices: sunlight mode and battery saver.
+Future<void> showDisplaySettingsSheet(
+  BuildContext context, {
+  required MapOptions options,
+}) => showModalBottomSheet<void>(
+  context: context,
+  showDragHandle: true,
+  builder: (context) => SafeArea(
+    child: ListenableBuilder(
+      listenable: options,
+      builder: (context, _) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SwitchListTile(
+            value: options.sunlight,
+            onChanged: (value) => options.sunlight = value,
+            secondary: const Icon(Icons.wb_sunny_outlined),
+            title: const Text('Sunlight mode'),
+            subtitle: const Text(
+              'High-contrast colours and heavier map lines for bright days.',
+            ),
+          ),
+          SwitchListTile(
+            value: options.batterySaver,
+            onChanged: (value) => options.batterySaver = value,
+            secondary: const Icon(Icons.battery_saver_outlined),
+            title: const Text('Battery saver'),
+            subtitle: const Text(
+              'Fewer GPS updates and no compass; distances stay approximate.',
+            ),
+          ),
+        ],
+      ),
+    ),
+  ),
+);
 
 Future<void> _show(BuildContext context, Widget child) =>
     showModalBottomSheet<void>(

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -10,6 +11,7 @@ import '../content/models.dart';
 import '../location/location_service.dart';
 import '../location/trail_locator.dart';
 import 'location_overlay.dart';
+import 'map_options.dart';
 import 'sheets.dart';
 
 /// The offline map: basemap from the bundled PMTiles archive, trail content
@@ -35,20 +37,11 @@ class _MapScreenState extends State<MapScreen> {
   static const _poisLayer = 'paluma-pois';
   static const _poisLabelLayer = 'paluma-pois-label';
 
-  static const _lineWidth = [
-    'interpolate',
-    ['linear'],
-    ['zoom'],
-    8,
-    2.0,
-    12,
-    3.5,
-    16,
-    6.0,
-  ];
-
   MapLibreMapController? _controller;
   var _layersAdded = false;
+
+  MapOptions? _options;
+  var _sunlight = false;
 
   late final LocationService _location;
   late final TrailLocator _trailLocator;
@@ -78,6 +71,18 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final options = MapOptionsScope.of(context);
+    _options = options;
+    _location.batterySaver = options.batterySaver;
+    if (_sunlight != options.sunlight) {
+      _sunlight = options.sunlight;
+      if (_layersAdded) unawaited(_applyLayerStyle());
+    }
+  }
+
+  @override
   void dispose() {
     _location.fix.removeListener(_onFix);
     _location.status.removeListener(_onLocationStatusChanged);
@@ -89,16 +94,12 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     final bundle = widget.bundle;
     final theme = Theme.of(context);
+    final options = MapOptionsScope.of(context);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(bundle.park.name),
         actions: [
-          IconButton(
-            tooltip: 'Show the whole park',
-            onPressed: _layersAdded ? _fitPark : null,
-            icon: const Icon(Icons.fit_screen_outlined),
-          ),
           IconButton(
             tooltip: 'About this app',
             onPressed: () => Navigator.of(context).push(
@@ -134,8 +135,9 @@ class _MapScreenState extends State<MapScreen> {
                 ? MyLocationTrackingMode.tracking
                 : MyLocationTrackingMode.none,
             // A compass puck requires the location component to be enabled, so
-            // it is only requested once tracking starts.
-            myLocationRenderMode: _locationEnabled
+            // it is only requested once tracking starts; battery saver skips
+            // it too, since the magnetometer is a constant drain.
+            myLocationRenderMode: _locationEnabled && !options.batterySaver
                 ? MyLocationRenderMode.compass
                 : MyLocationRenderMode.normal,
             onCameraIdle: _onCameraIdle,
@@ -172,10 +174,28 @@ class _MapScreenState extends State<MapScreen> {
           Positioned(
             right: 12,
             bottom: 64,
-            child: LocateButton(
-              status: _location.status.value,
-              following: _following,
-              onPressed: _onLocatePressed,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                MapControlButton(
+                  icon: Icons.fit_screen_outlined,
+                  tooltip: 'Show the whole park',
+                  onPressed: _layersAdded ? _fitPark : null,
+                ),
+                const SizedBox(height: 10),
+                MapControlButton(
+                  icon: Icons.tune,
+                  tooltip: 'Outdoor display and battery options',
+                  highlighted: options.sunlight || options.batterySaver,
+                  onPressed: _openDisplaySettings,
+                ),
+                const SizedBox(height: 10),
+                LocateButton(
+                  status: _location.status.value,
+                  following: _following,
+                  onPressed: _onLocatePressed,
+                ),
+              ],
             ),
           ),
         ],
@@ -216,117 +236,34 @@ class _MapScreenState extends State<MapScreen> {
       await controller.addLineLayer(
         _tracksSource,
         _tracksCasingLayer,
-        const LineLayerProperties(
-          lineColor: '#0B3D2E',
-          lineOpacity: 0.35,
-          lineWidth: [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            8,
-            4.5,
-            12,
-            6.5,
-            16,
-            10.0,
-          ],
-        ),
+        _tracksCasingProperties(_sunlight),
         enableInteraction: false,
       );
       await controller.addLineLayer(
         _tracksSource,
         _tracksLayer,
-        const LineLayerProperties(
-          lineColor: [
-            'match',
-            ['get', 'class'],
-            'walk',
-            '#2E7D32',
-            'track',
-            '#2E7D32',
-            'mtb',
-            '#6A1B9A',
-            'road',
-            '#607D8B',
-            'connector',
-            '#8D6E63',
-            '#455A64',
-          ],
-          lineWidth: _lineWidth,
-        ),
+        _tracksProperties(_sunlight),
       );
       await controller.addCircleLayer(
         _junctionsSource,
         _junctionsLayer,
-        const CircleLayerProperties(
-          circleRadius: [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            8,
-            4.0,
-            14,
-            7.0,
-          ],
-          circleColor: '#FFF8E1',
-          circleStrokeColor: '#BF360C',
-          circleStrokeWidth: 2.0,
-        ),
+        _junctionProperties(_sunlight),
       );
       await controller.addSymbolLayer(
         _junctionsSource,
         _junctionsLabelLayer,
-        const SymbolLayerProperties(
-          textField: [
-            'to-string',
-            ['get', 'number'],
-          ],
-          textFont: ['Noto-Sans-Medium'],
-          textSize: [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            8,
-            9.0,
-            14,
-            12.0,
-          ],
-          textColor: '#3E2723',
-          textAllowOverlap: false,
-        ),
+        _junctionLabelProperties(_sunlight),
         minzoom: 9.5,
       );
       await controller.addCircleLayer(
         _poisSource,
         _poisLayer,
-        const CircleLayerProperties(
-          circleRadius: [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            8,
-            3.0,
-            14,
-            6.5,
-          ],
-          circleColor: '#0277BD',
-          circleStrokeColor: '#FFFFFF',
-          circleStrokeWidth: 1.5,
-        ),
+        _poiProperties(_sunlight),
       );
       await controller.addSymbolLayer(
         _poisSource,
         _poisLabelLayer,
-        const SymbolLayerProperties(
-          textField: ['get', 'name'],
-          textFont: ['Noto-Sans-Regular'],
-          textSize: 10.5,
-          textColor: '#0D47A1',
-          textHaloColor: '#FFFFFF',
-          textHaloWidth: 1.5,
-          textAnchor: 'top',
-          textOffset: [0, 0.6],
-        ),
+        _poiLabelProperties(_sunlight),
         minzoom: 13.5,
       );
     } catch (error) {
@@ -337,6 +274,164 @@ class _MapScreenState extends State<MapScreen> {
       }
     }
     if (mounted) setState(() => _layersAdded = true);
+  }
+
+  /// Re-paints the overlay with the current display options once the layers
+  /// exist; a style reload goes through [_onStyleLoaded] instead.
+  Future<void> _applyLayerStyle() async {
+    final controller = _controller;
+    if (controller == null || !_layersAdded) return;
+    try {
+      await controller.setLayerProperties(
+        _tracksCasingLayer,
+        _tracksCasingProperties(_sunlight),
+      );
+      await controller.setLayerProperties(
+        _tracksLayer,
+        _tracksProperties(_sunlight),
+      );
+      await controller.setLayerProperties(
+        _junctionsLayer,
+        _junctionProperties(_sunlight),
+      );
+      await controller.setLayerProperties(
+        _junctionsLabelLayer,
+        _junctionLabelProperties(_sunlight),
+      );
+      await controller.setLayerProperties(
+        _poisLayer,
+        _poiProperties(_sunlight),
+      );
+      await controller.setLayerProperties(
+        _poisLabelLayer,
+        _poiLabelProperties(_sunlight),
+      );
+    } catch (_) {
+      // The map may already be gone; the next style load adds the layers
+      // again with the current colours.
+    }
+  }
+
+  static List<Object> _casingWidth(bool sunlight) => [
+    'interpolate',
+    ['linear'],
+    ['zoom'],
+    8,
+    sunlight ? 6.5 : 4.5,
+    12,
+    sunlight ? 9.0 : 6.5,
+    16,
+    sunlight ? 13.0 : 10.0,
+  ];
+
+  static List<Object> _trackWidth(bool sunlight) => [
+    'interpolate',
+    ['linear'],
+    ['zoom'],
+    8,
+    sunlight ? 3.5 : 2.0,
+    12,
+    sunlight ? 5.5 : 3.5,
+    16,
+    sunlight ? 9.0 : 6.0,
+  ];
+
+  static LineLayerProperties _tracksCasingProperties(bool sunlight) =>
+      LineLayerProperties(
+        lineColor: '#0B3D2E',
+        lineOpacity: sunlight ? 0.6 : 0.35,
+        lineWidth: _casingWidth(sunlight),
+      );
+
+  static LineLayerProperties _tracksProperties(bool sunlight) =>
+      LineLayerProperties(
+        lineColor: [
+          'match',
+          ['get', 'class'],
+          'walk',
+          '#2E7D32',
+          'track',
+          '#2E7D32',
+          'mtb',
+          '#6A1B9A',
+          'road',
+          '#607D8B',
+          'connector',
+          '#8D6E63',
+          '#455A64',
+        ],
+        lineWidth: _trackWidth(sunlight),
+      );
+
+  static CircleLayerProperties _junctionProperties(bool sunlight) =>
+      CircleLayerProperties(
+        circleRadius: [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          8,
+          sunlight ? 6.0 : 4.0,
+          14,
+          sunlight ? 10.0 : 7.0,
+        ],
+        circleColor: sunlight ? '#FFFFFF' : '#FFF8E1',
+        circleStrokeColor: sunlight ? '#000000' : '#BF360C',
+        circleStrokeWidth: sunlight ? 3.0 : 2.0,
+      );
+
+  static SymbolLayerProperties _junctionLabelProperties(bool sunlight) =>
+      SymbolLayerProperties(
+        textField: [
+          'to-string',
+          ['get', 'number'],
+        ],
+        textFont: ['Noto-Sans-Medium'],
+        textSize: [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          8,
+          sunlight ? 12.0 : 9.0,
+          14,
+          sunlight ? 16.0 : 12.0,
+        ],
+        textColor: sunlight ? '#000000' : '#3E2723',
+        textHaloColor: '#FFFFFF',
+        textHaloWidth: sunlight ? 2.0 : 0.0,
+        textAllowOverlap: false,
+      );
+
+  static CircleLayerProperties _poiProperties(bool sunlight) =>
+      CircleLayerProperties(
+        circleRadius: [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          8,
+          sunlight ? 5.0 : 3.0,
+          14,
+          sunlight ? 9.0 : 6.5,
+        ],
+        circleColor: sunlight ? '#0D47A1' : '#0277BD',
+        circleStrokeColor: '#FFFFFF',
+        circleStrokeWidth: sunlight ? 2.5 : 1.5,
+      );
+
+  static SymbolLayerProperties _poiLabelProperties(bool sunlight) =>
+      SymbolLayerProperties(
+        textField: ['get', 'name'],
+        textFont: ['Noto-Sans-Regular'],
+        textSize: sunlight ? 13.5 : 10.5,
+        textColor: sunlight ? '#000000' : '#0D47A1',
+        textHaloColor: '#FFFFFF',
+        textHaloWidth: 2.0,
+        textAnchor: 'top',
+        textOffset: const [0, 0.6],
+      );
+
+  void _openDisplaySettings() {
+    final options = _options;
+    if (options != null) showDisplaySettingsSheet(context, options: options);
   }
 
   void _onFeatureTapped(
