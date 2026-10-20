@@ -82,7 +82,9 @@ Do not commit `key.properties` or the keystore; both are ignored by git.
 ## Not automated yet
 
 - Play Store and App Store uploads, and the iOS IPA, wait for the signing setup
-  in #66.
+  in #66. Store delivery will use in-repo fastlane lanes once those secrets
+  exist; see [ADR 0007](decisions/0007-release-tooling.md).
 - Version bumps and release pull requests (release-please or equivalent) are
-  tracked in #65/#67.
-- Publishing the web image to GHCR is part of #68.
+  tracked in #65.
+- The web image is published by the Release workflow; where it is deployed from
+  is tracked in #69.
