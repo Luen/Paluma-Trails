@@ -82,6 +82,18 @@ for Play and cannot be installed with `adb`. Until the upload key is configured
 (#66), release APKs are debug-signed: allow installing unknown apps, or use
 `adb install -r <file>.apk`.
 
+### Run the website with Docker
+
+From the repository root:
+
+```sh
+docker compose up --build
+```
+
+Then open <http://localhost:8080>. See
+[`docs/web-deployment.md`](docs/web-deployment.md) for the image tags and
+caching.
+
 ## Project docs
 
 - [`docs/roadmap.md`](docs/roadmap.md) — milestones and which issue covers what

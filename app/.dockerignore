@@ -1,0 +1,18 @@
+# Build outputs and local tool state
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.iml
+
+# Not needed to build the web app
+android/
+ios/
+linux/
+macos/
+windows/
+test/
+tool/
+.idea/
+.vscode/
+.git/
