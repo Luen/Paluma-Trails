@@ -74,7 +74,9 @@ docs(adr): record offline map stack decision
   mode where relevant.
 - Use **Squash and merge** so each PR becomes one Conventional Commit.
   Release Please reads those commits; merge commits make it list the same
-  change twice in the changelog.
+  change twice in the changelog. The exception is the `dev` → `main`
+  promotion PR: merge that one with a merge commit so the individual commits
+  reach `main` and appear in the changelog.
 
 ## Releasing
 
