@@ -52,7 +52,7 @@ android {
     buildTypes {
         release {
             // Release APKs are debug-signed until the upload keystore is
-            // configured (android/key.properties, see docs/release.md).
+            // configured (android/key.properties, see docs/signing.md).
             signingConfig = if (keystorePropertiesFile.exists()) {
                 signingConfigs.getByName("release")
             } else {
