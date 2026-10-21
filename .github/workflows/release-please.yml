@@ -1,0 +1,37 @@
+name: Release Please
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: release-please
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the release token
+        id: token
+        env:
+          RELEASE_PLEASE_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+        run: |
+          if [[ -z "${RELEASE_PLEASE_TOKEN}" ]]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::RELEASE_PLEASE_TOKEN is not set; skipping release-please. See docs/release.md."
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: googleapis/release-please-action@v5
+        if: steps.token.outputs.configured == 'true'
+        with:
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
