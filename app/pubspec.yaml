@@ -1,0 +1,68 @@
+name: paluma_trails
+description: Offline-first trail guide for Paluma Range National Park.
+publish_to: 'none'
+version: 0.1.0+1 # x-release-please-version
+
+environment:
+  sdk: ^3.13.5
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  maplibre_gl: ^0.27.1
+  path: ^1.9.1
+  path_provider: ^2.1.6
+  geolocator: ^14.1.1
+  flutter_native_splash: ^2.4.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/bundle/manifest.json
+    - assets/bundle/content/
+    - assets/bundle/basemap/paluma.pmtiles
+    - assets/bundle/basemap/style.json
+    - assets/bundle/basemap/fonts/Noto-Sans-Regular/
+    - assets/bundle/basemap/fonts/Noto-Sans-Medium/
+    - assets/bundle/basemap/fonts/Noto-Sans-Italic/
+    - assets/bundle/basemap/sprites/
+
+# Generated with `dart run flutter_launcher_icons` and
+# `dart run flutter_native_splash:create`; see assets/icon/README.md.
+flutter_launcher_icons:
+  image_path: "assets/icon/icon.png"
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  adaptive_icon_background: "#14532D"
+  adaptive_icon_foreground: "assets/icon/icon_foreground.png"
+  adaptive_icon_monochrome: "assets/icon/icon_monochrome.png"
+  adaptive_icon_foreground_inset: 0
+  web:
+    generate: true
+    image_path: "assets/icon/icon.png"
+    background_color: "#14532D"
+    theme_color: "#14532D"
+
+flutter_native_splash:
+  color: "#14532D"
+  color_dark: "#14532D"
+  image: assets/icon/icon_splash.png
+  image_dark: assets/icon/icon_splash.png
+  android_12:
+    color: "#14532D"
+    color_dark: "#14532D"
+    image: assets/icon/icon_android12.png
+    image_dark: assets/icon/icon_android12.png
+    icon_background_color: "#14532D"
+    icon_background_color_dark: "#14532D"
+  # The web splash is hand-written in web/index.html (the generator rewrites
+  # that file on every run, which would make the drift check flaky).
+  web: false

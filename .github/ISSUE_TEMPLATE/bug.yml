@@ -1,0 +1,42 @@
+name: Bug report
+description: Something is broken, wrong or misleading
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For hazards on the actual tracks (fallen trees, damaged signs), contact the
+        volunteer maintenance team instead — see the link on the new issue picker.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What did you see, and what did you expect?
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: App version / commit, and whether it was on the website or the app
+    validations:
+      required: false
+  - type: input
+    id: device
+    attributes:
+      label: Device and OS
+    validations:
+      required: false
+  - type: dropdown
+    id: offline
+    attributes:
+      label: Was the device offline?
+      options: ['No', 'Yes — offline', 'Not sure']
+    validations:
+      required: false
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: false

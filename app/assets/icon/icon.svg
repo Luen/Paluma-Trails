@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Paluma Trails app mark: a trail pin with a mountain cut-out. -->
+  <rect width="1024" height="1024" fill="#14532D"/>
+  <path d="M512 176
+           C 373 176 260 289 260 428
+           C 260 624 512 864 512 864
+           C 512 864 764 624 764 428
+           C 764 289 651 176 512 176 Z"
+        fill="#F4ECD8"/>
+  <circle cx="512" cy="422" r="140" fill="#14532D"/>
+  <path d="M 396 470 L 466 356 L 512 414 L 556 348 L 628 470 Z" fill="#F4ECD8"/>
+</svg>

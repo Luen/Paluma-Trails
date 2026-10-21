@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "bundle_version": "2026-10-16-2566a267",
+  "generator": "paluma_cli 0.1.0",
+  "park": "paluma-range",
+  "files": [
+    {
+      "path": "basemap/fonts/Noto-Sans-Italic/0-255.pbf",
+      "bytes": 79344,
+      "sha256": "43edfca91c285ba1226f09d5e74d68e1473a088c517f02a5212ff6ccb10037dc"
+    },
+    {
+      "path": "basemap/fonts/Noto-Sans-Italic/256-511.pbf",
+      "bytes": 132976,
+      "sha256": "a6f9f6574c86a4a28aba630ca1017857ceadd2370ed32a1293c35f819ab9bd60"
+    },
+    {
+      "path": "basemap/fonts/Noto-Sans-Italic/512-767.pbf",
+      "bytes": 96460,
+      "sha256": "5849298255f12639422a8b8ef32927b1ac49d59f725afaa6cbaf51550a5752fe"
+    },
+    {
+      "path": "basemap/fonts/Noto-Sans-Medium/0-255.pbf",
+      "bytes": 77628,
+      "sha256": "ba2f0118dd024e3041b158e5f9eb49bc0a658019f53f458e9f5c0b8efcd79b91"
+    },
+    {
+      "path": "basemap/fonts/Noto-Sans-Medium/256-511.pbf",
+      "bytes": 129635,
+      "sha256": "d5e801a1a5b1d409d3298c3a1e1ca76328e2314a751078833a618620e8e66e4d"
+    },
+    {
+      "path": "basemap/fonts/Noto-Sans-Medium/512-767.pbf",
+      "bytes": 96169,
+      "sha256": "985e56060887a8e774fdf62ec4619f26bd44d264fcb837d315023f87d768f8e2"
+    },
+    {
+      "path": "basemap/fonts/Noto-Sans-Regular/0-255.pbf",
+      "bytes": 76044,
+      "sha256": "62c6d49b15fa836eb6aa45e259c7ca6762f44b011b09e47776efbe4a6db1b397"
+    },
+    {
+      "path": "basemap/fonts/Noto-Sans-Regular/256-511.pbf",
+      "bytes": 127726,
+      "sha256": "2eca7561f9f566bcacfda5dd04fb5880baec1328ec0f5484678289a13994de8a"
+    },
+    {
+      "path": "basemap/fonts/Noto-Sans-Regular/512-767.pbf",
+      "bytes": 94728,
+      "sha256": "6abc80badad0e823e228ab739515be257c8b33bc68bb077dd873030e9b2d143a"
+    },
+    {
+      "path": "basemap/paluma.pmtiles",
+      "bytes": 1528023,
+      "sha256": "1883d90ec021403028800a32a0a75dca8ac29e441bf77abdcea0776ca9c0896a"
+    },
+    {
+      "path": "basemap/sprites/light.json",
+      "bytes": 3549,
+      "sha256": "bfac76cf7ed5c2aa2992695904056a1c6b07785b7fd20e6c640cb44fd6244a2e"
+    },
+    {
+      "path": "basemap/sprites/light.png",
+      "bytes": 16174,
+      "sha256": "b6a34640917bdc57d0bd080836db33376371a3312ebe7b849045268015de3481"
+    },
+    {
+      "path": "basemap/sprites/light@2x.json",
+      "bytes": 3579,
+      "sha256": "1fb5b123fbe35d2e1f6ac171513ce01df89e671273a417ee89c44886a4c132f0"
+    },
+    {
+      "path": "basemap/sprites/light@2x.png",
+      "bytes": 28852,
+      "sha256": "23f6e9df27c2e9a14385763980a24e3608966bfc8192a106058bc2ca959ab563"
+    },
+    {
+      "path": "basemap/style.json",
+      "bytes": 173345,
+      "sha256": "febc606a90bd756ffc1af9c297f81c8338de48b954727d4243e13a09587bf3ca"
+    },
+    {
+      "path": "content/junctions.json",
+      "bytes": 11350,
+      "sha256": "6f7d5e5e879c021214a6654aac32903a0f9d895bd614291f183695232474f867"
+    },
+    {
+      "path": "content/park.json",
+      "bytes": 1497,
+      "sha256": "494cbbabf29cc710c619d3d76ef840136cc05ee82d79479a2a15a678ce5990d3"
+    },
+    {
+      "path": "content/pois.json",
+      "bytes": 20116,
+      "sha256": "22a50e14c4770cac110db5b6e0d718c228f8fc8ae4d398eb5fb4f601fa8b6fa0"
+    },
+    {
+      "path": "content/segments.json",
+      "bytes": 10614,
+      "sha256": "0bee16f8979fd3972fd892976f42aa39a4b040bb3900f8de65aa9aa9e176cf6c"
+    },
+    {
+      "path": "content/sources.json",
+      "bytes": 1356,
+      "sha256": "ca634a4f939f58940f5950c638a65e3cd25b99bcaf999df273f6a6a6fb5b77bc"
+    },
+    {
+      "path": "content/tracks.geojson",
+      "bytes": 460972,
+      "sha256": "ec591f132b00a26d815f00a796fc5f1142c4dd9c06852e893b86fd7261dae03f"
+    }
+  ],
+  "totals": {
+    "files": 21,
+    "bytes": 3170137
+  }
+}

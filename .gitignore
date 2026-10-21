@@ -1,0 +1,27 @@
+# Flutter / Dart
+**/build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.g.dart.bak
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.swp
+
+# macOS
+.DS_Store
+
+# Generated content bundles (the small, curated bundle is committed;
+# these are the large, reproducible artifacts)
+/content/bundle/*.zip
+/tools/**/node_modules/
+
+# Local development secrets / overrides
+.env
+*.local.json
+
+# Xcode Swift Package Manager scratch files
+app/ios/**/xcshareddata/swiftpm/

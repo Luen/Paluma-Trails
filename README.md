@@ -62,3 +62,41 @@ https://wanderstories.space/hiking-at-paluma-range-national-park/
 See also: http://paluma.org/
 
 Ask me to provide all the hisotrical books and information (PDFs) for use when research these POIs, like Gardes Hut.
+
+## Run the app
+
+The Flutter app lives in `app/`. For development, run `cd app && flutter run`.
+
+### Install on Android
+
+Sideload builds are attached to
+[GitHub Releases](https://github.com/Luen/Paluma-Trails/releases). Download the
+APK for the phone's ABI:
+
+- `app-arm64-v8a-release.apk` — most phones, including the Pixel 8
+- `app-armeabi-v7a-release.apk` — older 32-bit phones
+- `app-x86_64-release.apk` — emulators only
+
+There is no universal APK; the per-ABI files are much smaller. The `.aab` is
+for Play and cannot be installed with `adb`. Until the upload key is configured
+(#66), release APKs are debug-signed: allow installing unknown apps, or use
+`adb install -r <file>.apk`.
+
+### Run the website with Docker
+
+From the repository root:
+
+```sh
+docker compose up --build
+```
+
+Then open <http://localhost:8080>. See
+[`docs/web-deployment.md`](docs/web-deployment.md) for the image tags and
+caching.
+
+## Project docs
+
+- [`docs/roadmap.md`](docs/roadmap.md) — milestones and which issue covers what
+- [`docs/decisions/`](docs/decisions/) — architecture decision records
+- [`docs/content-model.md`](docs/content-model.md) — how the trail data is structured
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) — how to build, test and send changes

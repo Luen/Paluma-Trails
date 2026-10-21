@@ -1,0 +1,46 @@
+{
+  "id": "paluma-range",
+  "name": "Paluma Range National Park",
+  "region": "Queensland, Australia",
+  "bounds": {
+    "north": -18.8,
+    "south": -19.11,
+    "east": 146.33,
+    "west": 146.05
+  },
+  "center": {
+    "lat": -18.9566,
+    "lon": 146.1886
+  },
+  "default_zoom": 12.5,
+  "timezone": "Australia/Brisbane",
+  "updated": "2026-10-16",
+  "disclaimer": "Walking times are estimates only and assume a steady pace without breaks. Track conditions change; carry a paper map and tell someone your plans.",
+  "emergency": {
+    "phone": "000",
+    "alternative_phone": "112",
+    "notes": "Mobile reception across the Paluma plateau is unreliable and often absent in the gullies. Give your location as coordinates and the nearest junction number."
+  },
+  "attribution": [
+    {
+      "label": "Track network, junctions and points of interest: Wanderstories (uMap 264617), maintained with the Paluma trail volunteers",
+      "url": "https://wanderstories.space/paluma-maps/",
+      "licence": "Used with the author's permission"
+    },
+    {
+      "label": "Basemap data © OpenStreetMap contributors",
+      "url": "https://www.openstreetmap.org/copyright",
+      "licence": "ODbL 1.0"
+    },
+    {
+      "label": "Basemap tiles built with Protomaps",
+      "url": "https://protomaps.com",
+      "licence": "ISC"
+    },
+    {
+      "label": "Fonts: Noto Sans (Regular, Medium, Italic)",
+      "url": "https://fonts.google.com/noto",
+      "licence": "SIL Open Font License 1.1"
+    }
+  ]
+}
