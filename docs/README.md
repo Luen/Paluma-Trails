@@ -5,7 +5,8 @@
 - [Location and the next junction](location.md) — how the blue dot and along-track junction distances work.
 - [Architecture decisions](decisions/) — ADRs, one file per decision.
 - [Store assets](store/) — icon and feature graphic, generated from the artwork in `app/assets/icon/`.
-- [Releases](release.md) — cutting a release, Android sideloading, signing and the size budget.
+- [Releases](release.md) — cutting a release, Android sideloading and the size budget.
+- [Signing and store credentials](signing.md) — upload keystore, Play App Signing, App Store Connect and release approvals.
 - [Web build and deployment](web-deployment.md) — Docker image, GHCR tags and caching.
 - [Basemap pipeline](../tools/basemap/README.md) — how the offline PMTiles archive is produced.
 

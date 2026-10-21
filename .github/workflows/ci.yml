@@ -55,6 +55,8 @@ jobs:
       - run: flutter pub get
       - name: Check generated icons and splash are up to date
         run: tool/check_generated_icons.sh
+      - name: Test the upload keystore helper
+        run: tool/test_create_upload_keystore.sh
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - run: flutter test --coverage

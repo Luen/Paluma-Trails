@@ -58,16 +58,13 @@ install and 29 MB for the arm64 sideload APK.
 ## Signing
 
 `app/android/app/build.gradle.kts` reads `app/android/key.properties` when it
-exists and otherwise falls back to debug signing. The release workflow writes
-that file from the secrets listed in #66:
+exists and otherwise falls back to debug signing. Generate the upload key with
+`app/tool/create_upload_keystore.sh`, then set the four `ANDROID_*` secrets.
+Without them the workflow still succeeds, but warns and publishes debug-signed
+artifacts that are only suitable for sideload testing.
 
-- `ANDROID_KEYSTORE_BASE64`
-- `ANDROID_KEYSTORE_PASSWORD`
-- `ANDROID_KEY_ALIAS`
-- `ANDROID_KEY_PASSWORD`
-
-Without those secrets the workflow still succeeds, but warns and publishes
-debug-signed artifacts that are only suitable for sideload testing.
+The full Android, Play Console and Apple checklist is in
+[Signing and store credentials](signing.md).
 
 Debug keys differ between machines, so uninstall an existing app before
 installing a CI build if the signature does not match:
