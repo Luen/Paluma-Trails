@@ -50,3 +50,9 @@ workflow (AAB/APK + IPA + web, tag, GitHub Release, store uploads).
   only builds artifacts). The earlier "merge to `main` triggers a release" step
   waits for release-please in #65. Store delivery uses in-repo fastlane lanes
   (ADR 0007).
+- **2026-10-21:** Versioning and changelog automation use release-please on
+  `main` (#65). A promotion to `main` opens a release PR; merging that PR
+  creates the `v*` tag and GitHub Release, which still triggers the Release
+  workflow. Manual tags remain supported for hotfixes and prereleases.
+  Release Please uses a `RELEASE_PLEASE_TOKEN` PAT because tags created with
+  `GITHUB_TOKEN` do not trigger workflows.

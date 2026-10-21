@@ -217,12 +217,9 @@ jobs:
       - name: Write release notes
         env:
           SIGNED: ${{ needs.android.outputs.signed }}
-          VERSION: ${{ needs.android.outputs.version }}
         run: |
           {
-            echo "## Paluma Trails ${VERSION}"
-            echo
-            echo "### Android"
+            echo "### Release artifacts"
             echo
             echo "Download the APK for your phone's ABI:"
             echo
@@ -239,8 +236,6 @@ jobs:
               echo "> not ready for Play."
               echo
             fi
-            echo "### Web"
-            echo
             echo "\`paluma-trails-web.tar.gz\` contains the Flutter web build."
           } > notes.md
           find artifacts -type f | sort
@@ -250,5 +245,7 @@ jobs:
           tag_name: ${{ github.ref_name }}
           name: Paluma Trails ${{ needs.android.outputs.version }}
           body_path: notes.md
+          # Release Please writes the changelog; do not overwrite it.
+          append_body: true
           prerelease: ${{ contains(github.ref_name, '-') }}
           files: artifacts/**

@@ -72,13 +72,17 @@ docs(adr): record offline map stack decision
 - Link the issue you are working on (`Part of #12`, `Closes #64`).
 - Screenshots for UI changes; offline behaviour tested with the device in flight
   mode where relevant.
+- Use **Squash and merge** so each PR becomes one Conventional Commit.
+  Release Please reads those commits; merge commits make it list the same
+  change twice in the changelog.
 
 ## Releasing
 
-Promote `dev` to `main`, then push a `v*` tag. The Release workflow builds the
-AAB, the per-ABI APKs and the web bundle and publishes a GitHub Release. See
-[docs/release.md](docs/release.md) for the tag format, signing secrets and the
-Play download budget.
+Promote `dev` to `main`. Release Please opens a release PR with the next
+version and changelog; merging it creates the `v*` tag, and the Release
+workflow builds the AAB, the per-ABI APKs and the web bundle. See
+[docs/release.md](docs/release.md) for the versioning, the release token,
+signing secrets and the Play download budget.
 
 ## Adding dependencies
 
