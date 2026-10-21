@@ -7,7 +7,9 @@ Version bumps and the changelog are managed by
 Conventional Commits. It updates `version.txt`, `CHANGELOG.md`,
 `app/pubspec.yaml` and `.release-please-manifest.json` together. Squash-merge
 pull requests so each one is a single commit; merge commits make Release Please
-list the same change twice.
+list the same change twice. The exception is the `dev` → `main` promotion PR:
+use a merge commit there so the individual commits reach `main` and appear in
+the changelog.
 
 Release Please needs a `RELEASE_PLEASE_TOKEN` secret. The built-in
 `GITHUB_TOKEN` cannot be used for this: tags and releases it creates do not
