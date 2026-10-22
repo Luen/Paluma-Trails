@@ -1,5 +1,7 @@
 # Store listing assets
 
+Read [the branding guide](../branding.md) for logo, palette and voice rules.
+
 | File | Size | Notes |
 | --- | --- | --- |
 | `icon-512.png` | 512×512 | Google Play store icon, opaque |

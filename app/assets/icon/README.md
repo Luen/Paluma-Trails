@@ -2,6 +2,8 @@
 
 The artwork is original to Paluma Trails. It is not derived from any third-party
 icon set, so it can be used in the app, the web build and the store listing.
+Read [the branding guide](../../../docs/branding.md) before changing the mark,
+palette or usage rules.
 
 ## Source artwork
 
