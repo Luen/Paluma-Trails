@@ -78,15 +78,35 @@ Voice rules:
 
 ## Logo
 
-The identity has two parts: the **trail-pin mark** and the **wordmark**. Both
+The identity has two parts: the **junction pin** and the **wordmark**. Both
 are original to the project.
 
-### Trail-pin mark
+### Junction pin
 
-A pin with a circle and a mountain cut out of it. The cut-outs are holes, not
-painted shapes, so the mark works in one colour on any field.
+A map pin whose hole is a **junction ring**, the same idea as the numbered
+junction markers on the map, with one trail leaving it towards the tip and a
+branch leaving it to the upper left. It says what the app is for: knowing which
+junction you are at and where the tracks go from it. The ring and its stem
+also echo a “P”, for Paluma.
 
-<img src="../app/assets/icon/icon.svg" alt="Paluma Trails trail-pin mark" width="120">
+<img src="../app/assets/icon/icon.svg" alt="Paluma Trails junction-pin app icon" width="120">
+
+- The ring and trails are **cut out**, not painted, so the mark works in one
+  colour on any field.
+- In full colour the disc inside the ring is **sand**. Use the sand junction
+  only on rainforest (the icon, splash, app bar, loading screen, About header,
+  reversed lockups and marketing art). On light fields the disc is the mark's
+  own colour.
+- It is **one mark at every size**. The cuts are thick enough (a tenth of the
+  pin's height) to survive the 16 px favicon, so there is no separate
+  small-size drawing.
+- The geometry lives in `tools/brand/build_brand.py`, which writes every icon
+  source, and is mirrored by `TrailPinMark` (`app/lib/src/brand/brand.dart`).
+  Change both together.
+
+It replaced the original pin-with-mountain mark in #90. A pin and mountain is
+the stock symbol of hiking and map apps, said nothing about junctions, and its
+mountain was unreadable below 28 px.
 
 ### Wordmark
 
@@ -135,29 +155,21 @@ live, so they scale with the screen and need no SVG dependency.
   tile is the exception: the mark is already composed for the tile.
 - **Horizontal lockup:** at least 120 px (screen) or 30 mm (print) wide.
 - **Stacked lockup:** at least 72 px or 18 mm wide.
-- **Pin mark:** at least 28 px tall with the mountain. Below that, use the
-  small-size mark.
+- **Junction pin:** at least 16 px tall. Checked at 16 px (favicon), 24 px,
+  30 px (app bar), 48 px (launcher) and 512 px (store).
 
-### Small-size mark
-
-At 16–24 px the mountain cut-out is a smudge, so there is a sanctioned
-small-size mark: the same pin outline with a larger hole and no mountain, on a
-rounded rainforest tile (`app/assets/icon/icon_small.svg`, also the web
-`favicon.svg`). `TrailPinMark` switches to it automatically below 28 logical
-pixels.
-
-| Size | Use |
-| --- | --- |
-| 16 px | Browser tab favicon: small-size mark |
-| 24 px | App bar, notifications: small-size mark below 28 px |
-| 48 px | Launcher: full mark (checked; the mountain reads at 48 px) |
+| Size | Where | Notes |
+| --- | --- | --- |
+| 16–32 px | Browser tab (`app/web/favicon.svg`) | The pin is enlarged in a rounded tile |
+| 30 px | App bar | Cream with the sand junction |
+| 48 px and up | Launcher, store, splash | Generated from the icon sources |
 
 ### Do not
 
 Rotate, stretch, crop, outline, add gradients or shadows, re-typeset the
 wordmark in another font, change its tracking, place the cream mark on sand or
-white, put text inside the app icon, or redraw the pin with a different
-mountain shape. The small-size mark is the only simplification.
+white, put sand on a light field, put text inside the app icon, change the
+number or direction of the trails, or fill the ring instead of cutting it.
 
 ## Colour
 
@@ -302,7 +314,7 @@ Rules:
 ## Layout and components
 
 - **Map first.** The park map fills the screen. The rainforest app bar carries
-  the trail-pin mark, the park name and the About action; detail appears in
+  the junction pin, the park name and the About action; detail appears in
   bottom sheets, not permanent side panels.
 - **Controls:** round 48×48 controls with 26 px icons, bottom-right, so they are
   reachable with a thumb or a glove. Keep essential controls visible; do not
@@ -354,11 +366,11 @@ Rules:
 
 | Asset | Source | Output |
 | --- | --- | --- |
-| App icon | `app/assets/icon/icon.svg` | Android legacy/adaptive/monochrome, iOS, web PWA icons |
+| App icon | `app/assets/icon/icon.svg` (generated) | Android legacy/adaptive/monochrome, iOS, web PWA icons |
 | Adaptive foreground | `app/assets/icon/icon_foreground.svg` | Android adaptive icon |
 | Themed icon | `app/assets/icon/icon_monochrome.svg` | Android 13+ monochrome layer |
 | Splash | `app/assets/icon/icon_android12.svg`, `icon_splash.svg` (transparent) | Android 12+, older Android/iOS launch, web loader |
-| Small-size mark | `tools/brand/build_brand.py` | `app/assets/icon/icon_small.svg`, `app/web/favicon.svg` |
+| Favicon | `tools/brand/build_brand.py` | `app/web/favicon.svg` |
 | Wordmark and lockups | `tools/brand/build_brand.py` | `docs/brand/*.svg` |
 | Feature graphic | `tools/brand/build_brand.py` | `app/assets/icon/feature_graphic.svg` → `docs/store/feature-graphic.png` |
 | Social preview | `tools/brand/build_brand.py` | `docs/brand/social-preview.svg` → `.png` (upload in repository settings) |
@@ -368,7 +380,8 @@ Rules:
 
 After changing artwork:
 
-1. Run `python tools/brand/build_brand.py` if the generated artwork changed.
+1. Run `python tools/brand/build_brand.py`; it writes every icon source as
+   well as the lockups and marketing art.
 2. Run `tools/brand/render_png.sh` to render every PNG.
 3. Run `cd app && dart run flutter_launcher_icons && dart run flutter_native_splash:create`.
 4. Run `cd app && tool/check_generated_icons.sh`; CI runs the same check.
@@ -404,7 +417,7 @@ None. The items #88 left open were decided in #90:
 | Typeface | Atkinson Hyperlegible Next bundled for the interface; map labels stay Noto Sans |
 | Dark basemap | Ruled out; dark mode keeps the light basemap |
 | Track-class colours | Reviewed; three colours darkened, informal tracks dashed, map key added |
-| Small-size mark | Added below 28 px; full mark checked at 48 px |
+| Small-size mark | Replaced the pin-and-mountain with the junction pin, which works at every size from 16 px |
 | Surfaces | Social preview, README header, feature graphic and four store screenshots generated from the sources |
 
 One step needs a maintainer with admin rights: upload

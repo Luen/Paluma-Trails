@@ -57,6 +57,24 @@ void main() {
       expect(size.width, closeTo(50.4, 0.01));
     });
 
+    testWidgets('paints with and without the junction accent at any size', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: Column(
+            children: [
+              TrailPinMark(height: 16),
+              TrailPinMark(height: 200, accentColor: BrandColors.sand),
+            ],
+          ),
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      expect(find.byType(TrailPinMark), findsNWidgets(2));
+    });
+
     testWidgets('is decorative unless it has a label', (tester) async {
       final handle = tester.ensureSemantics();
       await tester.pumpWidget(

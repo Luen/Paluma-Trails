@@ -107,7 +107,7 @@ class LoadingScreen extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const TrailPinMark(height: 96),
+                const TrailPinMark(height: 96, accentColor: BrandColors.sand),
                 const SizedBox(height: 24),
                 const Wordmark(fontSize: 36, color: BrandColors.cream),
                 const SizedBox(height: 8),

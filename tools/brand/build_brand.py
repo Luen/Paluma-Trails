@@ -8,13 +8,14 @@ Everything here is generated, so edit this script rather than the SVGs:
 
 - the wordmark, outlined from the bundled typeface (Atkinson Hyperlegible
   Next Bold) with HarfBuzz shaping, so it needs no font to display;
+- the junction-pin mark in every icon source (`app/assets/icon/icon*.svg`)
+  and the web favicon;
 - horizontal and stacked lockups in the four colourways;
-- the small-size mark (`app/assets/icon/icon_small.svg`) and the web favicon;
 - the Play feature graphic, the GitHub social preview and the README header,
   whose background is the real track network from content/data.
 
-The pin geometry is copied from app/assets/icon/icon.svg and matches
-TrailPinMark in app/lib/src/brand/brand.dart.
+The mark geometry below is mirrored by TrailPinMark in
+app/lib/src/brand/brand.dart; change both together.
 """
 
 from __future__ import annotations
@@ -53,26 +54,53 @@ WORDMARK_TRACKING = -0.015
 
 # --- Mark -----------------------------------------------------------------
 
-# icon.svg grid: the pin spans x 260–764, y 176–864 (504 × 688).
+# The junction pin, on a 1024-unit grid: the pin spans x 260–764,
+# y 176–864 (504 × 688). Its hole is a junction ring, like the junction
+# markers on the map; one trail leaves it towards the tip and a branch leaves
+# it to the upper left. Everything is cut out of the pin, so the mark works in
+# one colour. In full colour, the disc inside the ring is sand.
 PIN_OUTLINE = (
     "M512 176C373 176 260 289 260 428C260 624 512 864 512 864"
     "C512 864 764 624 764 428C764 289 651 176 512 176Z"
 )
-PIN_HOLE = "M372 422A140 140 0 1 0 652 422A140 140 0 1 0 372 422Z"
-PIN_MOUNTAIN = "M396 470L466 356L512 414L556 348L628 470Z"
-# Small-size mark: a larger hole and no mountain.
-PIN_SMALL_HOLE = "M354 424A158 158 0 1 0 670 424A158 158 0 1 0 354 424Z"
 PIN_W, PIN_H, PIN_X, PIN_Y = 504, 688, 260, 176
+JUNCTION = (512, 430)  # ring centre
+RING_RADIUS = 96  # centre line of the ring
+CUT_WIDTH = 68  # ring and trails; the disc inside the ring has radius 62
+TRAILS = (
+    "M512 540C536 590 498 628 510 676",  # towards the tip
+    "M446 366C414 334 390 320 362 316",  # branch, upper left
+)
+DISC_RADIUS = RING_RADIUS - CUT_WIDTH / 2
+
+_mask_ids = iter(range(1, 10_000))
 
 
-def pin(x: float, y: float, height: float, fill: str, small: bool = False) -> str:
-    """The pin with its cut-outs, top-left at (x, y)."""
-    s = height / PIN_H
-    d = PIN_OUTLINE + (PIN_SMALL_HOLE if small else PIN_HOLE + PIN_MOUNTAIN)
+def mark(transform: str, fill: str, accent: str | None = None) -> str:
+    """The junction pin in pin-grid units under `transform`."""
+    cx, cy = JUNCTION
+    mid = f"pin{next(_mask_ids)}"
+    cuts = "".join(f'<path d="{d}"/>' for d in TRAILS)
+    disc = f'<circle cx="{cx}" cy="{cy}" r="{DISC_RADIUS:g}" fill="{accent}"/>' if accent else ""
     return (
-        f'<path transform="translate({x:.2f} {y:.2f}) scale({s:.5f}) '
-        f'translate({-PIN_X} {-PIN_Y})" fill="{fill}" fill-rule="evenodd" d="{d}"/>'
+        f'<g transform="{transform}">'
+        f'<mask id="{mid}"><rect x="{PIN_X - 8}" y="{PIN_Y - 8}" width="{PIN_W + 16}" '
+        f'height="{PIN_H + 16}" fill="#fff"/><g fill="none" stroke="#000" '
+        f'stroke-width="{CUT_WIDTH}" stroke-linecap="round"><circle cx="{cx}" cy="{cy}" '
+        f'r="{RING_RADIUS}"/>{cuts}</g></mask>'
+        f'<path fill="{fill}" mask="url(#{mid})" d="{PIN_OUTLINE}"/>{disc}</g>'
     )
+
+
+def pin(x: float, y: float, height: float, fill: str, accent: str | None = None) -> str:
+    """The mark with its top-left corner at (x, y)."""
+    s = height / PIN_H
+    return mark(f"translate({x:.2f} {y:.2f}) scale({s:.5f}) translate({-PIN_X} {-PIN_Y})", fill, accent)
+
+
+def centred(cx: float, cy: float, scale: float, fill: str, accent: str | None = None) -> str:
+    """The mark centred on (cx, cy), the way the icon sources place it."""
+    return mark(f"translate({cx:g} {cy:g}) scale({scale:g}) translate(-512 -520)", fill, accent)
 
 
 # --- Type -----------------------------------------------------------------
@@ -151,40 +179,45 @@ def svg(width: float, height: float, body: str, title: str) -> str:
 # --- Lockups ----------------------------------------------------------------
 
 COLOURWAYS = {
-    # suffix: (mark and wordmark colour, preview field)
-    "": (RAINFOREST, CREAM),
-    "-reversed": (CREAM, RAINFOREST),
-    "-black": ("#000000", "#FFFFFF"),
-    "-white": ("#FFFFFF", "#000000"),
+    # suffix: (mark and wordmark colour, junction accent)
+    # Sand only sits on rainforest; on light fields it would vanish.
+    "": (RAINFOREST, None),
+    "-reversed": (CREAM, SAND),
+    "-black": ("#000000", None),
+    "-white": ("#FFFFFF", None),
 }
 
 F = 100.0  # wordmark size the lockups are drawn at
 
 
-def horizontal_lockup(fill: str, x0: float = 0, y0: float = 0, size: float = F) -> tuple[str, float, float]:
+def horizontal_lockup(
+    fill: str, x0: float = 0, y0: float = 0, size: float = F, accent: str | None = None
+) -> tuple[str, float, float]:
     """Pin beside the wordmark. Returns (svg body, width, height) without clear space.
 
-    The pin is 1.1 em tall with its head centred on the capital height, so it
-    rises just above the cap line and its tip sits below the baseline.
+    The pin is 1.1 em tall with its junction centred on the capital height, so
+    it rises just above the cap line and its tip sits below the baseline.
     """
     word = outline(NAME, size, "Bold", WORDMARK_TRACKING)
     pin_h = size * 1.1
     gap = size * 0.32
     pin_w = pin_h * PIN_W / PIN_H
     cap = cap_height(size)
-    head_centre = 246 / PIN_H * pin_h  # circle centre below the pin top
+    head_centre = (JUNCTION[1] - PIN_Y) / PIN_H * pin_h  # ring centre below the pin top
     pin_top = 0.0
     baseline = head_centre + cap / 2
     top = min(pin_top, baseline - word.top)
     bottom = max(pin_top + pin_h, baseline + word.bottom)
     body = (
-        "  " + pin(x0, y0 + pin_top - top, pin_h, fill) + "\n"
+        "  " + pin(x0, y0 + pin_top - top, pin_h, fill, accent) + "\n"
         "  " + text_path(word, x0 + pin_w + gap - word.left, y0 + baseline - top, fill) + "\n"
     )
     return body, pin_w + gap + word.width - word.left, bottom - top
 
 
-def stacked_lockup(fill: str, x0: float = 0, y0: float = 0, size: float = F) -> tuple[str, float, float]:
+def stacked_lockup(
+    fill: str, x0: float = 0, y0: float = 0, size: float = F, accent: str | None = None
+) -> tuple[str, float, float]:
     word = outline(NAME, size, "Bold", WORDMARK_TRACKING)
     pin_h = size * 1.7
     pin_w = pin_h * PIN_W / PIN_H
@@ -193,7 +226,7 @@ def stacked_lockup(fill: str, x0: float = 0, y0: float = 0, size: float = F) -> 
     width = max(ink, pin_w)
     baseline = pin_h + gap + word.top
     body = (
-        "  " + pin(x0 + (width - pin_w) / 2, y0, pin_h, fill) + "\n"
+        "  " + pin(x0 + (width - pin_w) / 2, y0, pin_h, fill, accent) + "\n"
         "  " + text_path(word, x0 + (width - ink) / 2 - word.left, y0 + baseline, fill) + "\n"
     )
     return body, width, baseline + word.bottom
@@ -201,12 +234,12 @@ def stacked_lockup(fill: str, x0: float = 0, y0: float = 0, size: float = F) -> 
 
 def write_lockups() -> None:
     BRAND.mkdir(parents=True, exist_ok=True)
-    for suffix, (fill, _) in COLOURWAYS.items():
+    for suffix, (fill, accent) in COLOURWAYS.items():
         for name, build in (("horizontal", horizontal_lockup), ("stacked", stacked_lockup)):
             # Clear space: a quarter of the pin's height on every side.
             pin_h = F * (1.1 if name == "horizontal" else 1.7)
             pad = pin_h * 0.25
-            body, w, h = build(fill, pad, pad)
+            body, w, h = build(fill, pad, pad, accent=accent)
             (BRAND / f"lockup-{name}{suffix}.svg").write_text(
                 svg(round(w + 2 * pad, 1), round(h + 2 * pad, 1), body, NAME), encoding="utf-8", newline="\n"
             )
@@ -219,18 +252,33 @@ def write_lockups() -> None:
         )
 
 
-# --- Small-size mark --------------------------------------------------------
+# --- Icon sources -----------------------------------------------------------
 
 
-def write_small_mark() -> None:
-    """A 32-unit tile for 16–32 px: bigger pin, bigger hole, no mountain."""
-    body = (
+def write_icons() -> None:
+    """The icon and splash sources that tools/brand/render_png.sh rasterises.
+
+    Scales keep each layer inside its platform's safe area: the adaptive
+    foreground inside the 66 dp circle, the Android 12 splash inside the
+    640 dp circle.
+    """
+    tile = f'  <rect width="1024" height="1024" fill="{RAINFOREST}"/>\n'
+    sources = {
+        "icon.svg": (1024, tile + "  " + centred(512, 512, 1.12, CREAM, SAND) + "\n", "app icon"),
+        "icon_foreground.svg": (1024, "  " + centred(512, 512, 0.80, CREAM, SAND) + "\n", "adaptive icon foreground"),
+        "icon_monochrome.svg": (1024, "  " + centred(512, 512, 0.80, "#000000") + "\n", "themed icon, alpha only"),
+        "icon_android12.svg": (960, "  " + centred(480, 480, 0.81, CREAM, SAND) + "\n", "Android 12 splash icon"),
+        "icon_splash.svg": (1024, "  " + centred(512, 512, 0.72, CREAM, SAND) + "\n", "splash mark"),
+    }
+    for name, (size, body, title) in sources.items():
+        (ICON / name).write_text(svg(size, size, body, f"{NAME} {title}"), encoding="utf-8", newline="\n")
+
+    # Browser tab: the same mark, larger in a rounded tile, for 16–32 px.
+    favicon = (
         f'  <rect width="32" height="32" rx="7" fill="{RAINFOREST}"/>\n'
-        "  " + pin((32 - 27 * PIN_W / PIN_H) / 2, 2.5, 27, CREAM, small=True) + "\n"
+        "  " + pin((32 - 27.5 * PIN_W / PIN_H) / 2, 2.25, 27.5, CREAM, SAND) + "\n"
     )
-    content = svg(32, 32, body, NAME)
-    (ICON / "icon_small.svg").write_text(content, encoding="utf-8", newline="\n")
-    (WEB / "favicon.svg").write_text(content, encoding="utf-8", newline="\n")
+    (WEB / "favicon.svg").write_text(svg(32, 32, favicon, NAME), encoding="utf-8", newline="\n")
 
 
 # --- Track network illustration ----------------------------------------------
@@ -302,7 +350,7 @@ def banner(width: float, height: float, *, word_size: float, left: float, net_he
         f'  <g transform="translate({net_x:.1f} {net_y:.1f})">\n{net_body}  </g>\n',
     ]
 
-    lock_body, lock_w, lock_h = horizontal_lockup(CREAM, 0, 0, word_size)
+    lock_body, lock_w, lock_h = horizontal_lockup(CREAM, 0, 0, word_size, accent=SAND)
     tag = outline(TAGLINE, word_size * 0.4, "Regular")
     eb = outline(EYEBROW, word_size * 0.2, "Bold", 0.12)
     gap_eb = word_size * 0.32
@@ -340,9 +388,9 @@ def write_marketing() -> None:
 
 def main() -> None:
     write_lockups()
-    write_small_mark()
+    write_icons()
     write_marketing()
-    for path in sorted([*BRAND.glob("*.svg"), ICON / "icon_small.svg", ICON / "feature_graphic.svg"]):
+    for path in sorted([*BRAND.glob("*.svg"), *ICON.glob("*.svg"), WEB / "favicon.svg"]):
         print(f"wrote {path.relative_to(ROOT)} ({path.stat().st_size // 1024} KiB)")
 
 

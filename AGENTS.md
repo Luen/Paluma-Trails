@@ -90,7 +90,7 @@ tool/test_create_upload_keystore.sh
 2. For content changes, validate and confirm the generated bundle diff is
    committed.
 3. For icon/splash/store changes, run `tool/check_generated_icons.sh` and inspect
-   the small-size outputs.
+   the 16, 24 and 48 px outputs.
 4. For UI changes, check light, dark and sunlight modes and large text.
 5. Link the issue and explain the user-visible change; include screenshots for
    UI work.

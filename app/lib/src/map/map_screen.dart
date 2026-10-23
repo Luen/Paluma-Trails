@@ -103,7 +103,11 @@ class _MapScreenState extends State<MapScreen> {
       appBar: AppBar(
         title: Row(
           children: [
-            const TrailPinMark(height: 30, semanticLabel: BrandText.name),
+            const TrailPinMark(
+              height: 30,
+              accentColor: BrandColors.sand,
+              semanticLabel: BrandText.name,
+            ),
             const SizedBox(width: 12),
             Flexible(
               child: Text(bundle.park.name, overflow: TextOverflow.ellipsis),
