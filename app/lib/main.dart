@@ -4,6 +4,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
 import 'src/api/app.dart';
+import 'src/brand/brand.dart';
 import 'src/content/bundle_repository.dart';
 
 Future<void> main() async {
@@ -13,6 +14,7 @@ Future<void> main() async {
     // protocol registration (see _BundleLoader) needs the JS globals.
     await MapLibreMap.ensureWebLibraryLoaded();
   }
+  registerBrandLicences();
   runApp(PalumaTrailsApp(repository: BundleRepository()));
   // The web splash is an HTML overlay, so it needs an explicit removal after
   // the first frame. On Android and iOS the launch screen is already gone.

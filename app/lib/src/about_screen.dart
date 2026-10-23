@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'brand/brand.dart';
 import 'content/bundle_repository.dart';
 
 /// Park facts, attributions and the licence/disclaimer notes that should stay
@@ -11,101 +12,178 @@ class AboutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final park = bundle.park;
-    final manifest = bundle.manifest;
 
     return Scaffold(
       appBar: AppBar(title: const Text('About')),
       body: ListView(
-        padding: const EdgeInsets.all(16),
         children: [
-          Text(park.name, style: theme.textTheme.headlineSmall),
-          const SizedBox(height: 4),
-          Text(park.region, style: theme.textTheme.bodyMedium),
-          const SizedBox(height: 4),
-          Text(
-            'Content updated ${park.updated}',
-            style: theme.textTheme.bodySmall,
-          ),
-          const SizedBox(height: 16),
-          Card(
-            color: theme.colorScheme.errorContainer,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(
-                    Icons.emergency_outlined,
-                    color: theme.colorScheme.onErrorContainer,
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'In an emergency call ${park.emergencyPhone}',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            color: theme.colorScheme.onErrorContainer,
-                          ),
-                        ),
-                        if (park.emergencyNotes.isNotEmpty) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            park.emergencyNotes,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.colorScheme.onErrorContainer,
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          if (park.disclaimer.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            Text(park.disclaimer, style: theme.textTheme.bodyMedium),
-          ],
-          const SizedBox(height: 24),
-          const _SectionTitle('Offline bundle'),
-          _KeyValue('Version', manifest.bundleVersion),
-          _KeyValue('Size', _formatBytes(manifest.totalBytes)),
-          _KeyValue('Files', '${manifest.files.length}'),
-          _KeyValue('Content schema', 'v${manifest.schemaVersion}'),
-          const SizedBox(height: 8),
-          Text(
-            'Includes the basemap and all trail content, so the map works in '
-            'flight mode. Map detail is provided to zoom 15; zooming further '
-            'stretches the tiles.',
-            style: theme.textTheme.bodySmall,
-          ),
-          const SizedBox(height: 24),
-          const _SectionTitle('Walking times'),
-          Text(bundle.estimate.label, style: theme.textTheme.bodyMedium),
-          const SizedBox(height: 24),
-          const _SectionTitle('Credits'),
-          for (final attribution in park.attributions)
-            _KeyValue(attribution.label, attribution.licence),
-          const SizedBox(height: 8),
-          Text(
-            'Trail data collected and edited by the Wanderstories project; '
-            'content is unverified until checked against the tracks and '
-            'Queensland Parks sources. Source: github.com/Luen/Paluma-Trails',
-            style: theme.textTheme.bodySmall,
-          ),
-          const SizedBox(height: 32),
+          _AboutHeader(parkName: park.name, region: park.region),
+          Padding(padding: const EdgeInsets.all(16), child: _body(context)),
         ],
       ),
     );
   }
 
+  Widget _body(BuildContext context) {
+    final theme = Theme.of(context);
+    final park = bundle.park;
+    final manifest = bundle.manifest;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'Content updated ${park.updated}',
+          style: theme.textTheme.bodySmall,
+        ),
+        const SizedBox(height: 16),
+        Card(
+          color: theme.colorScheme.errorContainer,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.emergency_outlined,
+                  color: theme.colorScheme.onErrorContainer,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'In an emergency call ${park.emergencyPhone}',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: theme.colorScheme.onErrorContainer,
+                        ),
+                      ),
+                      if (park.emergencyNotes.isNotEmpty) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          park.emergencyNotes,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onErrorContainer,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        if (park.disclaimer.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          Text(park.disclaimer, style: theme.textTheme.bodyMedium),
+        ],
+        const SizedBox(height: 24),
+        const _SectionTitle('Offline bundle'),
+        _KeyValue('Version', manifest.bundleVersion),
+        _KeyValue('Size', _formatBytes(manifest.totalBytes)),
+        _KeyValue('Files', '${manifest.files.length}'),
+        _KeyValue('Content schema', 'v${manifest.schemaVersion}'),
+        const SizedBox(height: 8),
+        Text(
+          'Includes the basemap and all trail content, so the map works in '
+          'flight mode. Map detail is provided to zoom 15; zooming further '
+          'stretches the tiles.',
+          style: theme.textTheme.bodySmall,
+        ),
+        const SizedBox(height: 24),
+        const _SectionTitle('Walking times'),
+        Text(bundle.estimate.label, style: theme.textTheme.bodyMedium),
+        const SizedBox(height: 24),
+        const _SectionTitle('Credits'),
+        for (final attribution in park.attributions)
+          _KeyValue(attribution.label, attribution.licence),
+        const _KeyValue('Typeface', 'Atkinson Hyperlegible Next, SIL OFL 1.1'),
+        const SizedBox(height: 8),
+        Text(
+          'Trail data collected and edited by the Wanderstories project; '
+          'content is unverified until checked against the tracks and '
+          'Queensland Parks sources. Source: github.com/Luen/Paluma-Trails',
+          style: theme.textTheme.bodySmall,
+        ),
+        const SizedBox(height: 8),
+        Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: TextButton.icon(
+            onPressed: () => showLicensePage(
+              context: context,
+              applicationName: BrandText.name,
+              applicationIcon: Padding(
+                padding: const EdgeInsets.all(12),
+                child: TrailPinMark(
+                  height: 48,
+                  color: theme.colorScheme.primary,
+                ),
+              ),
+            ),
+            icon: const Icon(Icons.article_outlined),
+            label: const Text('Open-source licences'),
+          ),
+        ),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+
   static String _formatBytes(int bytes) =>
       '${(bytes / 1024 / 1024).toStringAsFixed(2)} MiB';
+}
+
+/// The brand lockup and the park, on the same rainforest field as the app bar.
+class _AboutHeader extends StatelessWidget {
+  const _AboutHeader({required this.parkName, required this.region});
+
+  final String parkName;
+  final String region;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return ColoredBox(
+      color: BrandColors.rainforest,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const BrandLockup(fontSize: 30),
+            const SizedBox(height: 8),
+            Text(
+              BrandText.tagline,
+              style: textTheme.titleMedium?.copyWith(
+                color: BrandColors.paleMist,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              width: 48,
+              height: 4,
+              decoration: BoxDecoration(
+                color: BrandColors.sand,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              parkName,
+              style: textTheme.titleLarge?.copyWith(color: BrandColors.cream),
+            ),
+            Text(
+              region,
+              style: textTheme.bodyMedium?.copyWith(color: BrandColors.mist),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class _SectionTitle extends StatelessWidget {

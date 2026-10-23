@@ -53,6 +53,9 @@ jobs:
           distribution: temurin
           java-version: '21'
       - run: flutter pub get
+      - name: Check brand and map colour contrast
+        working-directory: .
+        run: python3 tools/brand/colour_check.py
       - name: Check generated icons and splash are up to date
         run: tool/check_generated_icons.sh
       - name: Test the upload keystore helper

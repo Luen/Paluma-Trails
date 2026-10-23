@@ -25,6 +25,7 @@ authoritative.
 - `app/assets/bundle/` — generated offline bundle consumed by the app.
 - `tools/paluma_cli/` — Dart content validator/bundler.
 - `tools/basemap/` — offline PMTiles pipeline.
+- `tools/brand/` — wordmark/lockup/marketing generator and colour checks.
 - `.github/workflows/` — CI, release and release-please.
 
 ## Everyday commands
@@ -43,6 +44,10 @@ dart run tools/paluma_cli/bin/paluma_cli.dart content validate
 dart run tools/paluma_cli/bin/paluma_cli.dart bundle build --out /tmp/bundle
 diff -r /tmp/bundle app/assets/bundle
 
+# Brand artwork and colour checks (from the repository root)
+python tools/brand/colour_check.py
+python tools/brand/build_brand.py && tools/brand/render_png.sh
+
 # Generated artwork and signing helper
 cd app
 tool/check_generated_icons.sh
@@ -60,7 +65,8 @@ tool/test_create_upload_keystore.sh
   do not hand-edit `app/assets/bundle/content/**`.
 - **Branding.** Use the palette and rules in
   [docs/branding.md](docs/branding.md). Do not add unexplained hex values to
-  widgets; use `Theme.of(context).colorScheme` and `textTheme`. Keep original
+  widgets; use `Theme.of(context).colorScheme` and `textTheme`, `BrandColors`
+  on rainforest brand surfaces, and `MapPalette` for map features. Keep original
   artwork and record licences for new images.
 - **Outdoor usability.** Preserve 48 dp controls, high-contrast sunlight mode,
   battery saver behaviour and AA contrast. Do not make essential actions depend
@@ -84,7 +90,7 @@ tool/test_create_upload_keystore.sh
 2. For content changes, validate and confirm the generated bundle diff is
    committed.
 3. For icon/splash/store changes, run `tool/check_generated_icons.sh` and inspect
-   the small-size outputs.
+   the 16, 24 and 48 px outputs.
 4. For UI changes, check light, dark and sunlight modes and large text.
 5. Link the issue and explain the user-visible change; include screenshots for
    UI work.

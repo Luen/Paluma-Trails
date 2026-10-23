@@ -161,13 +161,13 @@ class LocationCard extends StatelessWidget {
                   Expanded(
                     child: Text(
                       title,
-                      style: theme.textTheme.labelSmall,
+                      style: theme.textTheme.labelMedium,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   if (accuracy != null) ...[
                     const SizedBox(width: 8),
-                    Text(accuracy, style: theme.textTheme.labelSmall),
+                    Text(accuracy, style: theme.textTheme.labelMedium),
                   ],
                 ],
               ),
