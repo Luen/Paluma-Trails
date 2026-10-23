@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../content/bundle_repository.dart';
 import '../content/models.dart';
 import 'format.dart';
+import 'map_key.dart';
 import 'map_options.dart';
+import 'map_palette.dart';
 
 /// Bottom sheets for the map's tappable features: junctions, POIs and tracks.
 
@@ -25,39 +27,43 @@ Future<void> showTrackSheet(
   required TrackSummary track,
 }) => _show(context, TrackSheet(bundle: bundle, track: track));
 
-/// Outdoor display choices: sunlight mode and battery saver.
+/// Outdoor display choices (sunlight mode and battery saver), then the map
+/// key.
 Future<void> showDisplaySettingsSheet(
   BuildContext context, {
   required MapOptions options,
-}) => showModalBottomSheet<void>(
-  context: context,
-  showDragHandle: true,
-  builder: (context) => SafeArea(
-    child: ListenableBuilder(
-      listenable: options,
-      builder: (context, _) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SwitchListTile(
-            value: options.sunlight,
-            onChanged: (value) => options.sunlight = value,
-            secondary: const Icon(Icons.wb_sunny_outlined),
-            title: const Text('Sunlight mode'),
-            subtitle: const Text(
-              'High-contrast colours and heavier map lines for bright days.',
-            ),
+}) => _show(
+  context,
+  ListenableBuilder(
+    listenable: options,
+    builder: (context, _) => ListView(
+      shrinkWrap: true,
+      padding: const EdgeInsets.only(bottom: 16),
+      children: [
+        SwitchListTile(
+          value: options.sunlight,
+          onChanged: (value) => options.sunlight = value,
+          secondary: const Icon(Icons.wb_sunny_outlined),
+          title: const Text('Sunlight mode'),
+          subtitle: const Text(
+            'High-contrast colours and heavier map lines for bright days.',
           ),
-          SwitchListTile(
-            value: options.batterySaver,
-            onChanged: (value) => options.batterySaver = value,
-            secondary: const Icon(Icons.battery_saver_outlined),
-            title: const Text('Battery saver'),
-            subtitle: const Text(
-              'Fewer GPS updates and no compass; distances stay approximate.',
-            ),
+        ),
+        SwitchListTile(
+          value: options.batterySaver,
+          onChanged: (value) => options.batterySaver = value,
+          secondary: const Icon(Icons.battery_saver_outlined),
+          title: const Text('Battery saver'),
+          subtitle: const Text(
+            'Fewer GPS updates and no compass; distances stay approximate.',
           ),
-        ],
-      ),
+        ),
+        const Divider(height: 24),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: MapKey(),
+        ),
+      ],
     ),
   ),
 );
@@ -100,11 +106,7 @@ class JunctionSheet extends StatelessWidget {
       children: [
         Row(
           children: [
-            CircleAvatar(
-              backgroundColor: theme.colorScheme.primary,
-              foregroundColor: theme.colorScheme.onPrimary,
-              child: Text('${junction.number}'),
-            ),
+            JunctionBadge(number: junction.number),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -118,14 +120,7 @@ class JunctionSheet extends StatelessWidget {
                 ],
               ),
             ),
-            if (junction.unverified)
-              const Tooltip(
-                message: 'Not yet checked against the tracks or official maps',
-                child: Chip(
-                  label: Text('Unverified'),
-                  visualDensity: VisualDensity.compact,
-                ),
-              ),
+            if (junction.unverified) const UnverifiedChip(),
           ],
         ),
         if (junction.notes != null) ...[
@@ -189,11 +184,7 @@ class _SegmentTile extends StatelessWidget {
 
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      leading: CircleAvatar(
-        backgroundColor: theme.colorScheme.surfaceContainerHighest,
-        foregroundColor: theme.colorScheme.onSurfaceVariant,
-        child: Text('${other?.number ?? '?'}'),
-      ),
+      leading: JunctionBadge(number: other?.number, size: 36),
       title: Text(other?.label ?? segment.otherEnd(junction.id)!),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -231,9 +222,11 @@ class PoiSheet extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(
-              _iconForCategory(poi.category),
-              color: theme.colorScheme.primary,
+            // The same blue as the POI dot on the map.
+            CircleAvatar(
+              backgroundColor: MapPalette.color(MapPalette.poi),
+              foregroundColor: MapPalette.color(MapPalette.poiStroke),
+              child: Icon(_iconForCategory(poi.category)),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -249,14 +242,7 @@ class PoiSheet extends StatelessWidget {
                 ],
               ),
             ),
-            if (poi.unverified)
-              const Tooltip(
-                message: 'Not yet checked against the tracks or official maps',
-                child: Chip(
-                  label: Text('Unverified'),
-                  visualDensity: VisualDensity.compact,
-                ),
-              ),
+            if (poi.unverified) const UnverifiedChip(),
           ],
         ),
         if (poi.summary != null) ...[
@@ -331,7 +317,12 @@ class TrackSheet extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(Icons.route_outlined, color: theme.colorScheme.primary),
+            SizedBox(
+              width: 40,
+              child: Center(
+                child: TrackClassSwatch(trackClass: track.trackClass),
+              ),
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -342,14 +333,7 @@ class TrackSheet extends StatelessWidget {
                 ],
               ),
             ),
-            if (track.unverified)
-              const Tooltip(
-                message: 'Not yet checked against the tracks or official maps',
-                child: Chip(
-                  label: Text('Unverified'),
-                  visualDensity: VisualDensity.compact,
-                ),
-              ),
+            if (track.unverified) const UnverifiedChip(),
           ],
         ),
         if (segments.isNotEmpty) ...[
@@ -359,6 +343,22 @@ class TrackSheet extends StatelessWidget {
       ],
     );
   }
+}
+
+/// Marks content that has not been checked on the ground or against official
+/// maps. Words, not just a colour, so it survives sunlight and colour vision.
+class UnverifiedChip extends StatelessWidget {
+  const UnverifiedChip({super.key});
+
+  @override
+  Widget build(BuildContext context) => const Tooltip(
+    message: 'Not yet checked against the tracks or official maps',
+    child: Chip(
+      avatar: Icon(Icons.help_outline, size: 18),
+      label: Text('Unverified'),
+      visualDensity: VisualDensity.compact,
+    ),
+  );
 }
 
 class _SectionTitle extends StatelessWidget {

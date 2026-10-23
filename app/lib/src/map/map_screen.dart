@@ -6,12 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
 import '../about_screen.dart';
+import '../brand/brand.dart';
 import '../content/bundle_repository.dart';
 import '../content/models.dart';
 import '../location/location_service.dart';
 import '../location/trail_locator.dart';
 import 'location_overlay.dart';
 import 'map_options.dart';
+import 'map_palette.dart';
 import 'sheets.dart';
 
 /// The offline map: basemap from the bundled PMTiles archive, trail content
@@ -32,6 +34,7 @@ class _MapScreenState extends State<MapScreen> {
 
   static const _tracksCasingLayer = 'paluma-tracks-casing';
   static const _tracksLayer = 'paluma-tracks';
+  static const _informalTracksLayer = 'paluma-tracks-informal';
   static const _junctionsLayer = 'paluma-junctions';
   static const _junctionsLabelLayer = 'paluma-junctions-label';
   static const _poisLayer = 'paluma-pois';
@@ -98,7 +101,15 @@ class _MapScreenState extends State<MapScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(bundle.park.name),
+        title: Row(
+          children: [
+            const TrailPinMark(height: 30, semanticLabel: BrandText.name),
+            const SizedBox(width: 12),
+            Flexible(
+              child: Text(bundle.park.name, overflow: TextOverflow.ellipsis),
+            ),
+          ],
+        ),
         actions: [
           IconButton(
             tooltip: 'About this app',
@@ -167,7 +178,7 @@ class _MapScreenState extends State<MapScreen> {
                   ),
                   const SizedBox(height: 6),
                 ],
-                _BundleChip(version: bundle.manifest.bundleVersion),
+                _OfflineChip(version: bundle.manifest.bundleVersion),
               ],
             ),
           ),
@@ -185,7 +196,7 @@ class _MapScreenState extends State<MapScreen> {
                 const SizedBox(height: 10),
                 MapControlButton(
                   icon: Icons.tune,
-                  tooltip: 'Outdoor display and battery options',
+                  tooltip: 'Map key and display options',
                   highlighted: options.sunlight || options.batterySaver,
                   onPressed: _openDisplaySettings,
                 ),
@@ -243,6 +254,13 @@ class _MapScreenState extends State<MapScreen> {
         _tracksSource,
         _tracksLayer,
         _tracksProperties(_sunlight),
+        filter: _solidTracksFilter,
+      );
+      await controller.addLineLayer(
+        _tracksSource,
+        _informalTracksLayer,
+        _informalTracksProperties(_sunlight),
+        filter: _informalTracksFilter,
       );
       await controller.addCircleLayer(
         _junctionsSource,
@@ -289,6 +307,10 @@ class _MapScreenState extends State<MapScreen> {
       await controller.setLayerProperties(
         _tracksLayer,
         _tracksProperties(_sunlight),
+      );
+      await controller.setLayerProperties(
+        _informalTracksLayer,
+        _informalTracksProperties(_sunlight),
       );
       await controller.setLayerProperties(
         _junctionsLayer,
@@ -338,29 +360,51 @@ class _MapScreenState extends State<MapScreen> {
 
   static LineLayerProperties _tracksCasingProperties(bool sunlight) =>
       LineLayerProperties(
-        lineColor: '#0B3D2E',
+        lineColor: MapPalette.casing,
         lineOpacity: sunlight ? 0.6 : 0.35,
         lineWidth: _casingWidth(sunlight),
       );
+
+  /// Solid classes on one layer, informal tracks dashed on another: a filter
+  /// split rather than a data-driven dash array, which not every MapLibre
+  /// platform supports.
+  static const List<Object> _solidTracksFilter = [
+    'match',
+    ['get', 'class'],
+    MapPalette.solidClasses,
+    true,
+    false,
+  ];
+
+  static const List<Object> _informalTracksFilter = [
+    'match',
+    ['get', 'class'],
+    MapPalette.solidClasses,
+    false,
+    true,
+  ];
 
   static LineLayerProperties _tracksProperties(bool sunlight) =>
       LineLayerProperties(
         lineColor: [
           'match',
           ['get', 'class'],
-          'walk',
-          '#2E7D32',
-          'track',
-          '#2E7D32',
           'mtb',
-          '#6A1B9A',
+          MapPalette.mtbTrack,
           'road',
-          '#607D8B',
+          MapPalette.road,
           'connector',
-          '#8D6E63',
-          '#455A64',
+          MapPalette.connector,
+          MapPalette.walkingTrack,
         ],
         lineWidth: _trackWidth(sunlight),
+      );
+
+  static LineLayerProperties _informalTracksProperties(bool sunlight) =>
+      LineLayerProperties(
+        lineColor: MapPalette.walkingTrack,
+        lineWidth: _trackWidth(sunlight),
+        lineDasharray: MapPalette.informalDash,
       );
 
   static CircleLayerProperties _junctionProperties(bool sunlight) =>
@@ -374,8 +418,12 @@ class _MapScreenState extends State<MapScreen> {
           14,
           sunlight ? 10.0 : 7.0,
         ],
-        circleColor: sunlight ? '#FFFFFF' : '#FFF8E1',
-        circleStrokeColor: sunlight ? '#000000' : '#BF360C',
+        circleColor: sunlight
+            ? MapPalette.sunlightJunctionFill
+            : MapPalette.junctionFill,
+        circleStrokeColor: sunlight
+            ? MapPalette.sunlightJunctionStroke
+            : MapPalette.junctionStroke,
         circleStrokeWidth: sunlight ? 3.0 : 2.0,
       );
 
@@ -395,8 +443,10 @@ class _MapScreenState extends State<MapScreen> {
           14,
           sunlight ? 16.0 : 12.0,
         ],
-        textColor: sunlight ? '#000000' : '#3E2723',
-        textHaloColor: '#FFFFFF',
+        textColor: sunlight
+            ? MapPalette.sunlightLabel
+            : MapPalette.junctionLabel,
+        textHaloColor: MapPalette.labelHalo,
         textHaloWidth: sunlight ? 2.0 : 0.0,
         textAllowOverlap: false,
       );
@@ -412,8 +462,8 @@ class _MapScreenState extends State<MapScreen> {
           14,
           sunlight ? 9.0 : 6.5,
         ],
-        circleColor: sunlight ? '#0D47A1' : '#0277BD',
-        circleStrokeColor: '#FFFFFF',
+        circleColor: sunlight ? MapPalette.sunlightPoi : MapPalette.poi,
+        circleStrokeColor: MapPalette.poiStroke,
         circleStrokeWidth: sunlight ? 2.5 : 1.5,
       );
 
@@ -422,8 +472,8 @@ class _MapScreenState extends State<MapScreen> {
         textField: ['get', 'name'],
         textFont: ['Noto-Sans-Regular'],
         textSize: sunlight ? 13.5 : 10.5,
-        textColor: sunlight ? '#000000' : '#0D47A1',
-        textHaloColor: '#FFFFFF',
+        textColor: sunlight ? MapPalette.sunlightLabel : MapPalette.poiLabel,
+        textHaloColor: MapPalette.labelHalo,
         textHaloWidth: 2.0,
         textAnchor: 'top',
         textOffset: const [0, 0.6],
@@ -456,6 +506,7 @@ class _MapScreenState extends State<MapScreen> {
           showPoiSheet(context, bundle: widget.bundle, poi: poi);
         }
       case _tracksLayer:
+      case _informalTracksLayer:
         final track = widget.bundle.tracksById[featureId];
         if (track != null) {
           showTrackSheet(context, bundle: widget.bundle, track: track);
@@ -655,8 +706,9 @@ class _MapScreenState extends State<MapScreen> {
   }
 }
 
-class _BundleChip extends StatelessWidget {
-  const _BundleChip({required this.version});
+/// Says the map works without reception, and which bundle is on the device.
+class _OfflineChip extends StatelessWidget {
+  const _OfflineChip({required this.version});
 
   final String version;
 
@@ -665,14 +717,28 @@ class _BundleChip extends StatelessWidget {
     final theme = Theme.of(context);
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface.withValues(alpha: 0.8),
+        color: theme.colorScheme.surface.withValues(alpha: 0.85),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        child: Text(
-          'Offline bundle $version',
-          style: theme.textTheme.labelSmall,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.offline_pin_outlined,
+              size: 16,
+              color: theme.colorScheme.primary,
+            ),
+            const SizedBox(width: 4),
+            Flexible(
+              child: Text(
+                'Offline map ready · bundle $version',
+                style: theme.textTheme.labelMedium,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
         ),
       ),
     );

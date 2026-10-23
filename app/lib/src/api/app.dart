@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../brand/brand.dart';
+import '../brand/theme.dart';
 import '../content/bundle_repository.dart';
 import '../map/map_options.dart';
 import '../map/map_screen.dart';
@@ -31,29 +33,19 @@ class _PalumaTrailsAppState extends State<PalumaTrailsApp> {
       child: ListenableBuilder(
         listenable: _options,
         builder: (context, _) => MaterialApp(
-          title: 'Paluma Trails',
+          title: BrandText.name,
           debugShowCheckedModeBanner: false,
-          theme: _theme(Brightness.light, sunlight: _options.sunlight),
-          darkTheme: _theme(Brightness.dark),
+          theme: buildPalumaTheme(
+            Brightness.light,
+            sunlight: _options.sunlight,
+          ),
+          darkTheme: buildPalumaTheme(Brightness.dark),
           // Sunlight mode is for a bright day, so it overrides a dark system
           // theme rather than following it.
           themeMode: _options.sunlight ? ThemeMode.light : ThemeMode.system,
           home: _BundleLoader(repository: widget.repository),
         ),
       ),
-    );
-  }
-
-  static ThemeData _theme(Brightness brightness, {bool sunlight = false}) {
-    final scheme = ColorScheme.fromSeed(
-      seedColor: const Color(0xFF2E6B4F),
-      brightness: brightness,
-      contrastLevel: sunlight ? 1.0 : 0.0,
-    );
-    return ThemeData(
-      colorScheme: scheme,
-      useMaterial3: true,
-      scaffoldBackgroundColor: sunlight ? const Color(0xFFFFFFFF) : null,
     );
   }
 }
@@ -71,7 +63,7 @@ class _BundleLoader extends StatefulWidget {
 }
 
 class _BundleLoaderState extends State<_BundleLoader> {
-  late final Future<LoadedBundle> _bundle = _load();
+  late Future<LoadedBundle> _bundle = _load();
 
   Future<LoadedBundle> _load() async {
     final bundle = await widget.repository.load();
@@ -86,27 +78,65 @@ class _BundleLoaderState extends State<_BundleLoader> {
       builder: (context, snapshot) {
         final bundle = snapshot.data;
         if (bundle != null) return MapScreen(bundle: bundle);
-        if (snapshot.hasError) return _BundleError(error: snapshot.error!);
-        return const _LoadingScreen();
+        if (snapshot.hasError) {
+          return _BundleError(
+            error: snapshot.error!,
+            onRetry: () => setState(() => _bundle = _load()),
+          );
+        }
+        return const LoadingScreen();
       },
     );
   }
 }
 
-class _LoadingScreen extends StatelessWidget {
-  const _LoadingScreen();
+/// Shown while the offline bundle opens. It continues the launch screen (the
+/// same rainforest field and cream mark) so start-up reads as one surface.
+class LoadingScreen extends StatelessWidget {
+  const LoadingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 16),
-            Text('Opening the offline map…'),
-          ],
+    final textTheme = Theme.of(context).textTheme;
+    return Scaffold(
+      backgroundColor: BrandColors.rainforest,
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const TrailPinMark(height: 96),
+                const SizedBox(height: 24),
+                const Wordmark(fontSize: 36, color: BrandColors.cream),
+                const SizedBox(height: 8),
+                Text(
+                  BrandText.tagline,
+                  textAlign: TextAlign.center,
+                  style: textTheme.titleMedium?.copyWith(
+                    color: BrandColors.paleMist,
+                  ),
+                ),
+                const SizedBox(height: 40),
+                const SizedBox.square(
+                  dimension: 28,
+                  child: CircularProgressIndicator(
+                    color: BrandColors.sand,
+                    strokeWidth: 3,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Opening the offline map…',
+                  textAlign: TextAlign.center,
+                  style: textTheme.bodyLarge?.copyWith(
+                    color: BrandColors.cream,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -114,36 +144,47 @@ class _LoadingScreen extends StatelessWidget {
 }
 
 class _BundleError extends StatelessWidget {
-  const _BundleError({required this.error});
+  const _BundleError({required this.error, required this.onRetry});
 
   final Object error;
+  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.error_outline,
-                color: Theme.of(context).colorScheme.error,
-                size: 40,
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'The offline bundle could not be loaded.',
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                '$error',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            ],
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  color: theme.colorScheme.error,
+                  size: 40,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'The offline map could not open.',
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.titleLarge,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '$error',
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodySmall,
+                ),
+                const SizedBox(height: 24),
+                FilledButton.icon(
+                  onPressed: onRetry,
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Try again'),
+                ),
+              ],
+            ),
           ),
         ),
       ),
