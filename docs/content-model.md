@@ -13,6 +13,8 @@ what the bundle contains, so a content fix is a data change plus a release.
   estimated walking time. **Generated** from tracks + junctions.
 - **POIs** — everything else worth stopping for: waterfalls, lookouts, mine ruins,
   huts, campsites. Some have QR codes on the track; all are tappable on the map.
+- **Safety guidance** — plain, offline advice for the safety page: what to do in
+  an emergency, what to carry and how to think about reception.
 
 ## Files
 
@@ -22,6 +24,7 @@ what the bundle contains, so a content fix is a data change plus a release.
 | `tracks.geojson` | yes (or `import-umap`) | Track polylines |
 | `junctions.json` | yes | Numbered junctions and their notes |
 | `pois.json` | yes | Points of interest, text, sources |
+| `safety.json` | yes | Offline safety guidance and emergency steps |
 | `segments.json` | no — generated | Junction-to-junction graph with distances/times |
 | `sources.json` | yes | Provenance and licences of each data source |
 

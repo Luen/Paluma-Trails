@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:paluma_trails/src/content/bundle_repository.dart';
@@ -174,7 +175,70 @@ void main() {
 
       expect(park.defaultZoom, 12);
       expect(park.emergencyPhone, '000');
+      expect(park.emergencyAlternativePhone, '112');
       expect(park.attributions, isEmpty);
+    });
+
+    test('parses the alternative emergency number', () {
+      final park = Park.fromJson({
+        'id': 'paluma',
+        'name': 'Paluma Range National Park',
+        'region': 'Queensland',
+        'center': {'lat': -18.95, 'lon': 146.15},
+        'bounds': {
+          'north': -18.8,
+          'south': -19.1,
+          'east': 146.3,
+          'west': 146.05,
+        },
+        'updated': '2026-10-16',
+        'emergency': {
+          'phone': '000',
+          'alternative_phone': '112',
+          'notes': 'Give coordinates.',
+        },
+      });
+
+      expect(park.emergencyPhone, '000');
+      expect(park.emergencyAlternativePhone, '112');
+      expect(park.emergencyNotes, 'Give coordinates.');
+    });
+  });
+
+  group('SafetyContent', () {
+    test('parses the emergency block and guidance sections', () {
+      final safety = SafetyContent.fromJson({
+        'updated': '2026-10-26',
+        'intro': 'Remote country.',
+        'emergency': {
+          'headline': 'In an emergency, call 000.',
+          'steps': ['Give your coordinates.', 'Stay put.'],
+        },
+        'sections': [
+          {
+            'title': 'Before you set out',
+            'items': ['Tell someone.'],
+          },
+        ],
+      });
+
+      expect(safety.emergencyHeadline, 'In an emergency, call 000.');
+      expect(safety.emergencySteps, ['Give your coordinates.', 'Stay put.']);
+      expect(safety.sections.single.title, 'Before you set out');
+      expect(safety.sections.single.items, ['Tell someone.']);
+    });
+
+    test('the shipped bundle carries the safety page', () {
+      final safety = SafetyContent.fromJson(
+        decodeJsonObject(
+          File('assets/bundle/content/safety.json').readAsStringSync(),
+        ),
+      );
+
+      expect(safety.updated, isNotEmpty);
+      expect(safety.emergencyHeadline, contains('000'));
+      expect(safety.emergencySteps, isNotEmpty);
+      expect(safety.sections, isNotEmpty);
     });
   });
 }

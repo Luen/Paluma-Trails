@@ -27,6 +27,7 @@ class Park {
     required this.updated,
     required this.disclaimer,
     required this.emergencyPhone,
+    this.emergencyAlternativePhone = '112',
     required this.emergencyNotes,
     required this.attributions,
   });
@@ -40,6 +41,9 @@ class Park {
   final String updated;
   final String disclaimer;
   final String emergencyPhone;
+
+  /// The number to try when [emergencyPhone] does not connect, normally 112.
+  final String emergencyAlternativePhone;
   final String emergencyNotes;
   final List<Attribution> attributions;
 
@@ -55,6 +59,8 @@ class Park {
       updated: json['updated']! as String,
       disclaimer: (json['disclaimer'] as String?) ?? '',
       emergencyPhone: (emergency['phone'] as String?) ?? '000',
+      emergencyAlternativePhone:
+          (emergency['alternative_phone'] as String?) ?? '112',
       emergencyNotes: (emergency['notes'] as String?) ?? '',
       attributions: ((json['attribution'] as List?) ?? const [])
           .cast<Map<String, Object?>>()
@@ -96,6 +102,62 @@ class Attribution {
     label: json['label']! as String,
     licence: json['licence']! as String,
     url: json['url'] as String?,
+  );
+}
+
+/// Offline safety guidance, kept in the bundle so it is always available
+/// without a signal. See `content/data/paluma/safety.json`.
+class SafetyContent {
+  const SafetyContent({
+    required this.updated,
+    required this.intro,
+    required this.emergencyHeadline,
+    required this.emergencySteps,
+    required this.sections,
+  });
+
+  final String updated;
+  final String intro;
+  final String emergencyHeadline;
+  final List<String> emergencySteps;
+  final List<SafetySection> sections;
+
+  static const empty = SafetyContent(
+    updated: '',
+    intro: '',
+    emergencyHeadline: '',
+    emergencySteps: [],
+    sections: [],
+  );
+
+  factory SafetyContent.fromJson(Map<String, Object?> json) {
+    final emergency = json['emergency'] as Map<String, Object?>? ?? const {};
+    return SafetyContent(
+      updated: (json['updated'] as String?) ?? '',
+      intro: (json['intro'] as String?) ?? '',
+      emergencyHeadline: (emergency['headline'] as String?) ?? '',
+      emergencySteps: ((emergency['steps'] as List?) ?? const [])
+          .cast<String>()
+          .toList(growable: false),
+      sections: ((json['sections'] as List?) ?? const [])
+          .cast<Map<String, Object?>>()
+          .map(SafetySection.fromJson)
+          .toList(growable: false),
+    );
+  }
+}
+
+class SafetySection {
+  const SafetySection({required this.title, required this.items});
+
+  final String title;
+  final List<String> items;
+
+  factory SafetySection.fromJson(Map<String, Object?> json) => SafetySection(
+    title: json['title']! as String,
+    items: ((json['items'] as List?) ?? const []).cast<String>().toList(
+      growable: false,
+    ),
   );
 }
 

@@ -12,6 +12,7 @@ class LoadedBundle {
   const LoadedBundle({
     required this.manifest,
     required this.park,
+    required this.safety,
     required this.tracks,
     required this.tracksById,
     required this.junctions,
@@ -27,6 +28,7 @@ class LoadedBundle {
 
   final BundleManifest manifest;
   final Park park;
+  final SafetyContent safety;
   final List<TrackSummary> tracks;
   final Map<String, TrackSummary> tracksById;
   final Map<String, Junction> junctions;
@@ -168,6 +170,9 @@ class BundleRepository {
     final park = Park.fromJson(
       decodeJsonObject(await read('content/park.json')),
     );
+    final safety = SafetyContent.fromJson(
+      decodeJsonObject(await read('content/safety.json')),
+    );
     final junctionsJson = decodeJsonObject(
       await read('content/junctions.json'),
     );
@@ -188,6 +193,7 @@ class BundleRepository {
     final bundle = LoadedBundle(
       manifest: manifest,
       park: park,
+      safety: safety,
       tracks: tracks,
       tracksById: {for (final track in tracks) track.id: track},
       junctions: {

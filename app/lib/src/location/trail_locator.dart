@@ -16,10 +16,19 @@ const _metresPerDegreeLat = math.pi * _earthRadius / 180;
 
 /// A track polyline in WGS84, ready for nearest-point queries.
 class TrackPolyline {
-  const TrackPolyline({required this.id, this.name, required this.points});
+  const TrackPolyline({
+    required this.id,
+    this.name,
+    this.trackClass = 'track',
+    required this.points,
+  });
 
   final String id;
   final String? name;
+
+  /// The bundle's track `class`: `track`, `walk`, `road`, `mtb`, `connector`
+  /// or `other`.
+  final String trackClass;
   final List<GeoPoint> points;
 }
 
@@ -296,6 +305,7 @@ List<TrackPolyline> trackPolylinesFromGeoJson(String source) {
       TrackPolyline(
         id: id,
         name: properties['name'] as String?,
+        trackClass: (properties['class'] as String?) ?? 'track',
         points: points,
       ),
     );

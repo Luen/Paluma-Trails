@@ -2,13 +2,19 @@ import 'package:flutter/material.dart';
 
 import 'brand/brand.dart';
 import 'content/bundle_repository.dart';
+import 'location/location_service.dart';
+import 'safety_screen.dart';
 
 /// Park facts, attributions and the licence/disclaimer notes that should stay
 /// one tap away from the map.
 class AboutScreen extends StatelessWidget {
-  const AboutScreen({super.key, required this.bundle});
+  const AboutScreen({super.key, required this.bundle, this.location});
 
   final LoadedBundle bundle;
+
+  /// When the map supplies its location service, the safety page can show the
+  /// walker's coordinates without starting a second GPS stream.
+  final LocationService? location;
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +85,20 @@ class AboutScreen extends StatelessWidget {
         if (park.disclaimer.isNotEmpty) ...[
           const SizedBox(height: 16),
           Text(park.disclaimer, style: theme.textTheme.bodyMedium),
+        ],
+        if (location != null) ...[
+          const SizedBox(height: 16),
+          FilledButton.icon(
+            style: FilledButton.styleFrom(minimumSize: const Size(0, 48)),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) =>
+                    SafetyScreen(bundle: bundle, location: location!),
+              ),
+            ),
+            icon: const Icon(Icons.health_and_safety_outlined),
+            label: const Text('Safety and emergency information'),
+          ),
         ],
         const SizedBox(height: 24),
         const _SectionTitle('Offline bundle'),

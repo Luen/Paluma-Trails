@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "bundle_version": "2026-10-16-2566a267",
+  "bundle_version": "2026-10-16-b428e56a",
   "generator": "paluma_cli 0.1.0",
   "park": "paluma-range",
   "files": [
@@ -95,6 +95,11 @@
       "sha256": "22a50e14c4770cac110db5b6e0d718c228f8fc8ae4d398eb5fb4f601fa8b6fa0"
     },
     {
+      "path": "content/safety.json",
+      "bytes": 2527,
+      "sha256": "d32cdc84aa352b58931f171b24924a33e6375a2990de9393d3b9fcc7614918bd"
+    },
+    {
       "path": "content/segments.json",
       "bytes": 10614,
       "sha256": "0bee16f8979fd3972fd892976f42aa39a4b040bb3900f8de65aa9aa9e176cf6c"
@@ -111,7 +116,7 @@
     }
   ],
   "totals": {
-    "files": 21,
-    "bytes": 3170137
+    "files": 22,
+    "bytes": 3172664
   }
 }
