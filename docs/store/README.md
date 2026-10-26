@@ -10,6 +10,8 @@ Read [the branding guide](../branding.md) for logo, palette and voice rules.
 | `screenshots/02-next-junction.png` | 1080×1746 | Blue dot and distance to the nearest junction |
 | `screenshots/03-junction.png` | 1080×1746 | Junction sheet: tracks from here, estimated times, bearings |
 | `screenshots/04-map-key.png` | 1080×1746 | Sunlight mode, battery saver and the map key |
+| `screenshots/05-safety.png` | 1080×1746 | Safety screen: emergency numbers, call buttons and offline guidance |
+| `screenshots/06-safety-located.png` | 1080×1746 | Safety screen with coordinates, nearest junction and recorded reception |
 
 The icon and feature graphic are rendered from sources in `app/assets/icon/`:
 
