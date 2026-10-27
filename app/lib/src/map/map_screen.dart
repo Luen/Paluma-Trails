@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart' show setEquals;
 import 'package:flutter/material.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
@@ -47,6 +48,10 @@ class _MapScreenState extends State<MapScreen> {
   MapOptions? _options;
   var _sunlight = false;
 
+  /// The POI categories hidden by the current display options, so the map
+  /// filter is only rebuilt when the choice actually changes.
+  Set<String> _hiddenPoiCategories = const {};
+
   late final LocationService _location;
   late final TrailLocator _trailLocator;
   TrailFix? _trailFix;
@@ -83,6 +88,10 @@ class _MapScreenState extends State<MapScreen> {
     if (_sunlight != options.sunlight) {
       _sunlight = options.sunlight;
       if (_layersAdded) unawaited(_applyLayerStyle());
+    }
+    if (!setEquals(_hiddenPoiCategories, options.hiddenPoiCategories)) {
+      _hiddenPoiCategories = options.hiddenPoiCategories;
+      if (_layersAdded) unawaited(_applyPoiVisibility());
     }
   }
 
@@ -208,7 +217,10 @@ class _MapScreenState extends State<MapScreen> {
                 MapControlButton(
                   icon: Icons.tune,
                   tooltip: 'Map key and display options',
-                  highlighted: options.sunlight || options.batterySaver,
+                  highlighted:
+                      options.sunlight ||
+                      options.batterySaver ||
+                      !options.allPoiGroupsVisible,
                   onPressed: _openDisplaySettings,
                 ),
                 const SizedBox(height: 10),
@@ -342,6 +354,28 @@ class _MapScreenState extends State<MapScreen> {
     } catch (_) {
       // The map may already be gone; the next style load adds the layers
       // again with the current colours.
+    }
+  }
+
+  /// Rebuilds the POI source after a display option changed.
+  ///
+  /// Layers keep their style and interaction; only the features handed to
+  /// MapLibre change. A layer filter would be cheaper, but the web plugin does
+  /// not convert a Dart filter list for `setFilter`, and this works the same on
+  /// every platform.
+  Future<void> _applyPoiVisibility() async {
+    final controller = _controller;
+    if (controller == null || !_layersAdded) return;
+    try {
+      await controller.setGeoJsonSource(
+        _poisSource,
+        widget.bundle.poisFeatureCollection(
+          hiddenCategories: _hiddenPoiCategories,
+        ),
+      );
+    } catch (_) {
+      // The map may already be gone; the next style load builds the source
+      // with the current choice.
     }
   }
 

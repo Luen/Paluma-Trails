@@ -82,24 +82,30 @@ class LoadedBundle {
   };
 
   /// MapLibre-ready GeoJSON for the points of interest.
-  Map<String, dynamic> poisFeatureCollection() => {
+  ///
+  /// [hiddenCategories] leaves out markers the walker has hidden with the map's
+  /// display options; the content itself is unchanged.
+  Map<String, dynamic> poisFeatureCollection({
+    Set<String> hiddenCategories = const {},
+  }) => {
     'type': 'FeatureCollection',
     'features': [
       for (final poi in pois.values)
-        {
-          'type': 'Feature',
-          'id': poi.id,
-          'properties': {
+        if (!hiddenCategories.contains(poi.category))
+          {
+            'type': 'Feature',
             'id': poi.id,
-            'name': poi.name,
-            'category': poi.category,
-            if (poi.unverified) 'unverified': true,
+            'properties': {
+              'id': poi.id,
+              'name': poi.name,
+              'category': poi.category,
+              if (poi.unverified) 'unverified': true,
+            },
+            'geometry': {
+              'type': 'Point',
+              'coordinates': [poi.location.lon, poi.location.lat],
+            },
           },
-          'geometry': {
-            'type': 'Point',
-            'coordinates': [poi.location.lon, poi.location.lat],
-          },
-        },
     ],
   };
 
