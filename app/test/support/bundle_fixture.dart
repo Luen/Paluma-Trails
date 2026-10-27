@@ -3,7 +3,10 @@ import 'package:paluma_trails/src/content/models.dart';
 
 /// A small hand-built bundle for widget tests: two junctions, one segment,
 /// one track and one POI.
-LoadedBundle testBundle({bool withSegment = true}) => LoadedBundle(
+LoadedBundle testBundle({
+  bool withSegment = true,
+  String tracksGeoJson = '{"type":"FeatureCollection","features":[]}',
+}) => LoadedBundle(
   manifest: const BundleManifest(
     schemaVersion: 1,
     bundleVersion: 'test-0000',
@@ -22,8 +25,22 @@ LoadedBundle testBundle({bool withSegment = true}) => LoadedBundle(
     updated: '2026-10-16',
     disclaimer: 'Test disclaimer.',
     emergencyPhone: '000',
+    emergencyAlternativePhone: '112',
     emergencyNotes: 'Ask for Queensland Ambulance Service.',
     attributions: [Attribution(label: 'OpenStreetMap', licence: 'ODbL')],
+  ),
+  safety: const SafetyContent(
+    updated: '2026-10-26',
+    intro: 'Test safety intro.',
+    emergencyHeadline:
+        'In an emergency, call 000. If the call does not connect, try 112.',
+    emergencySteps: ['Give your coordinates.', 'Stay where you are.'],
+    sections: [
+      SafetySection(
+        title: 'Before you set out',
+        items: ['Tell someone where you are going.'],
+      ),
+    ],
   ),
   tracks: const [
     TrackSummary(
@@ -85,7 +102,7 @@ LoadedBundle testBundle({bool withSegment = true}) => LoadedBundle(
     includesElevation: false,
     label: 'Estimate — flat-terrain pace, elevation not included',
   ),
-  tracksGeoJson: '{"type":"FeatureCollection","features":[]}',
+  tracksGeoJson: tracksGeoJson,
   styleTemplate: '{}',
   pmtilesUri: 'file:///tmp/paluma.pmtiles',
   assetsBaseUri: 'file:///tmp',

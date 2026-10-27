@@ -21,6 +21,7 @@ class ContentValidator {
     'pois.json': 'pois.schema.json',
     'segments.json': 'segments.schema.json',
     'sources.json': 'sources.schema.json',
+    'safety.json': 'safety.schema.json',
   };
 
   /// Returns a list of human-readable problems; empty means valid.

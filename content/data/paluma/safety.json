@@ -1,0 +1,48 @@
+{
+  "updated": "2026-10-26",
+  "intro": "Paluma is remote walking country. Phone reception is unreliable, weather changes quickly and help can take hours to reach you. The offline map works without a signal; your battery, water and a plan are what you rely on.",
+  "emergency": {
+    "headline": "In an emergency, call 000. If the call does not connect, try 112.",
+    "steps": [
+      "Give your coordinates from this screen and the number of the nearest junction.",
+      "Say how many people are with you and what the injury or hazard is.",
+      "Stay where you are if it is safe to do so, keep warm and dry, and make yourself easy to find.",
+      "If a call will not connect, send an SMS with your coordinates and junction number — it may leave when a call cannot."
+    ]
+  },
+  "sections": [
+    {
+      "title": "Before you set out",
+      "items": [
+        "Tell someone where you are going, which junctions you plan to pass and when you expect to be back.",
+        "Carry a paper map, a charged phone and a power bank. Download the offline map before leaving reception.",
+        "Check the forecast and park alerts. Tracks can close after heavy rain or for planned burns.",
+        "Walking times in this app are estimates only. They assume a steady pace without breaks and do not include elevation."
+      ]
+    },
+    {
+      "title": "Water and heat",
+      "items": [
+        "Carry more water than you expect to need, and treat creek water before drinking it.",
+        "Start early. Exposed sections and the climbs out of the creeks get hot through the middle of the day.",
+        "Turn back if you are behind your plan, the weather turns, or someone in the group is struggling."
+      ]
+    },
+    {
+      "title": "Wildlife and plants",
+      "items": [
+        "Leeches and ticks are common after rain. Check yourself, your clothing and your pack at the end of the walk.",
+        "Snakes may rest on or beside the track. Give them room and look before stepping over logs.",
+        "Stinging trees and wait-a-while grow close to some tracks. Long trousers and care with your hands help."
+      ]
+    },
+    {
+      "title": "Reception and navigation",
+      "items": [
+        "Reception is patchy on the plateau and often absent in the gullies and below the range.",
+        "GPS accuracy drops under dense canopy. Compare the map with track markers and junction numbers.",
+        "If you leave the track, stop and return to the last place where you were sure of your position."
+      ]
+    }
+  ]
+}

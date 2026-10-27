@@ -390,10 +390,3 @@ class _Fact extends StatelessWidget {
     visualDensity: VisualDensity.compact,
   );
 }
-
-/// `-18.941853, 146.188682` → `18.9419° S, 146.1887° E`.
-String formatCoordinates(GeoPoint point) {
-  final lat = point.lat.abs().toStringAsFixed(4);
-  final lon = point.lon.abs().toStringAsFixed(4);
-  return '$lat° ${point.lat >= 0 ? 'N' : 'S'}, $lon° ${point.lon >= 0 ? 'E' : 'W'}';
-}

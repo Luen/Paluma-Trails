@@ -40,9 +40,10 @@ view. Epic issues are linked.
 
 ## Milestone 4 — Weather, conditions and safety
 
+- Safety guidance and the offline emergency screen (#41, #42) — **shipped**;
+  reception points (#60) still need field verification
 - Investigate BOM access and licensing (#38)
 - Park alerts and closures (#40)
-- Safety guidance content (#41)
 - Emergency screen: coordinates and known reception points (#42, #60)
 
 ## Milestone 5 — Launch, quality and operations

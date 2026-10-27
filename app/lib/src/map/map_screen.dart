@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
@@ -9,8 +8,10 @@ import '../about_screen.dart';
 import '../brand/brand.dart';
 import '../content/bundle_repository.dart';
 import '../content/models.dart';
+import '../location/location_prompts.dart';
 import '../location/location_service.dart';
 import '../location/trail_locator.dart';
+import '../safety_screen.dart';
 import 'location_overlay.dart';
 import 'map_options.dart';
 import 'map_palette.dart';
@@ -116,10 +117,16 @@ class _MapScreenState extends State<MapScreen> {
         ),
         actions: [
           IconButton(
+            tooltip: 'Safety and emergency information',
+            onPressed: _openSafety,
+            icon: const Icon(Icons.health_and_safety_outlined),
+          ),
+          IconButton(
             tooltip: 'About this app',
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
-                builder: (_) => AboutScreen(bundle: bundle),
+                builder: (_) =>
+                    AboutScreen(bundle: bundle, location: _location),
               ),
             ),
             icon: const Icon(Icons.info_outline),
@@ -605,44 +612,8 @@ class _MapScreenState extends State<MapScreen> {
       return;
     }
 
-    final status = await _location.start();
-    if (!mounted) return;
-
-    if (status == LocationStatus.servicesDisabled) {
-      _notify(
-        'Location services are off — turn them on to see your position.',
-        actionLabel: 'Settings',
-        onAction: _location.openLocationSettings,
-      );
-      return;
-    }
-    if (status == LocationStatus.permissionDenied) {
-      _notify(
-        'Location permission is needed to show where you are.',
-        actionLabel: 'Ask again',
-        onAction: _onLocatePressed,
-      );
-      return;
-    }
-    if (status == LocationStatus.permissionDeniedForever) {
-      if (kIsWeb) {
-        _notify(
-          'Location permission was denied — allow it in the browser site '
-          'settings.',
-        );
-      } else {
-        _notify(
-          'Location permission was denied — grant it in the app settings.',
-          actionLabel: 'Settings',
-          onAction: _location.openAppSettings,
-        );
-      }
-      return;
-    }
-    if (status == LocationStatus.failed) {
-      _notify('The device did not report a position — tap again to retry.');
-      return;
-    }
+    final started = await startLocationWithPrompts(context, _location);
+    if (!mounted || !started) return;
 
     setState(() => _following = true);
     _centreAfterFollowingStarts();
@@ -681,14 +652,11 @@ class _MapScreenState extends State<MapScreen> {
     showJunctionSheet(context, bundle: widget.bundle, junction: junction);
   }
 
-  void _notify(String message, {String? actionLabel, VoidCallback? onAction}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        duration: const Duration(seconds: 6),
-        action: actionLabel == null || onAction == null
-            ? null
-            : SnackBarAction(label: actionLabel, onPressed: onAction),
+  void _openSafety() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) =>
+            SafetyScreen(bundle: widget.bundle, location: _location),
       ),
     );
   }
