@@ -67,6 +67,12 @@ on each segment so the app can be honest about what it knows.
 4. `dart run tools/paluma_cli/bin/paluma_cli.dart bundle build`
 5. Commit both the source change and the rebuilt bundle.
 
+The app groups categories for the map's display toggles (water, lookouts,
+camping, history, other). A new category also needs a home in
+`app/lib/src/map/poi_groups.dart`; `hazard` is deliberately left ungrouped so a
+warning cannot be hidden. Categories the app does not know about still draw, so
+a bundle update can never silently lose a marker.
+
 ## Provenance
 
 The initial track network was imported from the project's own uMap export

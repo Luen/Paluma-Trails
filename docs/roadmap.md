@@ -28,6 +28,7 @@ view. Epic issues are linked.
 
 - Shortlist and research POIs; content with citations (#24)
 - Offline POI detail pages with historic photos and credits (#26, #28)
+- Toggleable marker groups so the map stays readable (#56)
 - QR URL scheme so codes never change (#25)
 - Sign design, permissions, installation (#27, #44)
 
@@ -56,7 +57,7 @@ view. Epic issues are linked.
 
 ## Backlog ideas
 
-Route planner (#20), elevation profiles (#14), live trail metrics (#55), POI
-category toggles (#56), user waypoints (#57), trail notes for both directions
-(#58), walk simulation (#59), trip-planning hub (#61), scan analytics (#29),
-funding (#48), cross-linking with wanderstories.space (#47).
+Route planner (#20), elevation profiles (#14), live trail metrics (#55), user
+waypoints (#57), trail notes for both directions (#58), walk simulation (#59),
+trip-planning hub (#61), scan analytics (#29), funding (#48), cross-linking with
+wanderstories.space (#47).

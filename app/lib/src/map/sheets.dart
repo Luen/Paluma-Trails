@@ -6,6 +6,7 @@ import 'format.dart';
 import 'map_key.dart';
 import 'map_options.dart';
 import 'map_palette.dart';
+import 'poi_groups.dart';
 
 /// Bottom sheets for the map's tappable features: junctions, POIs and tracks.
 
@@ -59,6 +60,8 @@ Future<void> showDisplaySettingsSheet(
           ),
         ),
         const Divider(height: 24),
+        _PoiGroupToggles(options: options),
+        const Divider(height: 24),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 16),
           child: MapKey(),
@@ -67,6 +70,61 @@ Future<void> showDisplaySettingsSheet(
     ),
   ),
 );
+
+/// Points of interest grouped by what a walker needs: water, lookouts,
+/// camping, history and everything else. Hiding a group is a display choice,
+/// not a content change.
+class _PoiGroupToggles extends StatelessWidget {
+  const _PoiGroupToggles({required this.options});
+
+  final MapOptions options;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Points of interest',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
+              ),
+              if (!options.allPoiGroupsVisible)
+                TextButton(
+                  onPressed: options.showAllPoiGroups,
+                  child: const Text('Show all'),
+                ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: Text(
+            'Hide the markers you do not need today. Everything stays in the '
+            'offline map; only the drawing changes.',
+            style: theme.textTheme.bodySmall,
+          ),
+        ),
+        for (final group in PoiGroup.values)
+          SwitchListTile(
+            value: options.isPoiGroupVisible(group),
+            onChanged: (value) => options.setPoiGroupVisible(group, value),
+            secondary: Icon(group.icon),
+            title: Text(group.label),
+            subtitle: Text(group.description),
+          ),
+      ],
+    );
+  }
+}
 
 Future<void> _show(BuildContext context, Widget child) =>
     showModalBottomSheet<void>(

@@ -78,6 +78,20 @@ void main() {
       expect(properties['unverified'], isTrue);
       expect(features.single['id'], 'little-crystal-creek-falls');
     });
+
+    test('hidden POI categories are left out of the map source', () {
+      final bundle = testBundle();
+
+      final hidden = bundle.poisFeatureCollection(
+        hiddenCategories: const {'waterfall'},
+      );
+      expect(hidden['features'] as List, isEmpty);
+
+      final shown = bundle.poisFeatureCollection(
+        hiddenCategories: const {'lookout'},
+      );
+      expect(shown['features'] as List, hasLength(1));
+    });
   });
 
   group('Junction', () {
