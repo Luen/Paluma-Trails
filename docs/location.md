@@ -1,9 +1,9 @@
-# Location and the next junction
+# Location, the next junction and water
 
-The map can show where the walker is (blue dot, heading, accuracy circle) and
-how far the next junction is **along the track**. Everything works with the
-network off: the fixes come from the device's own location provider and the
-distances from the offline bundle.
+The map can show where the walker is (blue dot, heading, accuracy circle), how
+far the next junction is **along the track**, how far they have walked and where
+the next water is. Everything works with the network off: the fixes come from
+the device's own location provider and the distances from the offline bundle.
 
 ## Flow
 
@@ -23,12 +23,29 @@ distances from the offline bundle.
 4. `TrailLocator` snaps the fix to the nearest track polyline, works out the
    direction of travel from the GPS bearing (only when the walker is moving at
    least 0.7 m/s) and measures the remaining distance **along** the polyline to
-   the next junction. A 20 m hysteresis keeps it from flickering between tracks
-   that run close together.
-5. The card above the bundle chip shows the track, the next junction, the
-   distance, the estimated walk time at the bundle's pace and the fix accuracy.
-   Tapping it opens the junction's sheet. Fixes more than 150 m from every
-   track are reported as "off the mapped tracks" with no junction answer.
+   the next junction and the next water point. A 20 m hysteresis keeps it from
+   flickering between tracks that run close together.
+5. Water is a POI beside the track rather than on it, so a water POI within 60 m
+   of the line is attached to it; the distance is measured to the point where
+   the track passes closest to it. Creeks, waterfalls and swimming holes count;
+   the grouping lives in `app/lib/src/map/poi_groups.dart` so the map toggles and
+   the metric cannot drift apart. The card says "Nearest water" when the walker
+   is standing still, and "Water behind" once they have passed the last mapped
+   water on that track.
+6. `WalkTracker` adds up the distance between successive fixes, so the card can
+   show how far the walker has covered. Hops under 4 m are ignored as GPS
+   jitter while standing still, and stopping tracking resets the total rather
+   than carrying a bus trip into the next walk. It counts movement off the
+   mapped network too, and never goes down.
+7. "Next" and "behind" need a bearing, and the fix's speed has to be at least
+   0.7 m/s before a bearing is trusted. Where the platform reports neither — the
+   web build among them — the card says "Nearest water" and "Nearest: Junction
+   N" instead of guessing a direction.
+8. The card above the bundle chip shows the track, the next junction, the
+   distance, the estimated walk time at the bundle's pace and the fix accuracy,
+   plus the distance walked and the next water point. Tapping it opens the
+   junction's sheet. Fixes more than 150 m from every track are reported as "off
+   the mapped tracks" with no junction answer.
 
 Walk times reuse the bundle's flat-terrain pace (see
 `segments.json`'s `estimate`); they are estimates and are labelled with `~`.
@@ -36,8 +53,10 @@ Walk times reuse the bundle's flat-terrain pace (see
 ## Tests
 
 - `app/test/trail_locator_test.dart` covers the geometry, including a walk
-  along the real `paluma-track-circuit-5` and a check that every junction in
-  the content sits on the network.
+  along the real `paluma-track-circuit-5`, a check that every junction in the
+  content sits on the network, and the water points attached to the real tracks.
+- `app/test/walk_tracker_test.dart` covers the walked-distance accumulator,
+  including jitter while standing still and resetting between walks.
 - `app/test/location_service_test.dart` drives every permission and stream state
   through a fake location driver.
 - `app/test/location_overlay_test.dart` covers what the card says in each state.
@@ -48,4 +67,5 @@ Walk times reuse the bundle's flat-terrain pace (see
   accuracy circle appear and that "off the mapped tracks" is shown away from
   Paluma.
 - Emulator: `adb emu geo fix <lon> <lat>` walks the emulator through a track;
-  the card should count down to the next junction.
+  the card should count down to the next junction, add to the walked distance
+  and offer the next water point.

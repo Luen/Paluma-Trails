@@ -60,6 +60,37 @@ class NextJunction {
   final bool directionKnown;
 }
 
+/// The water point the walker reaches next along the track they are on.
+///
+/// Water is a point of interest near the track rather than on it, so the
+/// distance is measured from the walker's snapped position to the point where
+/// the track passes closest to that POI.
+class NextPoi {
+  const NextPoi({
+    required this.poi,
+    required this.distanceM,
+    required this.walkMinutes,
+    required this.ahead,
+    required this.directionKnown,
+  });
+
+  final Poi poi;
+
+  /// Metres of track between the walker and the point nearest the POI.
+  final double distanceM;
+
+  /// Walking time at the bundle's flat-terrain pace, rounded to whole minutes
+  /// and never below one.
+  final int walkMinutes;
+
+  /// Whether the water lies in front along the direction of travel. Only
+  /// meaningful when [directionKnown] is true.
+  final bool ahead;
+
+  /// Whether the fix carried a trustworthy direction of travel.
+  final bool directionKnown;
+}
+
 /// Where a GPS fix sits on the trail network.
 class TrailFix {
   const TrailFix({
@@ -67,6 +98,7 @@ class TrailFix {
     required this.snapped,
     required this.offTrackM,
     this.next,
+    this.nextWater,
   });
 
   final TrackPolyline track;
@@ -79,6 +111,9 @@ class TrailFix {
 
   /// The next junction, or null when the track carries none.
   final NextJunction? next;
+
+  /// The next water point, or null when no water is mapped near this track.
+  final NextPoi? nextWater;
 }
 
 /// Matches fixes to tracks and computes the remaining walk to the next
@@ -92,10 +127,13 @@ class TrailLocator {
     required GeoPoint origin,
     required List<TrackPolyline> tracks,
     required Map<String, Junction> junctions,
+    Map<String, Poi> pois = const {},
+    this.waterCategories = const {'water', 'waterfall', 'swimming'},
     required this.paceKmh,
     this.maxOffTrackM = 150,
     this.minWalkingSpeedMps = 0.7,
     this.junctionOnTrackM = 25,
+    this.poiOnTrackM = 60,
     this.switchTrackMarginM = 20,
     this.aheadEpsilonM = 10,
   }) : _origin = origin,
@@ -103,15 +141,24 @@ class TrailLocator {
          for (final track in tracks)
            if (track.points.length >= 2) _ProjectedTrack(track, origin),
        ] {
-    // Attach every junction to the tracks it sits on, once.
+    // Attach every junction and water point to the tracks they sit on, once.
     for (final track in _tracks) {
       for (final junction in junctions.values) {
         final near = track.nearest(_toLocal(junction.location, origin));
         if (near != null && near.distanceM <= junctionOnTrackM) {
-          track.junctions.add(_TrackJunction(junction, near.s));
+          track.junctions.add(_TrackStop(junction, near.s));
         }
       }
       track.junctions.sort((a, b) => a.s.compareTo(b.s));
+
+      for (final poi in pois.values) {
+        if (!waterCategories.contains(poi.category)) continue;
+        final near = track.nearest(_toLocal(poi.location, origin));
+        if (near != null && near.distanceM <= poiOnTrackM) {
+          track.waters.add(_TrackStop(poi, near.s));
+        }
+      }
+      track.waters.sort((a, b) => a.s.compareTo(b.s));
     }
   }
 
@@ -120,16 +167,23 @@ class TrailLocator {
     required String tracksGeoJson,
     required GeoPoint origin,
     required Map<String, Junction> junctions,
+    Map<String, Poi> pois = const {},
+    Set<String> waterCategories = const {'water', 'waterfall', 'swimming'},
     required double paceKmh,
   }) => TrailLocator(
     origin: origin,
     tracks: trackPolylinesFromGeoJson(tracksGeoJson),
     junctions: junctions,
+    pois: pois,
+    waterCategories: waterCategories,
     paceKmh: paceKmh,
   );
 
   final GeoPoint _origin;
   final List<_ProjectedTrack> _tracks;
+
+  /// Content categories that count as drinking water for [TrailFix.nextWater].
+  final Set<String> waterCategories;
 
   /// The flat-terrain pace the bundle's walk times are based on.
   final double paceKmh;
@@ -143,6 +197,10 @@ class TrailLocator {
 
   /// A junction counts as being on a track within this distance, metres.
   final double junctionOnTrackM;
+
+  /// A water point counts as being on a track within this distance, metres.
+  /// Wider than [junctionOnTrackM] because water sits beside the walking line.
+  final double poiOnTrackM;
 
   /// Stay on the current track while it is within this much of the nearest
   /// one, so fixes near two tracks do not flicker between them.
@@ -199,11 +257,12 @@ class TrailLocator {
       track: best.track,
       snapped: _toGeo(bestNear.point, _origin),
       offTrackM: bestNear.distanceM,
-      next: _nextAlong(best, bestNear.s, bearingDeg, speedMps),
+      next: _nextJunction(best, bestNear.s, bearingDeg, speedMps),
+      nextWater: _nextWater(best, bestNear.s, bearingDeg, speedMps),
     );
   }
 
-  NextJunction? _nextAlong(
+  NextJunction? _nextJunction(
     _ProjectedTrack track,
     double s,
     double? bearingDeg,
@@ -212,38 +271,74 @@ class TrailLocator {
     if (track.junctions.isEmpty) return null;
 
     final heading = _headingOf(bearingDeg, speedMps);
-    final directionKnown = heading != null;
-    final direction = heading == null
-        ? 0
-        : (track.tangentAt(s).dot(heading) >= 0 ? 1 : -1);
+    final choice = _chooseAhead(track, track.junctions, s, heading);
+    if (choice == null) return null;
 
-    _TrackJunction? chosen;
-    var ahead = false;
-    if (direction == 0) {
-      chosen = _nearestTo(track.junctions, s);
-    } else {
-      for (final candidate in track.junctions) {
-        if ((candidate.s - s) * direction > aheadEpsilonM) {
-          chosen = candidate;
-          ahead = true;
-          break;
-        }
-      }
-      // Past every junction on this track — report the closest one behind, so
-      // a dead-end walk still shows the way back.
-      chosen ??= _nearestTo(track.junctions, s);
-    }
-    if (chosen == null) return null;
-
-    final distanceM = (chosen.s - s).abs();
+    final distanceM = (choice.stop.s - s).abs();
     return NextJunction(
-      junction: chosen.junction,
+      junction: choice.stop.feature,
       distanceM: distanceM,
-      walkMinutes: math.max(1, (distanceM / (paceKmh * 1000 / 60)).round()),
-      ahead: ahead,
-      directionKnown: directionKnown,
+      walkMinutes: _walkMinutes(distanceM),
+      ahead: choice.ahead,
+      directionKnown: heading != null,
     );
   }
+
+  NextPoi? _nextWater(
+    _ProjectedTrack track,
+    double s,
+    double? bearingDeg,
+    double? speedMps,
+  ) {
+    if (track.waters.isEmpty) return null;
+
+    final heading = _headingOf(bearingDeg, speedMps);
+    final choice = _chooseAhead(track, track.waters, s, heading);
+    if (choice == null) return null;
+
+    final distanceM = (choice.stop.s - s).abs();
+    return NextPoi(
+      poi: choice.stop.feature,
+      distanceM: distanceM,
+      walkMinutes: _walkMinutes(distanceM),
+      ahead: choice.ahead,
+      directionKnown: heading != null,
+    );
+  }
+
+  /// Picks the stop to report: the next one ahead when the direction is known,
+  /// otherwise the nearest, and the nearest behind when the walker has passed
+  /// the last one on this track.
+  ({_TrackStop<T> stop, bool ahead})? _chooseAhead<T>(
+    _ProjectedTrack track,
+    List<_TrackStop<T>> stops,
+    double s,
+    _Vec? heading,
+  ) {
+    if (stops.isEmpty) return null;
+
+    if (heading == null) {
+      final stop = _nearestStop(stops, s);
+      return stop == null ? null : (stop: stop, ahead: false);
+    }
+
+    final direction = track.tangentAt(s).dot(heading) >= 0 ? 1 : -1;
+    _TrackStop<T>? next;
+    var nextDistance = double.infinity;
+    for (final candidate in stops) {
+      final aheadBy = (candidate.s - s) * direction;
+      if (aheadBy > aheadEpsilonM && aheadBy < nextDistance) {
+        next = candidate;
+        nextDistance = aheadBy;
+      }
+    }
+    if (next != null) return (stop: next, ahead: true);
+    final stop = _nearestStop(stops, s);
+    return stop == null ? null : (stop: stop, ahead: false);
+  }
+
+  int _walkMinutes(double distanceM) =>
+      math.max(1, (distanceM / (paceKmh * 1000 / 60)).round());
 
   _Vec? _headingOf(double? bearingDeg, double? speedMps) {
     if (bearingDeg == null || !bearingDeg.isFinite) return null;
@@ -252,9 +347,9 @@ class TrailLocator {
     return _Vec(math.sin(radians), math.cos(radians));
   }
 
-  static _TrackJunction? _nearestTo(List<_TrackJunction> junctions, double s) {
-    _TrackJunction? best;
-    for (final candidate in junctions) {
+  static _TrackStop<T>? _nearestStop<T>(List<_TrackStop<T>> stops, double s) {
+    _TrackStop<T>? best;
+    for (final candidate in stops) {
       if (best == null || (candidate.s - s).abs() < (best.s - s).abs()) {
         best = candidate;
       }
@@ -346,10 +441,10 @@ class _Nearest {
   final double distanceM;
 }
 
-class _TrackJunction {
-  const _TrackJunction(this.junction, this.s);
+class _TrackStop<T> {
+  const _TrackStop(this.feature, this.s);
 
-  final Junction junction;
+  final T feature;
   final double s;
 }
 
@@ -369,7 +464,8 @@ class _ProjectedTrack {
 
   /// Distance from the start of the polyline to each vertex, metres.
   final List<double> cumulative = [];
-  final List<_TrackJunction> junctions = [];
+  final List<_TrackStop<Junction>> junctions = [];
+  final List<_TrackStop<Poi>> waters = [];
 
   double get lengthM => cumulative.isEmpty ? 0 : cumulative.last;
 
