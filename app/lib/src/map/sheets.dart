@@ -304,9 +304,13 @@ class PoiSheet extends StatelessWidget {
                 ],
               ),
             ),
-            if (poi.unverified) const UnverifiedChip(),
           ],
         ),
+        if (poi.unverified)
+          const Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: UnverifiedChip(),
+          ),
         if (poi.summary != null) ...[
           const SizedBox(height: 16),
           Text(poi.summary!, style: theme.textTheme.titleMedium),

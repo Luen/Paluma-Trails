@@ -9,6 +9,7 @@
 - [Content model](content-model.md) — how tracks, junctions, POIs and segments fit together.
 - [Location and the next junction](location.md) — how the blue dot and along-track junction distances work.
 - [Walk preview](walk-preview.md) — offline simulated track playback and its isolation from real GPS/waypoints.
+- [Trip planning and photos](trip-planning.md) — dated offline access, camping and facility notes and a credited POI gallery.
 - [Weather data investigation](weather-data-investigation.md) — BOM products, Paluma coverage and cache requirements before the weather widget.
 - [Architecture decisions](decisions/) — ADRs, one file per decision.
 - [Store assets](store/) — icon and feature graphic, generated from the artwork in `app/assets/icon/`.

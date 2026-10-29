@@ -31,10 +31,16 @@ what the bundle contains, so a content fix is a data change plus a release.
 | `junctions.json` | yes | Numbered junctions and their notes |
 | `pois.json` | yes | Points of interest, text, sources |
 | `safety.json` | yes | Offline safety guidance and emergency steps |
+| `trip-planning.json` | yes | Dated pre-visit notes with per-section official references |
 | `segments.json` | no — generated | Junction-to-junction graph with distances/times |
 | `sources.json` | yes | Provenance and licences of each data source |
 
 ## Conventions
+
+Trip planning is bundled planning information, not a live conditions service.
+Each section needs non-empty paragraphs and HTTPS source links, with an explicit
+check date. Older bundles without the optional asset show an explanatory fallback
+and retain their gallery. See [trip planning](trip-planning.md).
 
 - **IDs** are lowercase slugs: `gardes-clearing`, `pbr-track`, `j7`. They are
   permanent — QR codes encode them (#25), so renaming an id breaks a sign on a

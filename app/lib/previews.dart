@@ -3,11 +3,49 @@ import 'package:flutter/widget_previews.dart';
 
 import 'src/brand/theme.dart';
 import 'src/content/models.dart';
+import 'src/content/bundle_repository.dart';
+import 'src/trip_planning_screen.dart';
 import 'src/map/poi_photo_card.dart';
 import 'src/map/source_link.dart';
 import 'src/location/trail_locator.dart';
 import 'src/location/walk_simulation.dart';
 import 'src/map/walk_preview.dart';
+
+Widget _tripPreview(
+  Brightness brightness, {
+  bool sunlight = false,
+  double scale = 1,
+}) => MaterialApp(
+  theme: buildPalumaTheme(brightness, sunlight: sunlight),
+  builder: (context, child) => MediaQuery(
+    data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(scale)),
+    child: child!,
+  ),
+  home: FutureBuilder<LoadedBundle>(
+    future: BundleRepository().load(),
+    builder: (context, snapshot) {
+      if (snapshot.hasError) {
+        return Text('Preview unavailable: ${snapshot.error}');
+      }
+      final bundle = snapshot.data;
+      return bundle == null
+          ? const Center(child: CircularProgressIndicator())
+          : TripPlanningScreen(bundle: bundle);
+    },
+  ),
+);
+
+@Preview(name: 'Trip planning — light', size: Size(360, 800))
+Widget tripLightPreview() => _tripPreview(Brightness.light);
+
+@Preview(name: 'Trip planning — dark', size: Size(360, 800))
+Widget tripDarkPreview() => _tripPreview(Brightness.dark);
+
+@Preview(name: 'Trip planning — sunlight', size: Size(360, 800))
+Widget tripSunlightPreview() => _tripPreview(Brightness.light, sunlight: true);
+
+@Preview(name: 'Trip planning — large text', size: Size(360, 800))
+Widget tripLargePreview() => _tripPreview(Brightness.light, scale: 2);
 
 const _photo = PoiPhoto(
   file: 'johnstones-hut-1911.jpg',

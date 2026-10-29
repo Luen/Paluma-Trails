@@ -1,5 +1,6 @@
 import 'package:paluma_trails/src/content/bundle_repository.dart';
 import 'package:paluma_trails/src/content/models.dart';
+import 'package:paluma_trails/src/content/trip_planning.dart';
 
 /// A small hand-built bundle for widget tests: two junctions, one segment,
 /// one track and one POI.
@@ -12,7 +13,10 @@ LoadedBundle testBundle({
   Map<String, Junction>? junctions,
   List<Segment>? segments,
   SafetyContent? safety,
+  TripPlanningContent? tripPlanning,
+  Map<String, Poi>? pois,
 }) => LoadedBundle(
+  tripPlanning: tripPlanning,
   manifest: const BundleManifest(
     schemaVersion: 1,
     bundleVersion: 'test-0000',
@@ -80,16 +84,18 @@ LoadedBundle testBundle({
           location: GeoPoint(-18.945, 146.19),
         ),
       },
-  pois: const {
-    'little-crystal-creek-falls': Poi(
-      id: 'little-crystal-creek-falls',
-      name: 'Little Crystal Creek Falls',
-      category: 'waterfall',
-      location: GeoPoint(-18.99, 146.24),
-      description: 'A short steep walk to the falls.',
-      unverified: true,
-    ),
-  },
+  pois:
+      pois ??
+      const {
+        'little-crystal-creek-falls': Poi(
+          id: 'little-crystal-creek-falls',
+          name: 'Little Crystal Creek Falls',
+          category: 'waterfall',
+          location: GeoPoint(-18.99, 146.24),
+          description: 'A short steep walk to the falls.',
+          unverified: true,
+        ),
+      },
   segments:
       segments ??
       (withSegment
