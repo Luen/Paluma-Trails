@@ -59,6 +59,8 @@ climb. The estimate then becomes `naismith-v2` (add 1 minute per 10 m of ascent)
 which makes walk times directional too. Both the method and the pace are recorded
 on each segment so the app can be honest about what it knows.
 
+For review, delivery and recovery, follow [Content releases](content-releases.md).
+
 ## Adding a new POI
 
 1. Find it on the map (or in the sources) and note the coordinates.
