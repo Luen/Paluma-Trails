@@ -79,6 +79,10 @@ tool/test_create_upload_keystore.sh
   on a hidden gesture.
 - **Safety copy.** Emergency and hazard messages stay plain, prominent and
   free of playful language.
+  Never suggest ordinary SMS directly to 000/112 or imply that 112 creates
+  mobile reception. Check current official guidance and retain offline source
+  labels; dedicated NRS relay services are a separate subject. See
+  [the contact-guidance research](content/research/emergency-contact-guidance.md).
 - **Secrets never enter git.** Do not commit keystores, `key.properties`,
   service-account JSON, Apple private keys or environment files.
 - **Branch flow.** Work from `dev` on a short-lived branch

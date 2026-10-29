@@ -1,5 +1,11 @@
 # Content model
 
+Safety guidance may include optional `sources` entries with an offline-readable
+label and an HTTPS URL. The app displays them as explicit online source links;
+the guidance itself stays bundled. Older bundles without these references still
+decode. Emergency-contact changes should cite current official sources; see
+[the research record](../content/research/emergency-contact-guidance.md).
+
 Everything a walker sees on the map, in junction cards and on POI pages comes from
 `content/data/paluma/`. The app never invents content at runtime; it renders exactly
 what the bundle contains, so a content fix is a data change plus a release.

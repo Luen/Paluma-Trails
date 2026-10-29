@@ -114,6 +114,7 @@ class SafetyContent {
     required this.emergencyHeadline,
     required this.emergencySteps,
     required this.sections,
+    this.sources = const [],
   });
 
   final String updated;
@@ -121,6 +122,7 @@ class SafetyContent {
   final String emergencyHeadline;
   final List<String> emergencySteps;
   final List<SafetySection> sections;
+  final List<SafetySource> sources;
 
   static const empty = SafetyContent(
     updated: '',
@@ -143,8 +145,24 @@ class SafetyContent {
           .cast<Map<String, Object?>>()
           .map(SafetySection.fromJson)
           .toList(growable: false),
+      sources: ((json['sources'] as List?) ?? const [])
+          .cast<Map<String, Object?>>()
+          .map(SafetySource.fromJson)
+          .toList(growable: false),
     );
   }
+}
+
+/// An official reference whose attribution remains available offline.
+class SafetySource {
+  const SafetySource({required this.label, required this.url});
+  final String label;
+  final String url;
+
+  factory SafetySource.fromJson(Map<String, Object?> json) => SafetySource(
+    label: json['label']! as String,
+    url: json['url']! as String,
+  );
 }
 
 class SafetySection {

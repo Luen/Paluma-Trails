@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "bundle_version": "2026-10-29-4e7e23f5",
+  "bundle_version": "2026-10-30-0a933125",
   "generator": "paluma_cli 0.1.0",
   "park": "paluma-range",
   "files": [
@@ -87,7 +87,7 @@
     {
       "path": "content/park.json",
       "bytes": 1497,
-      "sha256": "a1cc1b37bb675a6b47ca6ae33faae47a52271d27154b0c96c5a91d13b22081bb"
+      "sha256": "1385436a77a06a69e24bf30bd8221184c942212c95f33373e2ee3c1b246cb744"
     },
     {
       "path": "content/pois.json",
@@ -96,8 +96,8 @@
     },
     {
       "path": "content/safety.json",
-      "bytes": 2527,
-      "sha256": "d32cdc84aa352b58931f171b24924a33e6375a2990de9393d3b9fcc7614918bd"
+      "bytes": 3578,
+      "sha256": "2af09381c21e059bd1dae2fb244e4e5450eb28e8c2f3b7eaa78b03f29c8373da"
     },
     {
       "path": "content/segments.json",
@@ -106,8 +106,8 @@
     },
     {
       "path": "content/sources.json",
-      "bytes": 3956,
-      "sha256": "66bc1fe41f12fe71956336800e4d0b454ae041c0551411641728eb15a117123f"
+      "bytes": 5679,
+      "sha256": "93e178c77ee118eeb1a21ac4a667ec0de83c19a5d80281fc3702734671d9944b"
     },
     {
       "path": "content/tracks.geojson",
@@ -142,6 +142,6 @@
   ],
   "totals": {
     "files": 27,
-    "bytes": 3868964
+    "bytes": 3871738
   }
 }

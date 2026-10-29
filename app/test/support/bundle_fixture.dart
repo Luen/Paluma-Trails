@@ -11,6 +11,7 @@ LoadedBundle testBundle({
   String tracksGeoJson = '{"type":"FeatureCollection","features":[]}',
   Map<String, Junction>? junctions,
   List<Segment>? segments,
+  SafetyContent? safety,
 }) => LoadedBundle(
   manifest: const BundleManifest(
     schemaVersion: 1,
@@ -34,19 +35,20 @@ LoadedBundle testBundle({
     emergencyNotes: 'Ask for Queensland Ambulance Service.',
     attributions: [Attribution(label: 'OpenStreetMap', licence: 'ODbL')],
   ),
-  safety: const SafetyContent(
-    updated: '2026-10-26',
-    intro: 'Test safety intro.',
-    emergencyHeadline:
-        'In an emergency, call 000. If the call does not connect, try 112.',
-    emergencySteps: ['Give your coordinates.', 'Stay where you are.'],
-    sections: [
-      SafetySection(
-        title: 'Before you set out',
-        items: ['Tell someone where you are going.'],
+  safety:
+      safety ??
+      const SafetyContent(
+        updated: '2026-10-26',
+        intro: 'Test safety intro.',
+        emergencyHeadline: 'In an emergency, call 000. On a mobile, 112 connects to the same emergency service.',
+        emergencySteps: ['Give your coordinates.', 'Stay where you are.'],
+        sections: [
+          SafetySection(
+            title: 'Before you set out',
+            items: ['Tell someone where you are going.'],
+          ),
+        ],
       ),
-    ],
-  ),
   tracks: const [
     TrackSummary(
       id: 'tāngaroa-walking-track',
