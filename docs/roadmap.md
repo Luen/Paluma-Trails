@@ -6,6 +6,10 @@ Status legend: **shipped** (in `dev`), **next** (in progress), **later**, **open
 The GitHub issues are the source of truth for detail; this page is the bird's-eye
 view. Epic issues are linked.
 
+The [MVP scope and launch gates](mvp-scope.md) define delivery order and the
+evidence required before public launch. A shipped implementation still needs
+field verification where indicated.
+
 ## Milestone 0 — Foundation (this branch)
 
 | Work | Issues |
@@ -55,7 +59,8 @@ view. Epic issues are linked.
 
 ## Milestone 5 — Launch, quality and operations
 
-- MVP scope agreed (#50), field-test plan (#51), accessibility review (#53)
+- MVP scope and launch gates (#50), field-test plan (#51) — **shipped**;
+  field execution and accessibility review (#53) remain
 - App store publishing setup (#52), secrets and signing (#66)
 - Release workflow: tags, GitHub Release, store uploads (#65, #67)
 - Content update and release process (#54)
