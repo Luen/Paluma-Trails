@@ -82,3 +82,19 @@ The initial track network was imported from the project's own uMap export
 author and volunteers, currently the de-facto record of the Paluma tracks. The raw
 export is kept in `content/sources/` and the import is reproducible via
 `content import-umap`.
+
+## Photographs
+
+POI `photos` entries name a local file in `content/photos/` and require a caption,
+credit and licence/permission statement. Filenames use lowercase letters,
+numbers and hyphens, with a `.jpg`, `.jpeg`, `.png` or `.webp` extension; nested
+paths and remote image URLs are rejected. Validation fails on missing images or
+missing attribution. Keep permissions and extraction provenance beside the
+original files; the Paluma history images have a [permission record](../content/photos/README.md).
+
+`bundle build` copies only referenced images into `app/assets/bundle/photos/`
+and includes their byte sizes and SHA-256 hashes in the manifest. The app shows
+photos, captions and credits from bundled assets, without network requests.
+A missing/unreadable image leaves the historical text, caption and attribution
+available with an explanatory message. Run a fresh build after adding an image
+so Flutter includes the asset, and check light/dark/sunlight modes and large text.

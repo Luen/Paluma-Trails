@@ -7,6 +7,7 @@ import 'map_key.dart';
 import 'map_options.dart';
 import 'map_palette.dart';
 import 'poi_groups.dart';
+import 'poi_photo_card.dart';
 
 /// Bottom sheets for the map's tappable features: junctions, POIs and tracks.
 
@@ -312,6 +313,10 @@ class PoiSheet extends StatelessWidget {
         if (poi.description != null) ...[
           const SizedBox(height: 8),
           Text(poi.description!, style: theme.textTheme.bodyMedium),
+        ],
+        for (final photo in poi.photos) ...[
+          const SizedBox(height: 16),
+          PoiPhotoCard(photo: photo),
         ],
         if (sources.isNotEmpty) ...[
           const SizedBox(height: 16),

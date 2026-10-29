@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "bundle_version": "2026-10-16-b428e56a",
+  "bundle_version": "2026-10-29-4e7e23f5",
   "generator": "paluma_cli 0.1.0",
   "park": "paluma-range",
   "files": [
@@ -87,12 +87,12 @@
     {
       "path": "content/park.json",
       "bytes": 1497,
-      "sha256": "494cbbabf29cc710c619d3d76ef840136cc05ee82d79479a2a15a678ce5990d3"
+      "sha256": "a1cc1b37bb675a6b47ca6ae33faae47a52271d27154b0c96c5a91d13b22081bb"
     },
     {
       "path": "content/pois.json",
-      "bytes": 20116,
-      "sha256": "22a50e14c4770cac110db5b6e0d718c228f8fc8ae4d398eb5fb4f601fa8b6fa0"
+      "bytes": 34672,
+      "sha256": "43b118c7484f7581edabd4962cfd90d44ed894706f64ec1a12d42fa4982b743a"
     },
     {
       "path": "content/safety.json",
@@ -106,17 +106,42 @@
     },
     {
       "path": "content/sources.json",
-      "bytes": 1356,
-      "sha256": "ca634a4f939f58940f5950c638a65e3cd25b99bcaf999df273f6a6a6fb5b77bc"
+      "bytes": 3956,
+      "sha256": "66bc1fe41f12fe71956336800e4d0b454ae041c0551411641728eb15a117123f"
     },
     {
       "path": "content/tracks.geojson",
       "bytes": 460972,
       "sha256": "ec591f132b00a26d815f00a796fc5f1142c4dd9c06852e893b86fd7261dae03f"
+    },
+    {
+      "path": "photos/foxlees-lookout-1922.jpg",
+      "bytes": 76111,
+      "sha256": "cb9a67778483a6df42432baf860a68623ed7bdcffc336922b38d0e5c6fc7d519"
+    },
+    {
+      "path": "photos/gardes-lookout-wanderstories.jpg",
+      "bytes": 296819,
+      "sha256": "4c71d399998613727497ce704f8e4ace97cb42dd0897e489a452c26a4f6fa070"
+    },
+    {
+      "path": "photos/johnstones-hut-1911.jpg",
+      "bytes": 57722,
+      "sha256": "594f32b5be786ee7e97dbc0d6f5762446b6a52b7e8a59cb51edca240ade61052"
+    },
+    {
+      "path": "photos/mcclellands-lookout-1942.jpg",
+      "bytes": 117921,
+      "sha256": "2060d73e2463f893cf905984e436035f9cb4e6d2679821883ad509be236ee02a"
+    },
+    {
+      "path": "photos/star-valley-lookout-1940s.jpg",
+      "bytes": 130571,
+      "sha256": "c470e3aab7d5c7061ace158bc0588692df70beac986add244dc9124526e4f4e8"
     }
   ],
   "totals": {
-    "files": 22,
-    "bytes": 3172664
+    "files": 27,
+    "bytes": 3868964
   }
 }
