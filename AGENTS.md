@@ -231,11 +231,11 @@ releases, credentials or deployments.
 
 ### Remaining verification and external dependencies
 
-- Start funding research with [the dated shortlist](docs/funding-options.md).
-  Recheck current funder rules and round status; the owner's committee role
-  does not establish an applicant or sponsor's agreement. Signage funding is
-  separate from land-manager permission, and GCBF excludes ongoing operating
-  costs such as recurring hosting. No application or funder contact was made.
+- Luen confirmed on 30 October 2026 that he will self-fund the signs, with
+  permission from Wilfred Karnoll. Funding/grants issue #48 is closed at his
+  request; do not reopen grant research or applications. Preserve
+  [the signage funding decision](docs/funding-options.md). Sign design and
+  installation remain #27/#44; hosting remains #69.
 
 - Simulated walk previews must use a separate mock driver and memory-only
   waypoint storage. Keep the simulated/GPS-off labels, pause real tracking
