@@ -4,13 +4,11 @@
 //   PALUMA_PMTILES  -> the PMTiles archive (file:// on native, https on web)
 //   PALUMA_ASSETS   -> the directory holding fonts/ and sprites/
 //
-// Usage: node tools/basemap/generate_style.mjs <output.json>
+// Usage (from the repository root):
+//   node tools/basemap/generate_style.mjs content/basemap/style.json
 import { writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
-
-const require = createRequire(import.meta.url);
-const basemaps = require('@protomaps/basemaps');
 
 const outArg = process.argv[2];
 if (!outArg) {
@@ -18,10 +16,18 @@ if (!outArg) {
   process.exit(64);
 }
 
+function refuseOutside(userPath) {
+  console.error(
+    `refusing to write outside the working directory: ${userPath}`,
+  );
+  process.exit(64);
+}
+
 // Resolves userPath under the working directory, stripping `..` segments so a
 // crafted CLI argument cannot escape (CWE-23 / Snyk javascript/PT). Absolute
 // paths are accepted only when they already sit under cwd, then rewritten as a
-// join of cwd + sanitised relative segments.
+// join of cwd + sanitised relative segments. A final resolve + relative check
+// is defence in depth after the Snyk-recognised sanitiser.
 function resolveOutputPath(userPath) {
   const root = path.resolve(process.cwd());
   let relativeInput = userPath;
@@ -29,10 +35,7 @@ function resolveOutputPath(userPath) {
     const abs = path.resolve(userPath);
     const rel = path.relative(root, abs);
     if (rel.startsWith('..') || path.isAbsolute(rel)) {
-      console.error(
-        `refusing to write outside the working directory: ${userPath}`,
-      );
-      process.exit(64);
+      refuseOutside(userPath);
     }
     relativeInput = rel;
   }
@@ -40,10 +43,18 @@ function resolveOutputPath(userPath) {
   const safeSuffix = path
     .normalize(relativeInput)
     .replace(/^(\.\.(\/|\\|$))+/g, '');
-  return path.join(root, safeSuffix);
+  const out = path.resolve(path.join(root, safeSuffix));
+  const confined = path.relative(root, out);
+  if (confined.startsWith('..') || path.isAbsolute(confined)) {
+    refuseOutside(userPath);
+  }
+  return out;
 }
 
 const out = resolveOutputPath(outArg);
+
+const require = createRequire(import.meta.url);
+const basemaps = require('@protomaps/basemaps');
 
 const layers = basemaps.layers('basemap', basemaps.namedFlavor('light'), {
   lang: 'en',
