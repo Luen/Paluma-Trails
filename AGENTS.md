@@ -110,17 +110,9 @@ tool/test_create_upload_keystore.sh
   release-please PR. Publishing the Release triggers
   `.github/workflows/release-publish.yml` for the GHCR web image. A tag alone
   does **not** publish an image.
-- **Keep `dev` and `main` in sync.** The nightly dependency job commits to
-  `main`, so it back-merges into `dev` in the same run. Without that, `dev`
-  falls one commit further behind every night and the next promote conflicts
-  on `pubspec.yaml` / lockfiles. To check:
-
-  ```bash
-  git fetch origin && git rev-list --count origin/dev..origin/main
-  ```
-
-  The merge step runs in a scratch worktree on purpose — checking `dev` out
-  in the primary tree would leave the job on the wrong branch for later steps.
+- **Keep `dev` and `main` in sync.** After Release Please publishes a release,
+  it opens a `main` → `dev` PR. Merge that PR with a merge commit after CI
+  passes to preserve ancestry. Neither protected branch needs an Actions bypass.
 
 ### Nightly minor dependency updates
 
@@ -132,20 +124,25 @@ on **`main`**:
    (`npm-check-updates --target semver`: same major for 1.x+, same minor for
    0.x). Versions published in the last **3 days** are skipped (`--cooldown`).
 2. Analyze / test / brand colour check when constraint files moved.
-3. Patch-bump `version.txt`, `app/pubspec.yaml`, `kAppVersion` and
-   `.release-please-manifest.json`, commit to `main`, create a GitHub Release
-   pinned to the tested commit, then explicitly dispatch `release.yml` on its
-   tag and `release-publish.yml` for GHCR `:latest`. `GITHUB_TOKEN` events do
-   not start those workflows automatically.
-4. Back-merge `main` → `dev` (fast-forward, else a merge commit in a scratch
-   worktree, else open a `chore/sync-main-to-dev` PR).
+3. Commit dependencies to `chore/nightly-minor-deps` and open a PR to `main`.
+   The `fix(deps):` squash commit requests a patch release from Release Please.
+   Pending updates are reused, never force-pushed over; delete a closed,
+   unmerged branch to discard it. A merged branch is cleaned up on the next run.
+4. After the dependency PR merges, use the normal Release Please version PR.
+   It updates the version files and changelog together, then publishes after
+   merge. The existing token fallback explicitly dispatches artifact/image builds.
+5. The release workflow proposes `main` → `dev` as a PR instead of pushing
+   directly. Merge it with a merge commit to preserve ancestry.
 
-Constraint files are the intentional edit. Lockfiles are only re-resolved so
-CI can still install. Branch protection on `main` / `dev` needs a bypass for
-Actions if pushes from `GITHUB_TOKEN` are blocked.
+`tools/open_automation_pr.sh` reuses an existing open PR and explicitly starts
+CI on its head (token-created PRs do not trigger CI). It uses
+`RELEASE_PLEASE_TOKEN` when present, otherwise `GITHUB_TOKEN`. If repository
+policy denies Actions PR creation, the run summary links to the prepared
+comparison for a maintainer to open. Other API/authentication failures still
+fail the job. No branch protection or repository permissions are weakened.
 
-Only `release-publish.yml` pushes the web image. The nightly workflow invokes
-it explicitly for dependency patches; feature releases use the release event.
+Constraint files are the intentional edit. Lockfiles are re-resolved so CI can
+still install. Only `release-publish.yml` pushes the web image.
 
 - `release-publish.yml` — on `release: published` (plus `workflow_dispatch`
   with a `tag` input to re-publish an existing release). Feature releases from

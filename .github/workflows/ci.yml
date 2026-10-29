@@ -20,6 +20,9 @@ jobs:
         working-directory: tools/paluma_cli
     steps:
       - uses: actions/checkout@v5
+      - name: Test automation PR handoff
+        working-directory: .
+        run: python3 -m unittest discover -s tools -p 'test_open_automation_pr.py'
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: stable

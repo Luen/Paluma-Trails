@@ -42,3 +42,17 @@ jobs:
           set -euo pipefail
           gh workflow run release.yml --ref "$RELEASE_TAG" -f "version=${RELEASE_TAG#v}"
           gh workflow run release-publish.yml --ref main -f "tag=${RELEASE_TAG}"
+      - name: Checkout release tooling for back-merge PR
+        if: steps.release.outputs.release_created == 'true'
+        uses: actions/checkout@v5
+        with:
+          ref: main
+      - name: Propose main back to dev
+        if: steps.release.outputs.release_created == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}
+          GH_WORKFLOW_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/open_automation_pr.sh dev main \
+            "chore: sync released main into dev" \
+            "Brings released versions and dependencies back into dev. Merge with a merge commit after CI passes to preserve branch ancestry."
