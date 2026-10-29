@@ -20,7 +20,7 @@ final _gpsFix = GpsFix(
   timestamp: DateTime(2026, 10, 20),
 );
 
-TrailFix _trail(NextJunction? next) => TrailFix(
+TrailFix _trail(NextJunction? next, {NextPoi? water}) => TrailFix(
   track: const TrackPolyline(
     id: 'track',
     name: 'Paluma Track Circuit 5',
@@ -29,6 +29,28 @@ TrailFix _trail(NextJunction? next) => TrailFix(
   snapped: const GeoPoint(-19, 146),
   offTrackM: 4,
   next: next,
+  nextWater: water,
+);
+
+NextPoi _water({
+  String name = 'Swimming hole',
+  double distanceM = 240,
+  int walkMinutes = 4,
+  bool ahead = true,
+  bool directionKnown = true,
+  bool unverified = false,
+}) => NextPoi(
+  poi: Poi(
+    id: 'swimming-hole',
+    name: name,
+    category: 'water',
+    location: const GeoPoint(-19.005, 146.005),
+    unverified: unverified,
+  ),
+  distanceM: distanceM,
+  walkMinutes: walkMinutes,
+  ahead: ahead,
+  directionKnown: directionKnown,
 );
 
 NextJunction _next({
@@ -212,6 +234,76 @@ void main() {
       await tester.pump();
 
       expect(taps, 0);
+    });
+
+    testWidgets('shows the distance walked and the next water', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          LocationCard(
+            status: LocationStatus.tracking,
+            fix: _gpsFix,
+            trail: _trail(_next(), water: _water()),
+            walkedM: 1200,
+          ),
+        ),
+      );
+
+      expect(find.text('Walked 1.2 km'), findsOneWidget);
+      expect(find.text('Next water 240 m · ~4 min'), findsOneWidget);
+    });
+
+    testWidgets('marks unverified water and says when it is behind', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          LocationCard(
+            status: LocationStatus.tracking,
+            fix: _gpsFix,
+            trail: _trail(
+              _next(),
+              water: _water(ahead: false, unverified: true),
+            ),
+            walkedM: 80,
+          ),
+        ),
+      );
+
+      expect(
+        find.text('Water behind 240 m · ~4 min (unverified)'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('says nearest water when the walker is standing still', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          LocationCard(
+            status: LocationStatus.tracking,
+            fix: _gpsFix,
+            trail: _trail(_next(), water: _water(directionKnown: false)),
+          ),
+        ),
+      );
+
+      expect(find.text('Nearest water 240 m · ~4 min'), findsOneWidget);
+    });
+
+    testWidgets('hides walked distance before the first fix', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          LocationCard(
+            status: LocationStatus.starting,
+            fix: null,
+            trail: null,
+            walkedM: 500,
+          ),
+        ),
+      );
+
+      expect(find.textContaining('Walked'), findsNothing);
     });
   });
 

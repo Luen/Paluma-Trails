@@ -126,12 +126,16 @@ class LocationCard extends StatelessWidget {
     required this.status,
     required this.fix,
     required this.trail,
+    this.walkedM = 0,
     this.onJunctionTap,
   });
 
   final LocationStatus status;
   final GpsFix? fix;
   final TrailFix? trail;
+
+  /// Metres walked since tracking started.
+  final double walkedM;
   final void Function(Junction junction)? onJunctionTap;
 
   @override
@@ -142,6 +146,8 @@ class LocationCard extends StatelessWidget {
         status != LocationStatus.tracking || fix == null || fix!.accuracyM <= 0
         ? null
         : '±${fix!.accuracyM.round()} m';
+    final water = trail?.nextWater;
+    final showWalked = status == LocationStatus.tracking && fix != null;
 
     final onTap = junction == null ? null : () => onJunctionTap?.call(junction);
     return Material(
@@ -173,11 +179,40 @@ class LocationCard extends StatelessWidget {
               ),
               if (detail != null)
                 Text(detail, style: theme.textTheme.bodyMedium),
+              if (showWalked) ...[
+                const SizedBox(height: 4),
+                Wrap(
+                  spacing: 12,
+                  runSpacing: 4,
+                  children: [
+                    _Metric(
+                      icon: Icons.route_outlined,
+                      label: 'Walked ${formatDistance(walkedM)}',
+                    ),
+                    if (water != null)
+                      _Metric(
+                        icon: Icons.water_drop_outlined,
+                        label: _waterLabel(water),
+                      ),
+                  ],
+                ),
+              ],
             ],
           ),
         ),
       ),
     );
+  }
+
+  /// Wording that never claims water is ahead when the walker is stationary,
+  /// or when they have passed the last water point on this track.
+  static String _waterLabel(NextPoi water) {
+    final lead = !water.directionKnown
+        ? 'Nearest water'
+        : (water.ahead ? 'Next water' : 'Water behind');
+    final verified = water.poi.unverified ? ' (unverified)' : '';
+    return '$lead ${formatDistance(water.distanceM)} · '
+        '~${formatDuration(water.walkMinutes)}$verified';
   }
 
   /// Title, optional second line and the junction the card would open.
@@ -209,6 +244,27 @@ class LocationCard extends StatelessWidget {
       '$lead: ${next.junction.label} · ${formatDistance(next.distanceM)} · '
           '~${formatDuration(next.walkMinutes)}',
       next.junction,
+    );
+  }
+}
+
+/// One small figure on the location card: an icon and a short label.
+class _Metric extends StatelessWidget {
+  const _Metric({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 15, color: theme.colorScheme.primary),
+        const SizedBox(width: 4),
+        Text(label, style: theme.textTheme.labelMedium),
+      ],
     );
   }
 }

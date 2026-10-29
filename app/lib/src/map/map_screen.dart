@@ -12,12 +12,14 @@ import '../content/models.dart';
 import '../location/location_prompts.dart';
 import '../location/location_service.dart';
 import '../location/trail_locator.dart';
+import '../location/walk_tracker.dart';
 import '../safety_screen.dart';
 import '../waypoints/waypoint.dart';
 import '../waypoints/waypoint_store.dart';
 import 'location_overlay.dart';
 import 'map_options.dart';
 import 'map_palette.dart';
+import 'poi_groups.dart';
 import 'sheets.dart';
 import 'waypoint_sheets.dart';
 
@@ -61,6 +63,7 @@ class _MapScreenState extends State<MapScreen> {
   late final LocationService _location;
   late final TrailLocator _trailLocator;
   late final WaypointStore _waypoints;
+  late final WalkTracker _walk;
   TrailFix? _trailFix;
 
   /// Whether the camera should follow the walker's fixes.
@@ -76,10 +79,13 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     super.initState();
     _location = LocationService();
+    _walk = WalkTracker();
     _trailLocator = TrailLocator.fromGeoJson(
       tracksGeoJson: widget.bundle.tracksGeoJson,
       origin: widget.bundle.park.center,
       junctions: widget.bundle.junctions,
+      pois: widget.bundle.pois,
+      waterCategories: PoiGroup.water.categories.toSet(),
       paceKmh: widget.bundle.estimate.paceKmh,
     );
     _location.fix.addListener(_onFix);
@@ -205,6 +211,7 @@ class _MapScreenState extends State<MapScreen> {
                     status: _location.status.value,
                     fix: _location.fix.value,
                     trail: _trailFix,
+                    walkedM: _walk.metres,
                     onJunctionTap: _openJunction,
                   ),
                   const SizedBox(height: 6),
@@ -666,7 +673,10 @@ class _MapScreenState extends State<MapScreen> {
     if (!mounted) return;
     setState(() {
       // A stopped stream must not leave a stale junction on the card.
-      if (!_location.isTracking) _trailFix = null;
+      if (!_location.isTracking) {
+        _trailFix = null;
+        _walk.reset();
+      }
     });
   }
 
@@ -674,6 +684,7 @@ class _MapScreenState extends State<MapScreen> {
     final fix = _location.fix.value;
     if (fix == null) return;
 
+    _walk.add(fix.position);
     final trailFix = _trailLocator.locate(
       fix.position,
       bearingDeg: fix.bearingDeg,
