@@ -44,7 +44,8 @@ and retain their gallery. See [trip planning](trip-planning.md).
 
 - **IDs** are lowercase slugs: `gardes-clearing`, `pbr-track`, `j7`. They are
   permanent — QR codes encode them (#25), so renaming an id breaks a sign on a
-  track. Add new ids rather than reusing old ones.
+  track. Add new ids rather than reusing old ones. The link form and the rules
+  a sign relies on are in [qr-codes.md](qr-codes.md).
 - **Coordinates** are WGS84. GeoJSON uses `[longitude, latitude]`; JSON objects
   use `{"lat": …, "lon": …}`.
 - **Distances** in metres, times in whole minutes.

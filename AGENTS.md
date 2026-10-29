@@ -14,6 +14,7 @@ authoritative.
 - **Content model:** [docs/content-model.md](docs/content-model.md).
 - **Location and junction distances:** [docs/location.md](docs/location.md).
 - **Route planning:** [docs/planning.md](docs/planning.md).
+- **QR codes and links:** [docs/qr-codes.md](docs/qr-codes.md).
 - **Release process:** [docs/release.md](docs/release.md).
 - **Signing and store credentials:** [docs/signing.md](docs/signing.md).
 - **Web deployment:** [docs/web-deployment.md](docs/web-deployment.md).

@@ -39,7 +39,9 @@ field verification where indicated.
 - Shortlist and research POIs; content with citations (#24)
 - Offline POI detail pages with historic photos and credits (#26, #28)
 - Toggleable marker groups so the map stays readable (#56)
-- QR URL scheme so codes never change (#25)
+- QR URL scheme so codes never change (#25) — **shipped** for the link form the
+  app and website accept; see `docs/qr-codes.md`. The printed host, the QR
+  images and native app links are still open
 - Sign design, permissions, installation (#27, #44)
 
 ## Milestone 3 — Offline-first track issue reporting
