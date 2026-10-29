@@ -27,7 +27,7 @@ authoritative.
 - `tools/paluma_cli/` — Dart content validator/bundler.
 - `tools/basemap/` — offline PMTiles pipeline.
 - `tools/brand/` — wordmark/lockup/marketing generator and colour checks.
-- `.github/workflows/` — CI, release, release-please and nightly minor deps.
+- `.github/workflows/` — CI, release, release-please, nightly deps release and release-publish.
 
 ## Everyday commands
 
@@ -82,31 +82,67 @@ tool/test_create_upload_keystore.sh
   release-please sees the individual commits.
 - **Conventional Commits.** Use `feat(scope):`, `fix(scope):`, `docs(scope):`,
   etc. Release Please derives versions and the changelog from them.
-- **Release tags.** Do not create `v*` tags by hand for normal releases; merge
-  the release-please PR. Manual tags are only for hotfixes/prereleases.
+- **Release tags.** Do not create `v*` tags by hand for normal feature
+  releases; merge the release-please PR. Manual tags are only for
+  hotfixes/prereleases. The nightly job also cuts patch tags when dependency
+  ranges move (see below).
 - **App version in the UI.** `kAppVersion` in
   [`app/lib/src/app_version.dart`](app/lib/src/app_version.dart) is shown on
   About and the map chip (and therefore on the website). Release Please keeps it
   in sync with `version.txt` and `app/pubspec.yaml` via the
-  `# x-release-please-version` marker — do not bump it by hand on a normal
-  release.
+  `# x-release-please-version` marker for feature releases; the nightly job
+  bumps the same files for dependency patches.
+
+## Branch model
+
+| Branch | Role |
+| --- | --- |
+| `dev` | Default branch for features and improvements |
+| `main` | Production. Releases and GHCR images land here |
+
+- Open feature/fix PRs against **`dev`**.
+- To release features: merge **`dev` into `main`**, then merge the
+  release-please PR. Publishing the Release triggers
+  `.github/workflows/release-publish.yml` for the GHCR web image. A tag alone
+  does **not** publish an image.
+- **Keep `dev` and `main` in sync.** The nightly dependency job commits to
+  `main`, so it back-merges into `dev` in the same run. Without that, `dev`
+  falls one commit further behind every night and the next promote conflicts
+  on `pubspec.yaml` / lockfiles. To check:
+
+  ```bash
+  git fetch origin && git rev-list --count origin/dev..origin/main
+  ```
+
+  The merge step runs in a scratch worktree on purpose — checking `dev` out
+  in the primary tree would leave the job on the wrong branch for later steps.
 
 ### Nightly minor dependency updates
 
-`.github/workflows/nightly-minor-deps.yml` runs daily (~00:17 AEST) on `dev`.
-`tools/update_minor_deps.py` raises caret ranges in `app/pubspec.yaml`,
-`tools/paluma_cli/pubspec.yaml` and `tools/basemap/package.json` to the newest
-in-major release (`npm-check-updates --target semver` rules: same major for
-1.x+, same minor for 0.x). Versions published in the last **3 days** are
-skipped (`--cooldown`) so a hijacked release has time to be yanked.
+`.github/workflows/nightly-minor-deps-release.yml` runs daily (~00:17 AEST)
+on **`main`**:
+
+1. `tools/update_minor_deps.py` raises caret ranges in `app/pubspec.yaml`,
+   `tools/paluma_cli/pubspec.yaml` and `tools/basemap/package.json`
+   (`npm-check-updates --target semver`: same major for 1.x+, same minor for
+   0.x). Versions published in the last **3 days** are skipped (`--cooldown`).
+2. Analyze / test / brand colour check when constraint files moved.
+3. Patch-bump `version.txt`, `app/pubspec.yaml`, `kAppVersion` and
+   `.release-please-manifest.json`, commit to `main`, create a GitHub Release
+   (which runs `release-publish.yml` for GHCR `:latest`).
+4. Back-merge `main` → `dev` (fast-forward, else a merge commit in a scratch
+   worktree, else open a `chore/sync-main-to-dev` PR).
 
 Constraint files are the intentional edit. Lockfiles are only re-resolved so
-CI can still install; the job does not chase every transitive bump. It runs
-analyze/tests, then pushes a `chore(deps):` commit straight to `dev` when
-something changed. It does **not** cut a release tag — promote `dev` → `main`
-and merge the release-please PR as usual so GHCR `:latest` updates through the
-normal Release workflow. Branch protection on `dev` needs a bypass for Actions
-if pushes from `GITHUB_TOKEN` are blocked.
+CI can still install. Branch protection on `main` / `dev` needs a bypass for
+Actions if pushes from `GITHUB_TOKEN` are blocked.
+
+Two workflows push the web image, and they are the only ones that should:
+
+- `nightly-minor-deps-release.yml` — nightly in-range dependency bumps
+- `release-publish.yml` — on `release: published` (plus `workflow_dispatch`
+  with a `tag` input to re-publish an existing release). Feature releases from
+  release-please use the same path.
 
 Manual dry run from the repo root:
 

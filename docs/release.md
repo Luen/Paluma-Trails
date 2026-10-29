@@ -127,5 +127,6 @@ Do not commit `key.properties` or the keystore; both are ignored by git.
   in #66. Store delivery will use in-repo fastlane lanes once those secrets
   exist; see [ADR 0007](decisions/0007-release-tooling.md).
 - Promotion from `dev` to `main` is still a manual pull request.
-- The web image is published by the Release workflow; where it is deployed from
-  is tracked in #69.
+- The web image is published by `.github/workflows/release-publish.yml` on
+  `release: published` (and by the nightly deps release). Where it is deployed
+  from is tracked in #69.

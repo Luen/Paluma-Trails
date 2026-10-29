@@ -43,16 +43,17 @@ Caddy adds an SPA fallback and sets:
 
 ## Published image
 
-On a `v*` tag the Release workflow smoke-tests an amd64 image, then pushes a
-multi-arch (`linux/amd64`, `linux/arm64`) manifest:
+The **Publish release image** workflow (`.github/workflows/release-publish.yml`)
+smoke-tests an amd64 image, then pushes a multi-arch (`linux/amd64`,
+`linux/arm64`) manifest when a GitHub Release is published (release-please or
+the nightly deps release):
 
 - `ghcr.io/luen/paluma-trails-web:<version>` for every release;
 - `ghcr.io/luen/paluma-trails-web:latest` for stable versions (no hyphen in the
   version).
 
-A manual Release run builds and smoke-tests the image. Tick **Push the
-multi-arch web image to GHCR** to publish without cutting a git tag (useful to
-republish the same version for arm64). The GHCR package is private by default;
+Re-publish an existing tag with **Publish release image → Run workflow** and a
+`tag` input (for example `v0.1.1`). The GHCR package is private by default;
 make it public in the package settings if the host should pull it anonymously.
 
 ## Home server (pull only)

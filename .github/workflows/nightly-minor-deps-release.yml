@@ -1,0 +1,178 @@
+# Nightly dependency refresh → patch release (main).
+#
+# Raises caret / in-major npm ranges after a publish cooldown, then when
+# constraint files moved: analyze/test, patch-bump ship versions, commit to
+# main, back-merge into dev, and cut a GitHub Release (release-please
+# manifest is updated in the same commit so the next feature release stays
+# consistent). Publishing the Release triggers release-publish.yml for GHCR.
+#
+# Constraint files are the intentional edit; lockfiles are only re-resolved
+# so CI can still install.
+
+name: Nightly minor deps release
+
+on:
+  schedule:
+    - cron: '17 14 * * *' # ~00:17 AEST
+  workflow_dispatch:
+
+concurrency:
+  group: nightly-minor-deps-${{ github.repository }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  packages: write
+  pull-requests: write
+
+env:
+  COOLDOWN_DAYS: 3
+
+jobs:
+  update-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - uses: dart-lang/setup-dart@v1
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Raise in-major ranges (3-day cooldown)
+        run: python tools/update_minor_deps.py --cooldown-days "${COOLDOWN_DAYS}"
+
+      - name: Detect constraint-file changes
+        id: changes
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- \
+              app/pubspec.yaml \
+              tools/paluma_cli/pubspec.yaml \
+              tools/basemap/package.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "All dependency ranges already at the newest cooled in-major release."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            git diff -- \
+              app/pubspec.yaml \
+              tools/paluma_cli/pubspec.yaml \
+              tools/basemap/package.json
+          fi
+
+      - name: App analyze and test
+        if: steps.changes.outputs.changed == 'true'
+        working-directory: app
+        run: |
+          flutter pub get
+          dart format --output=none --set-exit-if-changed .
+          flutter analyze
+          flutter test
+
+      - name: Content tooling test
+        if: steps.changes.outputs.changed == 'true'
+        working-directory: tools/paluma_cli
+        run: |
+          dart pub get
+          dart analyze
+          dart test
+
+      - name: Brand colour check
+        if: steps.changes.outputs.changed == 'true'
+        run: python tools/brand/colour_check.py
+
+      - name: Bump patch version
+        if: steps.changes.outputs.changed == 'true'
+        id: version
+        run: |
+          set -euo pipefail
+          old="$(tr -d '[:space:]' < version.txt)"
+          IFS=. read -r maj min pat <<< "$old"
+          new="${maj}.${min}.$((pat + 1))"
+          echo "${new}" > version.txt
+          # pubspec: keep the x-release-please-version marker; bump build +1.
+          line="$(grep -E '^version:' app/pubspec.yaml | head -n1)"
+          raw="$(echo "${line#version: }" | sed 's/[[:space:]]*#.*//' | tr -d '[:space:]')"
+          build="${raw##*+}"
+          if [[ "$build" == "$raw" ]]; then build=0; fi
+          new_build=$((build + 1))
+          sed -i -E "s/^version: .*/version: ${new}+${new_build} # x-release-please-version/" app/pubspec.yaml
+          sed -i -E "s/const String kAppVersion = '[^']*'/const String kAppVersion = '${new}'/" \
+            app/lib/src/app_version.dart
+          python -c "import json; from pathlib import Path; p=Path('.release-please-manifest.json'); d=json.loads(p.read_text()); d['.']='${new}'; p.write_text(json.dumps(d)+'\n')"
+          echo "version=${new}" >> "$GITHUB_OUTPUT"
+          echo "Bumped to ${new}+${new_build}"
+
+      - name: Commit dependency bump
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            app/pubspec.yaml app/pubspec.lock \
+            tools/paluma_cli/pubspec.yaml tools/paluma_cli/pubspec.lock \
+            tools/basemap/package.json \
+            version.txt \
+            app/lib/src/app_version.dart \
+            .release-please-manifest.json
+          git commit -m "chore(deps): nightly in-major dependency update (${{ steps.version.outputs.version }})"
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      # Keep dev level with main. Runs straight after the bump lands so a
+      # failure further down (release) cannot leave dev behind.
+      - name: Sync main back to dev
+        if: steps.changes.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git fetch origin main dev
+          if git merge-base --is-ancestor origin/dev origin/main; then
+            git push origin origin/main:refs/heads/dev
+            echo "dev fast-forwarded to main"
+            exit 0
+          fi
+          SYNC_DIR="$(mktemp -d)"
+          git worktree add --detach "$SYNC_DIR" origin/dev
+          if git -C "$SYNC_DIR" merge --no-edit \
+              -m "chore: merge main into dev (nightly deps)" origin/main; then
+            git -C "$SYNC_DIR" push origin HEAD:dev
+            echo "merged main into dev"
+          else
+            echo "::warning::Could not merge main into dev automatically; opening a PR instead"
+            git push -f origin origin/main:refs/heads/chore/sync-main-to-dev
+            gh pr create --base dev --head chore/sync-main-to-dev \
+              --title "chore: sync main into dev" \
+              --body "Automated back-merge of the nightly dependency release conflicted. Resolve manually so dev does not drift behind main." \
+              || echo "A sync PR is already open"
+          fi
+          git worktree remove --force "$SYNC_DIR"
+
+      - name: Create GitHub Release
+        if: steps.changes.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          TAG="v${VERSION}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists"
+            exit 0
+          fi
+          gh release create "$TAG" --target main --title "$TAG" \
+            --notes "Nightly in-major dependency update (${TAG})."

@@ -1,0 +1,126 @@
+# Build and push the GHCR web image for a published GitHub Release.
+#
+# Nightly (nightly-minor-deps-release.yml) and release-please both cut GitHub
+# Releases; this is the only workflow that should move
+# `ghcr.io/luen/paluma-trails-web:latest`. Release events run from the DEFAULT
+# branch (`dev`), so keep this file present there. The build checks out the
+# release tag. Prereleases are skipped so they cannot move `:latest`.
+
+name: Publish release image
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag to build and push (e.g. v0.1.1)
+        required: true
+        type: string
+
+concurrency:
+  group: release-publish-${{ github.event.release.tag_name || inputs.tag }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    if: github.event_name == 'workflow_dispatch' || github.event.release.prerelease == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Resolve tag
+        id: tag
+        run: |
+          set -euo pipefail
+          TAG="${{ github.event.release.tag_name || inputs.tag }}"
+          if [ -z "$TAG" ]; then
+            echo "Could not resolve a release tag" >&2
+            exit 1
+          fi
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+          echo "Publishing ${TAG}"
+
+      - name: Checkout release tag
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ steps.tag.outputs.tag }}
+          fetch-depth: 0
+
+      - name: Resolve commit
+        id: commit
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Image tags
+        id: version
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.tag.outputs.version }}"
+          TAGS="ghcr.io/luen/paluma-trails-web:${VERSION}"
+          if [[ "${VERSION}" != *-* ]]; then
+            TAGS="${TAGS}"$'\n'"ghcr.io/luen/paluma-trails-web:latest"
+          fi
+          echo "name=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "tags<<EOF" >> "$GITHUB_OUTPUT"
+          echo "${TAGS}" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+          echo "Building web image ${VERSION}"
+
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build amd64 image for smoke test
+        uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_RECORD_UPLOAD: false
+        with:
+          context: ./app
+          platforms: linux/amd64
+          push: false
+          load: true
+          tags: paluma-web:smoke
+          cache-from: type=gha,scope=paluma-web
+          cache-to: type=gha,mode=max,scope=paluma-web
+
+      - name: Smoke test
+        run: |
+          docker run -d --name paluma-web -p 8080:80 paluma-web:smoke
+          for i in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:8080/ > /tmp/paluma-index.html; then
+              break
+            fi
+            sleep 2
+          done
+          grep -q "Paluma Trails" /tmp/paluma-index.html
+          curl -fsSI http://127.0.0.1:8080/flutter_service_worker.js \
+            | grep -qi "cache-control: no-cache"
+          docker rm -f paluma-web
+
+      - name: Build and push multi-arch image
+        uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_RECORD_UPLOAD: false
+        with:
+          context: ./app
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.version.outputs.tags }}
+          cache-from: type=gha,scope=paluma-web
+          cache-to: type=gha,mode=max,scope=paluma-web
+          labels: |
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.revision=${{ steps.commit.outputs.sha }}
+            org.opencontainers.image.version=${{ steps.version.outputs.name }}
+
+      - name: Clean up on failure
+        if: failure()
+        run: docker rm -f paluma-web || true
