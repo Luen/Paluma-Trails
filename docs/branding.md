@@ -373,6 +373,11 @@ Source citations retain readable offline labels. Web sources use a 48 dp
 minimum button with an external-link icon and “Read online” wording, so a walker
 can distinguish bundled information from a page requiring connectivity.
 
+Walk-preview controls use themed cards and 48 dp playback actions. The preview
+title and GPS-off label stay explicit, speed is labelled as preview speed, and
+controls wrap/scroll at large text sizes. A simulation must never resemble a
+real location fix on an emergency screen or become a saved user waypoint.
+
 The printable planning page uses a white paper surface, the map palette and
 platform sans-serif fallback. Its maps distinguish numbered circular junctions
 from square POI markers and dashed informal tracks. An enlarged village map

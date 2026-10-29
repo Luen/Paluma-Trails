@@ -230,6 +230,15 @@ releases, credentials or deployments.
 
 ### Remaining verification and external dependencies
 
+- Simulated walk previews must use a separate mock driver and memory-only
+  waypoint storage. Keep the simulated/GPS-off labels, pause real tracking
+  before preview entry, preserve its distance without counting the untracked
+  gap, and never pass simulated fixes into emergency screens. Mock `Position`
+  values need explicit heading/speed presence flags to drive “next” metrics.
+- PMTiles web QA needs a byte-range-capable HTTP server. Python's basic
+  `http.server` can draw the overlays but fail the basemap requests; use the
+  production Caddy setup or a proper range-capable test server.
+
 - Use [the field-test protocol](docs/field-testing.md) and
   [report template](docs/field-test-report.md). Component previews, widget tests
   and CI do not establish real GPS, battery behaviour, TalkBack/VoiceOver on

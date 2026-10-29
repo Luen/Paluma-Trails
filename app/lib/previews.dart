@@ -5,6 +5,9 @@ import 'src/brand/theme.dart';
 import 'src/content/models.dart';
 import 'src/map/poi_photo_card.dart';
 import 'src/map/source_link.dart';
+import 'src/location/trail_locator.dart';
+import 'src/location/walk_simulation.dart';
+import 'src/map/walk_preview.dart';
 
 const _photo = PoiPhoto(
   file: 'johnstones-hut-1911.jpg',
@@ -86,3 +89,65 @@ Widget sourceLinkSunlightPreview() =>
 
 @Preview(name: 'Source link — large text', size: Size(360, 500))
 Widget sourceLinkLargePreview() => _sourcePreview(Brightness.light, scale: 2);
+
+class _WalkControlsPreview extends StatefulWidget {
+  const _WalkControlsPreview({
+    required this.brightness,
+    this.sunlight = false,
+    this.scale = 1,
+  });
+  final Brightness brightness;
+  final bool sunlight;
+  final double scale;
+
+  @override
+  State<_WalkControlsPreview> createState() => _WalkControlsPreviewState();
+}
+
+class _WalkControlsPreviewState extends State<_WalkControlsPreview> {
+  final simulation = WalkSimulation(
+    const TrackPolyline(
+      id: 'preview-example',
+      name: 'Simulated preview example',
+      points: [GeoPoint(-19, 146), GeoPoint(-18.99, 146.01)],
+    ),
+  );
+
+  @override
+  void dispose() {
+    simulation.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => MaterialApp(
+    theme: buildPalumaTheme(widget.brightness, sunlight: widget.sunlight),
+    home: Builder(
+      builder: (context) => MediaQuery(
+        data: MediaQuery.of(context)
+            .copyWith(textScaler: TextScaler.linear(widget.scale)),
+        child: Scaffold(
+          body: SingleChildScrollView(
+            child: WalkPreviewControls(
+              simulation: simulation,
+              onRestart: simulation.restart,
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+@Preview(name: 'Walk preview — light', size: Size(360, 500))
+Widget walkControlsLight() =>
+    const _WalkControlsPreview(brightness: Brightness.light);
+@Preview(name: 'Walk preview — dark', size: Size(360, 500))
+Widget walkControlsDark() =>
+    const _WalkControlsPreview(brightness: Brightness.dark);
+@Preview(name: 'Walk preview — sunlight', size: Size(360, 500))
+Widget walkControlsSunlight() =>
+    const _WalkControlsPreview(brightness: Brightness.light, sunlight: true);
+@Preview(name: 'Walk preview — large text', size: Size(320, 700))
+Widget walkControlsLarge() =>
+    const _WalkControlsPreview(brightness: Brightness.light, scale: 2);
