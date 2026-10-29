@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
 import 'app_version.dart';
@@ -123,6 +124,11 @@ class AboutScreen extends StatelessWidget {
         Text(bundle.estimate.label, style: theme.textTheme.bodyMedium),
         const SizedBox(height: 24),
         const _SectionTitle('Walking guides'),
+        if (kIsWeb)
+          SourceLink(
+            label: 'Printable planning map · save as PDF',
+            url: Uri.base.resolve('printable-map.html').toString(),
+          ),
         const SourceLink(
           label: 'Paluma trails and history — Wanderstories',
           url: 'https://wanderstories.space/hiking-at-paluma-range-national-park/',

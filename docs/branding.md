@@ -373,6 +373,13 @@ Source citations retain readable offline labels. Web sources use a 48 dp
 minimum button with an external-link icon and “Read online” wording, so a walker
 can distinguish bundled information from a page requiring connectivity.
 
+The printable planning page uses a white paper surface, the map palette and
+platform sans-serif fallback. Its maps distinguish numbered circular junctions
+from square POI markers and dashed informal tracks. An enlarged village map
+keeps dense junction labels readable. Keep the unverified-content notice,
+source credit, revision, scale and estimated-time wording in printed output.
+See [the printable-map workflow](printable-map.md).
+
 ## Asset inventory and workflow
 
 | Asset | Source | Output |
