@@ -23,6 +23,7 @@ class ContentValidator {
     'segments.json': 'segments.schema.json',
     'sources.json': 'sources.schema.json',
     'safety.json': 'safety.schema.json',
+    'trip-planning.json': 'trip-planning.schema.json',
   };
 
   /// Returns a list of human-readable problems; empty means valid.
