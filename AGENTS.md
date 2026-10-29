@@ -243,3 +243,15 @@ releases, credentials or deployments.
   location. Do not silently label a nearby town's forecast as Paluma. Recheck
   [BOM data services](https://www.bom.gov.au/resources/data-services), the
   authorised product and attribution/caching scope before choosing #39's feed.
+
+### Follow-up work already opened
+
+Before opening duplicate work, inspect the current state of
+[source links #112](https://github.com/Luen/Paluma-Trails/pull/112),
+[accessibility #114](https://github.com/Luen/Paluma-Trails/pull/114),
+[MVP scope #115](https://github.com/Luen/Paluma-Trails/pull/115),
+[release target fix #116](https://github.com/Luen/Paluma-Trails/pull/116),
+[BOM investigation #118](https://github.com/Luen/Paluma-Trails/pull/118) and
+[QR contract #119](https://github.com/Luen/Paluma-Trails/pull/119).
+Some are partial work on larger issues; their existence does not establish that
+the issue's acceptance criteria or external prerequisites are satisfied.
