@@ -231,6 +231,12 @@ releases, credentials or deployments.
 
 ### Remaining verification and external dependencies
 
+- Start funding research with [the dated shortlist](docs/funding-options.md).
+  Recheck current funder rules and round status; the owner's committee role
+  does not establish an applicant or sponsor's agreement. Signage funding is
+  separate from land-manager permission, and GCBF excludes ongoing operating
+  costs such as recurring hosting. No application or funder contact was made.
+
 - Simulated walk previews must use a separate mock driver and memory-only
   waypoint storage. Keep the simulated/GPS-off labels, pause real tracking
   before preview entry, preserve its distance without counting the untracked
