@@ -369,6 +369,10 @@ and the owner-supplied permission record live in `content/photos/`. The images
 show historical scenes, with dates in their captions; they do not depict current
 track conditions. Photo captions/credits use the theme and support large text.
 
+Source citations retain readable offline labels. Web sources use a 48 dp
+minimum button with an external-link icon and “Read online” wording, so a walker
+can distinguish bundled information from a page requiring connectivity.
+
 ## Asset inventory and workflow
 
 | Asset | Source | Output |

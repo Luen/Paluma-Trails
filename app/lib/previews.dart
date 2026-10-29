@@ -4,6 +4,7 @@ import 'package:flutter/widget_previews.dart';
 import 'src/brand/theme.dart';
 import 'src/content/models.dart';
 import 'src/map/poi_photo_card.dart';
+import 'src/map/source_link.dart';
 
 const _photo = PoiPhoto(
   file: 'johnstones-hut-1911.jpg',
@@ -50,3 +51,38 @@ Widget poiPhotoSunlightPreview() => _preview(Brightness.light, sunlight: true);
 
 @Preview(name: 'Historic photo — large text', size: Size(360, 800))
 Widget poiPhotoLargeTextPreview() => _preview(Brightness.light, scale: 2);
+
+Widget _sourcePreview(
+  Brightness brightness, {
+  bool sunlight = false,
+  double scale = 1,
+}) => MaterialApp(
+  theme: buildPalumaTheme(brightness, sunlight: sunlight),
+  home: Builder(
+    builder: (context) => MediaQuery(
+      data: MediaQuery.of(context)
+          .copyWith(textScaler: TextScaler.linear(scale)),
+      child: const Scaffold(
+        body: SingleChildScrollView(
+          child: SourceLink(
+            label: 'Luen Warneke and Wilfred Karnoll, Paluma walking guides — Wanderstories',
+            url: 'https://wanderstories.space/hiking-at-paluma-range-national-park/',
+          ),
+        ),
+      ),
+    ),
+  ),
+);
+
+@Preview(name: 'Source link — light', size: Size(360, 500))
+Widget sourceLinkPreview() => _sourcePreview(Brightness.light);
+
+@Preview(name: 'Source link — dark', size: Size(360, 500))
+Widget sourceLinkDarkPreview() => _sourcePreview(Brightness.dark);
+
+@Preview(name: 'Source link — sunlight', size: Size(360, 500))
+Widget sourceLinkSunlightPreview() =>
+    _sourcePreview(Brightness.light, sunlight: true);
+
+@Preview(name: 'Source link — large text', size: Size(360, 500))
+Widget sourceLinkLargePreview() => _sourcePreview(Brightness.light, scale: 2);
