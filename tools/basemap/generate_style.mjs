@@ -7,15 +7,43 @@
 // Usage: node tools/basemap/generate_style.mjs <output.json>
 import { writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
+import path from 'node:path';
 
 const require = createRequire(import.meta.url);
 const basemaps = require('@protomaps/basemaps');
 
-const out = process.argv[2];
-if (!out) {
+const outArg = process.argv[2];
+if (!outArg) {
   console.error('usage: generate_style.mjs <output.json>');
   process.exit(64);
 }
+
+// Resolves userPath under the working directory, stripping `..` segments so a
+// crafted CLI argument cannot escape (CWE-23 / Snyk javascript/PT). Absolute
+// paths are accepted only when they already sit under cwd, then rewritten as a
+// join of cwd + sanitised relative segments.
+function resolveOutputPath(userPath) {
+  const root = path.resolve(process.cwd());
+  let relativeInput = userPath;
+  if (path.isAbsolute(userPath)) {
+    const abs = path.resolve(userPath);
+    const rel = path.relative(root, abs);
+    if (rel.startsWith('..') || path.isAbsolute(rel)) {
+      console.error(
+        `refusing to write outside the working directory: ${userPath}`,
+      );
+      process.exit(64);
+    }
+    relativeInput = rel;
+  }
+  // Snyk-recognised sanitisation: drop leading parent-directory segments.
+  const safeSuffix = path
+    .normalize(relativeInput)
+    .replace(/^(\.\.(\/|\\|$))+/g, '');
+  return path.join(root, safeSuffix);
+}
+
+const out = resolveOutputPath(outArg);
 
 const layers = basemaps.layers('basemap', basemaps.namedFlavor('light'), {
   lang: 'en',
