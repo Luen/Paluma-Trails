@@ -24,6 +24,8 @@ jobs:
       - uses: googleapis/release-please-action@v5
         id: release
         with:
+          # The repository default is dev; releases belong to main.
+          target-branch: main
           token: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}
           # Repositories may disallow Actions from creating PRs. Without a PAT,
           # a maintainer opens the release PR with the Release Please CLI.
