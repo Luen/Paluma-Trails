@@ -1,5 +1,6 @@
 # Docs
 
+- [Field testing](field-testing.md) — device matrix, offline/GPS/daylight/battery protocol and report template.
 - [Roadmap](roadmap.md) — epics and milestones, mapped to GitHub issues.
 - [Branding](branding.md) — logo, icon, palette, typography and look-and-feel rules.
 - [Content releases](content-releases.md) — review, bundle, deliver and recover a content update.
