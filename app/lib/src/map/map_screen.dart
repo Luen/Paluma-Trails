@@ -732,7 +732,21 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     final resumeTracking = _location.isTracking;
     if (resumeTracking) {
       _suspendingForPreview = true;
-      await _location.stop();
+      try {
+        await _location.stop();
+      } catch (_) {
+        _suspendingForPreview = false;
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Could not pause live location. The preview has not started.',
+              ),
+            ),
+          );
+        }
+        return;
+      }
       _walk.pause();
     }
     if (!mounted) return;
@@ -745,8 +759,22 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
         ),
       );
     } finally {
-      if (mounted && resumeTracking) await _location.start();
-      _suspendingForPreview = false;
+      try {
+        if (mounted && resumeTracking) await _location.start();
+      } catch (_) {
+        if (mounted) {
+          _location.status.value = LocationStatus.failed;
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Live location could not resume. Use the locate button to try again.',
+              ),
+            ),
+          );
+        }
+      } finally {
+        _suspendingForPreview = false;
+      }
     }
   }
 
