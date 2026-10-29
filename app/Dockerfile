@@ -3,11 +3,15 @@
 # Build the Flutter web bundle. The release workflow builds this image and
 # pushes it to GHCR; `docker compose up --build` builds it locally.
 #
+# Flutter's official Linux SDK is amd64-only, so the build stage is always
+# linux/amd64. The runtime stage is plain Caddy and is published for both
+# amd64 and arm64 (Odroid / Raspberry Pi home servers).
+#
 # Registry Flutter images lag the stable channel (the newest cirruslabs tag is
 # Flutter 3.44.0 / Dart 3.12, while the app needs Dart 3.13.5), so install the
 # same SDK version used by CI directly. Bump FLUTTER_VERSION with the stable
 # channel.
-FROM debian:bookworm-slim AS build
+FROM --platform=linux/amd64 debian:bookworm-slim AS build
 
 ARG FLUTTER_VERSION=3.47.7
 ENV FLUTTER_HOME=/opt/flutter
