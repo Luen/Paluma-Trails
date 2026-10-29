@@ -195,7 +195,10 @@ releases, credentials or deployments.
   provenance until new evidence supports a change.
 - Photo files need offline captions, source/collection credits and permission
   text. Keep source image details, hashes and extraction/crop records in the
-  catalogue. The bundler copies referenced photos; never fix a missing asset by
+  catalogue. Every referenced file/POI pair needs a catalogue entry with the
+  exact SHA-256 and a local permission-record link; content validation checks
+  these before bundling. This does not replace reviewing permission scope.
+  The bundler copies referenced photos; never fix a missing asset by
   making its display depend on a remote URL. See
   [the photo QA record](docs/qa/poi-history/README.md).
 
