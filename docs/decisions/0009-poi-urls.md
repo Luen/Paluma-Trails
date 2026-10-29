@@ -30,7 +30,9 @@ selection and an alias/redirect policy must be confirmed before printing (#27).
 - Installed app: verified Android App Links/iOS Universal Links open the POI
   from packaged content without requiring a network fetch. This requires the
   chosen host's association files and the final signing identities; merely
-  declaring a URL handler is not verification.
+  declaring a URL handler is not verification. Follow the official
+  [Android verification guide](https://developer.android.com/training/app-links/verify-applinks)
+  and [Apple Universal Links guide](https://developer.apple.com/documentation/xcode/supporting-universal-links-in-your-app).
 - Browser: a fresh online visit to the same path renders the correct POI, with
   a static text/photo-credit fallback if Flutter is unavailable. Hosting must
   serve that path correctly, rather than dropping the ID on an SPA redirect.
