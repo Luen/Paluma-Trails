@@ -13,6 +13,8 @@
 - [Web build and deployment](web-deployment.md) — Docker image, GHCR tags and caching.
 - [Basemap pipeline](../tools/basemap/README.md) — how the offline PMTiles archive is produced.
 
+- [Contributing content](content-editing.md) — suggest sourced corrections without installing development tools.
+
 ## Working agreements
 
 - `content/data/**` is the source of truth. `app/assets/bundle/content/**` is
