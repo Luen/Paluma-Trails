@@ -11,9 +11,35 @@ From the repository root:
 docker compose up --build
 ```
 
-Then open <http://localhost:8080>. The first build downloads the Flutter SDK
-(about 1.6 GB) and takes a few minutes, so allow several GB of free disk;
-`docker compose down` stops it.
+Then open <http://localhost:8098>. Override the host port or image tag if
+needed:
+
+```sh
+PALUMA_WEB_PORT=8080 docker compose up --build
+PALUMA_WEB_TAG=latest docker compose pull && docker compose up -d
+```
+
+The first build downloads the Flutter SDK (about 1.6 GB) and takes a few
+minutes, so allow several GB of free disk; `docker compose down` stops it.
+
+## Home server (pull only)
+
+On a host that already has Docker (for example the Odroid), copy
+`docker-compose.yml`, pull the published image, and start it. No `.env` is
+required for the static site:
+
+```sh
+mkdir -p ~/paluma-trails && cd ~/paluma-trails
+# place docker-compose.yml here, then:
+docker compose pull
+docker compose up -d
+curl -fsS http://127.0.0.1:8098/ | head
+```
+
+Prerelease tags (with a hyphen) are not also tagged `:latest`, so pin
+`PALUMA_WEB_TAG` (or the default in `docker-compose.yml`) until a stable
+release. The GHCR package may be private; log in with a token that has
+`read:packages` if anonymous pulls fail.
 
 ### Build notes
 

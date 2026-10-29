@@ -96,9 +96,9 @@ From the repository root:
 docker compose up --build
 ```
 
-Then open <http://localhost:8080>. See
-[`docs/web-deployment.md`](docs/web-deployment.md) for the image tags and
-caching.
+Then open <http://localhost:8098>. See
+[`docs/web-deployment.md`](docs/web-deployment.md) for the image tags, home
+server pull steps, and caching.
 
 ## Project docs
 
