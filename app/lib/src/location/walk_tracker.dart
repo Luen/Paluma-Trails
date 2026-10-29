@@ -23,6 +23,9 @@ class WalkTracker {
   /// Metres walked since the last [reset].
   double get metres => _metres;
 
+  /// Keeps the total but starts a new span after an explicit tracking pause.
+  void pause() => _last = null;
+
   /// Forgets the walk: used when tracking stops, so the next walk starts at
   /// zero rather than adding a bus trip to yesterday's walk.
   void reset() {

@@ -14,9 +14,11 @@ import '../location/location_prompts.dart';
 import '../location/location_service.dart';
 import '../location/trail_locator.dart';
 import '../location/walk_tracker.dart';
+import '../location/walk_simulation.dart';
 import '../safety_screen.dart';
 import '../waypoints/waypoint.dart';
 import '../waypoints/waypoint_store.dart';
+import '../waypoints/waypoint_storage.dart';
 import 'location_overlay.dart';
 import 'map_options.dart';
 import 'map_palette.dart';
@@ -24,19 +26,24 @@ import 'poi_groups.dart';
 import 'route_sheet.dart';
 import 'sheets.dart';
 import 'waypoint_sheets.dart';
+import 'walk_preview.dart';
 
 /// The offline map: basemap from the bundled PMTiles archive, trail content
 /// from the bundled GeoJSON, and tap-to-inspect sheets on top.
 class MapScreen extends StatefulWidget {
-  const MapScreen({super.key, required this.bundle});
+  const MapScreen({super.key, required this.bundle, this.simulation});
 
   final LoadedBundle bundle;
+
+  /// Owned and disposed by this screen. A preview uses no platform GPS and
+  /// cannot share coordinates with safety screens or saved waypoints.
+  final WalkSimulation? simulation;
 
   @override
   State<MapScreen> createState() => _MapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> {
+class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   static const _tracksSource = 'paluma-tracks-source';
   static const _junctionsSource = 'paluma-junctions-source';
   static const _poisSource = 'paluma-pois-source';
@@ -74,13 +81,16 @@ class _MapScreenState extends State<MapScreen> {
   /// Set when the camera should jump to the next fix (after starting location
   /// or tapping "follow me" again).
   var _needsCentre = false;
+  var _suspendingForPreview = false;
 
   bool get _locationEnabled => _location.isTracking;
 
   @override
   void initState() {
     super.initState();
-    _location = LocationService();
+    WidgetsBinding.instance.addObserver(this);
+    _location = LocationService(driver: widget.simulation);
+    _following = widget.simulation != null;
     _walk = WalkTracker();
     _trailLocator = TrailLocator.fromGeoJson(
       tracksGeoJson: widget.bundle.tracksGeoJson,
@@ -92,8 +102,11 @@ class _MapScreenState extends State<MapScreen> {
     );
     _location.fix.addListener(_onFix);
     _location.status.addListener(_onLocationStatusChanged);
-    _waypoints = WaypointStore()..addListener(_onWaypointsChanged);
+    _waypoints = WaypointStore(
+      storage: widget.simulation == null ? null : _PreviewWaypointStorage(),
+    )..addListener(_onWaypointsChanged);
     unawaited(_waypoints.load());
+    if (widget.simulation != null) unawaited(_location.start());
   }
 
   @override
@@ -114,12 +127,25 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _location.fix.removeListener(_onFix);
     _location.status.removeListener(_onLocationStatusChanged);
     _location.dispose();
+    widget.simulation?.dispose();
     _waypoints.removeListener(_onWaypointsChanged);
     _waypoints.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final simulation = widget.simulation;
+    if (state != AppLifecycleState.resumed &&
+        simulation != null &&
+        !simulation.paused &&
+        !simulation.complete) {
+      simulation.togglePause();
+    }
   }
 
   @override
@@ -130,135 +156,192 @@ class _MapScreenState extends State<MapScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            const TrailPinMark(
-              height: 30,
-              accentColor: BrandColors.sand,
-              semanticLabel: BrandText.name,
+        automaticallyImplyLeading: widget.simulation == null,
+        title: widget.simulation != null
+            ? const Text(
+                'Walk preview · simulated',
+                overflow: TextOverflow.ellipsis,
+              )
+            : Row(
+                children: [
+                  const TrailPinMark(
+                    height: 30,
+                    accentColor: BrandColors.sand,
+                    semanticLabel: BrandText.name,
+                  ),
+                  const SizedBox(width: 12),
+                  Flexible(
+                    child: Text(
+                      bundle.park.name,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+        actions: [
+          if (widget.simulation != null)
+            IconButton(
+              tooltip: 'End simulated walk',
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(Icons.close),
+            )
+          else ...[
+            IconButton(
+              tooltip: 'Plan a walk',
+              onPressed: _openRoutePlanner,
+              icon: const Icon(Icons.route_outlined),
             ),
-            const SizedBox(width: 12),
-            Flexible(
-              child: Text(bundle.park.name, overflow: TextOverflow.ellipsis),
+            IconButton(
+              tooltip: 'Safety and emergency information',
+              onPressed: _openSafety,
+              icon: const Icon(Icons.health_and_safety_outlined),
+            ),
+            IconButton(
+              tooltip: 'About this app',
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => AboutScreen(
+                    bundle: bundle,
+                    location: _location,
+                    onWalkPreview: _openWalkPreview,
+                  ),
+                ),
+              ),
+              icon: const Icon(Icons.info_outline),
             ),
           ],
-        ),
-        actions: [
-          IconButton(
-            tooltip: 'Plan a walk',
-            onPressed: _openRoutePlanner,
-            icon: const Icon(Icons.route_outlined),
-          ),
-          IconButton(
-            tooltip: 'Safety and emergency information',
-            onPressed: _openSafety,
-            icon: const Icon(Icons.health_and_safety_outlined),
-          ),
-          IconButton(
-            tooltip: 'About this app',
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) =>
-                    AboutScreen(bundle: bundle, location: _location),
-              ),
-            ),
-            icon: const Icon(Icons.info_outline),
-          ),
         ],
       ),
-      body: Stack(
+      body: Column(
         children: [
-          MapLibreMap(
-            styleString: bundle.resolveStyle(),
-            initialCameraPosition: CameraPosition(
-              target: LatLng(bundle.park.center.lat, bundle.park.center.lon),
-              zoom: bundle.park.defaultZoom,
-            ),
-            onMapCreated: (controller) {
-              _controller = controller;
-              controller.onFeatureTapped.add(_onFeatureTapped);
-            },
-            onStyleLoadedCallback: _onStyleLoaded,
-            compassEnabled: true,
-            attributionButtonPosition: AttributionButtonPosition.bottomRight,
-            logoEnabled: true,
-            // The app feeds the puck from its own fixes, so the same path
-            // works on Android, iOS and the web; see LocationService.
-            locationSource: const ManualLocationSource(),
-            myLocationEnabled: _locationEnabled,
-            myLocationTrackingMode: _following
-                ? MyLocationTrackingMode.tracking
-                : MyLocationTrackingMode.none,
-            // A compass puck requires the location component to be enabled, so
-            // it is only requested once tracking starts; battery saver skips
-            // it too, since the magnetometer is a constant drain.
-            myLocationRenderMode: _locationEnabled && !options.batterySaver
-                ? MyLocationRenderMode.compass
-                : MyLocationRenderMode.normal,
-            onCameraIdle: _onCameraIdle,
-            onCameraTrackingDismissed: _onCameraTrackingDismissed,
-          ),
-          if (!_layersAdded)
-            Positioned.fill(
-              child: ColoredBox(
-                color: theme.colorScheme.surface.withValues(alpha: 0.85),
-                child: const Center(child: CircularProgressIndicator()),
+          if (widget.simulation case final simulation?)
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.sizeOf(context).height * 0.3,
+              ),
+              child: SingleChildScrollView(
+                child: WalkPreviewControls(
+                  simulation: simulation,
+                  onRestart: () {
+                    _walk.reset();
+                    _needsCentre = true;
+                    simulation.restart();
+                  },
+                ),
               ),
             ),
-          Positioned(
-            left: 12,
-            right: 64,
-            bottom: 12,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+          Expanded(
+            child: Stack(
               children: [
-                if (_location.status.value != LocationStatus.off) ...[
-                  LocationCard(
-                    status: _location.status.value,
-                    fix: _location.fix.value,
-                    trail: _trailFix,
-                    walkedM: _walk.metres,
-                    onJunctionTap: _openJunction,
+                MapLibreMap(
+                  styleString: bundle.resolveStyle(),
+                  initialCameraPosition: CameraPosition(
+                    target: widget.simulation == null
+                        ? LatLng(bundle.park.center.lat, bundle.park.center.lon)
+                        : LatLng(
+                            widget.simulation!.track.points.first.lat,
+                            widget.simulation!.track.points.first.lon,
+                          ),
+                    zoom: widget.simulation == null
+                        ? bundle.park.defaultZoom
+                        : 15,
                   ),
-                  const SizedBox(height: 6),
-                ],
-                _OfflineChip(bundleVersion: bundle.manifest.bundleVersion),
-              ],
-            ),
-          ),
-          Positioned(
-            right: 12,
-            bottom: 64,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                MapControlButton(
-                  icon: Icons.fit_screen_outlined,
-                  tooltip: 'Show the whole park',
-                  onPressed: _layersAdded ? _fitPark : null,
+                  onMapCreated: (controller) {
+                    _controller = controller;
+                    controller.onFeatureTapped.add(_onFeatureTapped);
+                  },
+                  onStyleLoadedCallback: _onStyleLoaded,
+                  compassEnabled: true,
+                  attributionButtonPosition:
+                      AttributionButtonPosition.bottomRight,
+                  logoEnabled: true,
+                  // The app feeds the puck from its own fixes, so the same path
+                  // works on Android, iOS and the web; see LocationService.
+                  locationSource: const ManualLocationSource(),
+                  myLocationEnabled: _locationEnabled,
+                  myLocationTrackingMode: _following
+                      ? MyLocationTrackingMode.tracking
+                      : MyLocationTrackingMode.none,
+                  // A compass puck requires the location component to be enabled, so
+                  // it is only requested once tracking starts; battery saver skips
+                  // it too, since the magnetometer is a constant drain.
+                  myLocationRenderMode:
+                      _locationEnabled &&
+                          !options.batterySaver &&
+                          widget.simulation == null
+                      ? MyLocationRenderMode.compass
+                      : MyLocationRenderMode.normal,
+                  onCameraIdle: _onCameraIdle,
+                  onCameraTrackingDismissed: _onCameraTrackingDismissed,
                 ),
-                const SizedBox(height: 10),
-                MapControlButton(
-                  icon: Icons.tune,
-                  tooltip: 'Map key and display options',
-                  highlighted:
-                      options.sunlight ||
-                      options.batterySaver ||
-                      !options.allPoiGroupsVisible,
-                  onPressed: _openDisplaySettings,
+                if (!_layersAdded)
+                  Positioned.fill(
+                    child: ColoredBox(
+                      color: theme.colorScheme.surface.withValues(alpha: 0.85),
+                      child: const Center(child: CircularProgressIndicator()),
+                    ),
+                  ),
+                Positioned(
+                  left: 12,
+                  right: 64,
+                  bottom: 12,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (_location.status.value != LocationStatus.off) ...[
+                        LocationCard(
+                          status: _location.status.value,
+                          fix: _location.fix.value,
+                          trail: _trailFix,
+                          walkedM: _walk.metres,
+                          onJunctionTap: _openJunction,
+                        ),
+                        const SizedBox(height: 6),
+                      ],
+                      _OfflineChip(
+                        bundleVersion: bundle.manifest.bundleVersion,
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 10),
-                MapControlButton(
-                  icon: Icons.push_pin_outlined,
-                  tooltip: 'Your waypoints',
-                  onPressed: _layersAdded ? _openWaypoints : null,
-                ),
-                const SizedBox(height: 10),
-                LocateButton(
-                  status: _location.status.value,
-                  following: _following,
-                  onPressed: _onLocatePressed,
+                Positioned(
+                  right: 12,
+                  bottom: 64,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      MapControlButton(
+                        icon: Icons.fit_screen_outlined,
+                        tooltip: 'Show the whole park',
+                        onPressed: _layersAdded ? _fitPark : null,
+                      ),
+                      const SizedBox(height: 10),
+                      MapControlButton(
+                        icon: Icons.tune,
+                        tooltip: 'Map key and display options',
+                        highlighted:
+                            options.sunlight ||
+                            options.batterySaver ||
+                            !options.allPoiGroupsVisible,
+                        onPressed: _openDisplaySettings,
+                      ),
+                      const SizedBox(height: 10),
+                      if (widget.simulation == null) ...[
+                        MapControlButton(
+                          icon: Icons.push_pin_outlined,
+                          tooltip: 'Your waypoints',
+                          onPressed: _layersAdded ? _openWaypoints : null,
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                      LocateButton(
+                        status: _location.status.value,
+                        following: _following,
+                        onPressed: _onLocatePressed,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -635,6 +718,38 @@ class _MapScreenState extends State<MapScreen> {
     if (options != null) showDisplaySettingsSheet(context, options: options);
   }
 
+  Future<void> _openWalkPreview() async {
+    final track = await showModalBottomSheet<TrackPolyline>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.sizeOf(context).height * 0.8,
+      ),
+      builder: (_) => WalkPreviewPicker(bundle: widget.bundle),
+    );
+    if (!mounted || track == null) return;
+    final resumeTracking = _location.isTracking;
+    if (resumeTracking) {
+      _suspendingForPreview = true;
+      await _location.stop();
+      _walk.pause();
+    }
+    if (!mounted) return;
+    final simulation = WalkSimulation(track);
+    try {
+      await Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) =>
+              MapScreen(bundle: widget.bundle, simulation: simulation),
+        ),
+      );
+    } finally {
+      if (mounted && resumeTracking) await _location.start();
+      _suspendingForPreview = false;
+    }
+  }
+
   void _onFeatureTapped(
     math.Point<double> point,
     LatLng latLng,
@@ -664,6 +779,7 @@ class _MapScreenState extends State<MapScreen> {
         }
       case _waypointsLayer:
       case _waypointsLabelLayer:
+        if (widget.simulation != null) return;
         final waypoint = _waypoints.byId(featureId);
         if (waypoint != null) {
           showWaypointSheet(
@@ -682,7 +798,7 @@ class _MapScreenState extends State<MapScreen> {
       // A stopped stream must not leave a stale junction on the card.
       if (!_location.isTracking) {
         _trailFix = null;
-        _walk.reset();
+        if (!_suspendingForPreview) _walk.reset();
       }
     });
   }
@@ -809,6 +925,7 @@ class _MapScreenState extends State<MapScreen> {
 
   /// Opens the walker's pins, saving new ones where the map is looking.
   void _openWaypoints() {
+    if (widget.simulation != null) return;
     final target = _controller?.cameraPosition?.target;
     final centre = target == null
         ? widget.bundle.park.center
@@ -857,6 +974,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void _openSafety() {
+    if (widget.simulation != null) return;
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) =>
@@ -883,6 +1001,17 @@ class _MapScreenState extends State<MapScreen> {
 }
 
 /// Says the map works without reception, and which app / content is running.
+/// Defence in depth: even future preview UI changes cannot persist fake pins.
+class _PreviewWaypointStorage implements WaypointStorage {
+  String? _data;
+  @override
+  Future<String?> read() async => _data;
+  @override
+  Future<void> write(String data) async {
+    _data = data;
+  }
+}
+
 class _OfflineChip extends StatelessWidget {
   const _OfflineChip({required this.bundleVersion});
 
