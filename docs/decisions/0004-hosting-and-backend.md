@@ -51,3 +51,12 @@ is a poor place for reporters' location data and it complicates the API.
 - If Cloudflare is not acceptable later, the intake contract is one endpoint
   (`POST /reports`) and one storage bucket, so swapping providers is contained.
 - Privacy policy work (#36) must land before intake goes live.
+
+## Implementation status (2026-10-29)
+
+The independent GitHub Release bundle hosting above remains the target. Current
+releases deliver content inside the app/web assets; the client loads packaged
+assets and does not download standalone bundles. Independent publication and
+validated activation belong to #17/#87. See [the content release
+runbook](../content-releases.md) for the current delivery and recovery process
+(#54). This clarification does not change the hosting decision.

@@ -13,6 +13,22 @@ Two rules:
 - Never commit a keystore, `key.properties`, a service-account JSON file or an
   Apple private key. All of them are ignored by git.
 
+## Store identifiers
+
+The public site is <https://paluma.wanderstories.space/>. Store IDs follow that
+domain (reverse DNS under `space.wanderstories`):
+
+| Platform | Identifier | Notes |
+| --- | --- | --- |
+| Android application id / Play package name | `space.wanderstories.paluma` | Create the Play Console app with this name. |
+| iOS bundle ID | `space.wanderstories.paluma` | Same string in App Store Connect. |
+
+Do **not** register `space.wanderstories.paluma_trails` (or the older
+`space.wanderstories.palumaTrails` iOS id) in Play or App Store Connect. The
+Flutter project may still carry those placeholders until the rename lands;
+finish the id change in `app/` before the first store upload so the AAB/IPA
+match the table above.
+
 ## What has to exist
 
 | Credential | Where it comes from | Used by |
@@ -99,9 +115,10 @@ notes do not contain the debug-signed warning.
 ## Play Console
 
 1. Create the app in [Play Console](https://play.google.com/console) with the
-   package name `space.wanderstories.paluma_trails`, then complete the app
-   content declarations (privacy policy, data safety, content rating, target
-   audience, ads).
+   package name `space.wanderstories.paluma`, then complete the app content
+   declarations (privacy policy, data safety, content rating, target audience,
+   ads). Use the site URL <https://paluma.wanderstories.space/> where a
+   privacy-policy or support link is required.
 2. Keep **Play App Signing** enabled. New apps use it by default: Google holds
    the app signing key, and the keystore from the previous section is only the
    upload key. Do not upload the app signing key, and do not reuse the upload
@@ -137,7 +154,7 @@ that the fastlane `supply` lane will use.
 ## iOS and TestFlight
 
 iOS delivery is blocked until the Apple account and macOS signing assets exist.
-The bundle ID is `space.wanderstories.palumaTrails`.
+The bundle ID is `space.wanderstories.paluma` (same as the Android package).
 
 1. Join the Apple Developer Program with the account that will own the app.
 2. In App Store Connect, create the app record with that bundle ID and a unique

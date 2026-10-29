@@ -1,0 +1,56 @@
+name: Content correction
+description: Suggest a sourced change to a place, track or offline guide without editing JSON.
+title: "[Content]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This public form is for corrections to the app's reference content.
+        For track clearing, use the maintenance contact in the issue chooser.
+        Do not post private contact details or personal location histories.
+        See [Contributing content](https://github.com/Luen/Paluma-Trails/blob/dev/docs/content-editing.md).
+  - type: input
+    id: place
+    attributes:
+      label: Place or track
+      description: Name, junction number or stable ID; give enough detail to identify it.
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: Current content
+      description: Quote the text or describe the location/feature that needs correcting. For a new item, say it is missing.
+    validations:
+      required: true
+  - type: textarea
+    id: proposed
+    attributes:
+      label: Proposed correction
+      description: Give replacement wording. For coordinates, label WGS84 decimal latitude and longitude separately and include the measurement method.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence and uncertainty
+      description: Source URL, book/page, or dated field observation; include observation date, method and uncertainty. Say what still needs verification.
+    validations:
+      required: true
+  - type: textarea
+    id: rights
+    attributes:
+      label: Photo or other material permissions
+      description: If proposing images or copied material, give creator, licence/permission, credit and permission for offline redistribution. Do not attach material you cannot share.
+  - type: input
+    id: version
+    attributes:
+      label: App and bundle version (if known)
+      description: The map shows the bundle version. Include the app version or screenshot of the affected text if useful.
+  - type: checkboxes
+    id: public
+    attributes:
+      label: Public request
+      options:
+        - label: I understand this request is public and does not contact emergency services or arrange track maintenance.
+          required: true

@@ -1,5 +1,8 @@
 # Releases
 
+Content revisions follow [the content release runbook](content-releases.md),
+including offline verification and corrective releases.
+
 ## Versioning and release PRs
 
 Version bumps and the changelog are managed by
@@ -115,9 +118,14 @@ Debug keys differ between machines, so uninstall an existing app before
 installing a CI build if the signature does not match:
 
 ```sh
-adb uninstall space.wanderstories.paluma_trails
+adb uninstall space.wanderstories.paluma
 adb install app-arm64-v8a-release.apk
 ```
+
+Until the Android application id is renamed in `app/`, sideloaded debug or CI
+builds may still use `space.wanderstories.paluma_trails` — uninstall that id if
+`adb` reports the package is not found. See
+[Signing and store credentials](signing.md#store-identifiers).
 
 Do not commit `key.properties` or the keystore; both are ignored by git.
 

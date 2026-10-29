@@ -48,6 +48,10 @@ CI runs exactly these checks, plus `flutter build web --release` and a debug APK
 
 ## Editing content
 
+No SDK or JSON experience? Use the **Content correction** issue form and follow
+[the contributor guide](docs/content-editing.md). A maintainer can turn the
+request into a validated content PR.
+
 - Edit files under `content/data/paluma/`. Never edit `app/assets/bundle/**`
   by hand — it is generated. Run `bundle build` afterwards, and commit the result.
 - Numbers about tracks (distances, times) are computed by the tool and labelled
