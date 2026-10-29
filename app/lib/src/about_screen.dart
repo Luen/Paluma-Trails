@@ -7,6 +7,7 @@ import 'content/bundle_repository.dart';
 import 'location/location_service.dart';
 import 'map/source_link.dart';
 import 'safety_screen.dart';
+import 'trip_planning_screen.dart';
 
 /// Park facts, attributions and the licence/disclaimer notes that should stay
 /// one tap away from the map.
@@ -138,6 +139,16 @@ class AboutScreen extends StatelessWidget {
         Text(bundle.estimate.label, style: theme.textTheme.bodyMedium),
         const SizedBox(height: 24),
         const _SectionTitle('Walking guides'),
+        OutlinedButton.icon(
+          style: OutlinedButton.styleFrom(minimumSize: const Size(0, 48)),
+          onPressed: () => Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => TripPlanningScreen(bundle: bundle),
+            ),
+          ),
+          icon: const Icon(Icons.travel_explore),
+          label: const Text('Trip planning and photos · offline'),
+        ),
         if (kIsWeb)
           SourceLink(
             label: 'Printable planning map · save as PDF',

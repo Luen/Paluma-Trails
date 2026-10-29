@@ -448,6 +448,10 @@ One step needs a maintainer with admin rights: upload
 
 ## References
 
+Trip planning uses the existing rainforest app bar with cream selected tab text,
+mist unselected text and a sand indicator. Plan/Photos tab labels stay short at
+large text sizes. Gallery captions, credits and permission text are always shown.
+
 - #90 — finishing the identity (this revision)
 - #88 — brand identity review
 - #71 — original icon, splash, web icons and store artwork

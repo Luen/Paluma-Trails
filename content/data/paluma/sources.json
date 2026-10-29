@@ -92,6 +92,66 @@
         "safety.json emergency contact guidance"
       ],
       "notes": "Checked 2026-10-30. Factual reference only; no agency endorsement asserted. This is not a review of all other safety sections."
+    },
+    {
+      "id": "qpws-planning-visiting-safely",
+      "label": "QPWS — Visiting Paluma Range safely",
+      "url": "https://parks.qld.gov.au/parks/paluma-range/visiting-safely",
+      "licence": "Original factual summary with attribution. Agency terms retained; no endorsement or image licence inferred.",
+      "used_for": [
+        "trip-planning"
+      ],
+      "notes": "Read 30 October 2026. Static planning notes only; see content/research/trip-planning.md for limits."
+    },
+    {
+      "id": "qpws-planning-camping",
+      "label": "QPWS — Paluma Range camping",
+      "url": "https://parks.qld.gov.au/parks/paluma-range/camping",
+      "licence": "Original factual summary with attribution. Agency terms retained; no endorsement or image licence inferred.",
+      "used_for": [
+        "trip-planning"
+      ],
+      "notes": "Read 30 October 2026. Static planning notes only; see content/research/trip-planning.md for limits."
+    },
+    {
+      "id": "qpws-planning-big-crystal-creek",
+      "label": "QPWS — Big Crystal Creek camping facilities",
+      "url": "https://parks.qld.gov.au/parks/paluma-range/camping/big-crystal-creek",
+      "licence": "Original factual summary with attribution. Agency terms retained; no endorsement or image licence inferred.",
+      "used_for": [
+        "trip-planning"
+      ],
+      "notes": "Read 30 October 2026. Static planning notes only; see content/research/trip-planning.md for limits."
+    },
+    {
+      "id": "qpws-planning-jourama-falls",
+      "label": "QPWS — Jourama Falls camping facilities",
+      "url": "https://parks.qld.gov.au/parks/paluma-range/camping/jourama-falls",
+      "licence": "Original factual summary with attribution. Agency terms retained; no endorsement or image licence inferred.",
+      "used_for": [
+        "trip-planning"
+      ],
+      "notes": "Read 30 October 2026. Static planning notes only; see content/research/trip-planning.md for limits."
+    },
+    {
+      "id": "qpws-planning-park-alerts",
+      "label": "QPWS — Park alerts (online reference only)",
+      "url": "https://parks.qld.gov.au/park-alerts",
+      "licence": "Original factual summary with attribution. Agency terms retained; no endorsement or image licence inferred.",
+      "used_for": [
+        "trip-planning"
+      ],
+      "notes": "Read 30 October 2026. Static planning notes only; see content/research/trip-planning.md for limits."
+    },
+    {
+      "id": "qpws-planning-big-crystal-booking",
+      "label": "QPWS — Queensland National Parks Booking Service — Big Crystal Creek",
+      "url": "https://book.parks.qld.gov.au/big-crystal-creek-camping-area",
+      "licence": "Original factual summary with attribution. Agency terms retained; no endorsement or image licence inferred.",
+      "used_for": [
+        "trip-planning"
+      ],
+      "notes": "Read 30 October 2026. Static planning notes only; see content/research/trip-planning.md for limits."
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "bundle_version": "2026-10-30-0a933125",
+  "bundle_version": "2026-10-30-04c0da3b",
   "generator": "paluma_cli 0.1.0",
   "park": "paluma-range",
   "files": [
@@ -106,13 +106,18 @@
     },
     {
       "path": "content/sources.json",
-      "bytes": 5679,
-      "sha256": "93e178c77ee118eeb1a21ac4a667ec0de83c19a5d80281fc3702734671d9944b"
+      "bytes": 8631,
+      "sha256": "c5762d0e5ea262ad81034e39dc03a6f3b228caebf1bf516aacd58502376e16a1"
     },
     {
       "path": "content/tracks.geojson",
       "bytes": 460972,
       "sha256": "ec591f132b00a26d815f00a796fc5f1142c4dd9c06852e893b86fd7261dae03f"
+    },
+    {
+      "path": "content/trip-planning.json",
+      "bytes": 4643,
+      "sha256": "103a5f5873d946f4b4759770490d3e03461f761303bd7613df8ee3837ee56e0c"
     },
     {
       "path": "photos/foxlees-lookout-1922.jpg",
@@ -141,7 +146,7 @@
     }
   ],
   "totals": {
-    "files": 27,
-    "bytes": 3871738
+    "files": 28,
+    "bytes": 3879333
   }
 }

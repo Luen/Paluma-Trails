@@ -237,6 +237,13 @@ releases, credentials or deployments.
   [the signage funding decision](docs/funding-options.md). Sign design and
   installation remain #27/#44; hosting remains #69.
 
+- The trip-planning hub reads `trip-planning.json`; keep the check date and
+  per-section official sources. It is static planning information, not a live
+  alert/booking service. QPWS pages inspected on 30 October disagreed about
+  Big Crystal Creek reception and some alert dates; do not import guarantees
+  from one page. See [the research record](content/research/trip-planning.md).
+  Gallery photographs reuse POI assets and must retain all caption/rights text.
+
 - Simulated walk previews must use a separate mock driver and memory-only
   waypoint storage. Keep the simulated/GPS-off labels, pause real tracking
   before preview entry, preserve its distance without counting the untracked
