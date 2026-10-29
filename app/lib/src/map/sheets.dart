@@ -14,26 +14,26 @@ Future<void> showJunctionSheet(
   BuildContext context, {
   required LoadedBundle bundle,
   required Junction junction,
-}) => _show(context, JunctionSheet(bundle: bundle, junction: junction));
+}) => showMapSheet(context, JunctionSheet(bundle: bundle, junction: junction));
 
 Future<void> showPoiSheet(
   BuildContext context, {
   required LoadedBundle bundle,
   required Poi poi,
-}) => _show(context, PoiSheet(poi: poi));
+}) => showMapSheet(context, PoiSheet(poi: poi));
 
 Future<void> showTrackSheet(
   BuildContext context, {
   required LoadedBundle bundle,
   required TrackSummary track,
-}) => _show(context, TrackSheet(bundle: bundle, track: track));
+}) => showMapSheet(context, TrackSheet(bundle: bundle, track: track));
 
 /// Outdoor display choices (sunlight mode and battery saver), then the map
 /// key.
 Future<void> showDisplaySettingsSheet(
   BuildContext context, {
   required MapOptions options,
-}) => _show(
+}) => showMapSheet(
   context,
   ListenableBuilder(
     listenable: options,
@@ -126,7 +126,9 @@ class _PoiGroupToggles extends StatelessWidget {
   }
 }
 
-Future<void> _show(BuildContext context, Widget child) =>
+/// Opens one of the map's bottom sheets: dragging handle, safe area and a cap
+/// at 70% of the screen so the map stays visible behind it.
+Future<void> showMapSheet(BuildContext context, Widget child) =>
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,

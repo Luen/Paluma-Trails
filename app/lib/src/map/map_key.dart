@@ -36,6 +36,7 @@ class MapKey extends StatelessWidget {
           label: 'Numbered junction',
         ),
         const _KeyRow(symbol: PoiDot(), label: 'Point of interest'),
+        const _KeyRow(symbol: WaypointDot(), label: 'Your waypoint'),
       ],
     );
   }
@@ -173,6 +174,28 @@ class PoiDot extends StatelessWidget {
       border: Border.all(
         color: MapPalette.color(MapPalette.poiStroke),
         width: 2,
+      ),
+    ),
+  );
+}
+
+/// A walker-saved pin as drawn on the map: larger than a content POI and a
+/// deep plum so it stays distinct from junctions and park markers.
+class WaypointDot extends StatelessWidget {
+  const WaypointDot({super.key, this.size = 18});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: size,
+    height: size,
+    decoration: BoxDecoration(
+      shape: BoxShape.circle,
+      color: MapPalette.color(MapPalette.waypoint),
+      border: Border.all(
+        color: MapPalette.color(MapPalette.poiStroke),
+        width: 2.5,
       ),
     ),
   );

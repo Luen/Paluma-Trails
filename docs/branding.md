@@ -229,6 +229,7 @@ sheet and the map are easy to match up.
 | Track casing | `#0B3D2E` at 35% | at 60%, heavier | — |
 | Junction | `#FFF8E1` fill, `#BF360C` ring, `#3E2723` number | `#FFFFFF` / `#000000` / `#000000` | Numbered circle |
 | POI | `#01579B` dot, white ring; label `#0D47A1` | `#0D47A1` dot; label `#000000` | Labelled dot |
+| Your waypoint | `#5E0035` dot, white ring; label `#880E4F` | `#3E0022` dot; label `#000000` | Larger labelled pin the walker saved |
 
 The values live in `MapPalette` (`app/lib/src/map/map_palette.dart`); the map
 layers, the map key and the sheet badges all read from it. Sunlight mode also

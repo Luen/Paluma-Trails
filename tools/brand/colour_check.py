@@ -186,7 +186,7 @@ def main() -> int:
 
     # Classes drawn with the same style must stay apart for every walker.
     lines = {k: palette[k] for k in ("walkingTrack", "mtbTrack", "road", "connector")}
-    points = {k: palette[k] for k in ("poi", "junctionStroke")}
+    points = {k: palette[k] for k in ("poi", "junctionStroke", "waypoint")}
     print("\nSmallest CIEDE2000 difference (≥ 10 is comfortably distinct)")
     for group, colours in (("track lines", lines), ("markers", points)):
         for kind in (None, *CVD):
