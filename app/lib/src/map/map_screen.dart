@@ -7,6 +7,7 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 
 import '../about_screen.dart';
 import '../brand/brand.dart';
+import '../app_version.dart';
 import '../content/bundle_repository.dart';
 import '../content/models.dart';
 import '../location/location_prompts.dart';
@@ -222,7 +223,7 @@ class _MapScreenState extends State<MapScreen> {
                   ),
                   const SizedBox(height: 6),
                 ],
-                _OfflineChip(version: bundle.manifest.bundleVersion),
+                _OfflineChip(bundleVersion: bundle.manifest.bundleVersion),
               ],
             ),
           ),
@@ -881,11 +882,11 @@ class _MapScreenState extends State<MapScreen> {
   }
 }
 
-/// Says the map works without reception, and which bundle is on the device.
+/// Says the map works without reception, and which app / content is running.
 class _OfflineChip extends StatelessWidget {
-  const _OfflineChip({required this.version});
+  const _OfflineChip({required this.bundleVersion});
 
-  final String version;
+  final String bundleVersion;
 
   @override
   Widget build(BuildContext context) {
@@ -908,7 +909,7 @@ class _OfflineChip extends StatelessWidget {
             const SizedBox(width: 4),
             Flexible(
               child: Text(
-                'Offline map ready · bundle $version',
+                'v$kAppVersion · Offline map ready · bundle $bundleVersion',
                 style: theme.textTheme.labelMedium,
                 overflow: TextOverflow.ellipsis,
               ),

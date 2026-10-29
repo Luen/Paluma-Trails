@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'app_version.dart';
 import 'brand/brand.dart';
 import 'content/bundle_repository.dart';
 import 'location/location_service.dart';
@@ -100,6 +101,9 @@ class AboutScreen extends StatelessWidget {
             label: const Text('Safety and emergency information'),
           ),
         ],
+        const SizedBox(height: 24),
+        const _SectionTitle('App'),
+        const _KeyValue('Version', kAppVersion),
         const SizedBox(height: 24),
         const _SectionTitle('Offline bundle'),
         _KeyValue('Version', manifest.bundleVersion),

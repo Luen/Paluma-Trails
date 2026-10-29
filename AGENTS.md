@@ -27,7 +27,7 @@ authoritative.
 - `tools/paluma_cli/` — Dart content validator/bundler.
 - `tools/basemap/` — offline PMTiles pipeline.
 - `tools/brand/` — wordmark/lockup/marketing generator and colour checks.
-- `.github/workflows/` — CI, release and release-please.
+- `.github/workflows/` — CI, release, release-please and nightly minor deps.
 
 ## Everyday commands
 
@@ -84,6 +84,35 @@ tool/test_create_upload_keystore.sh
   etc. Release Please derives versions and the changelog from them.
 - **Release tags.** Do not create `v*` tags by hand for normal releases; merge
   the release-please PR. Manual tags are only for hotfixes/prereleases.
+- **App version in the UI.** `kAppVersion` in
+  [`app/lib/src/app_version.dart`](app/lib/src/app_version.dart) is shown on
+  About and the map chip (and therefore on the website). Release Please keeps it
+  in sync with `version.txt` and `app/pubspec.yaml` via the
+  `# x-release-please-version` marker — do not bump it by hand on a normal
+  release.
+
+### Nightly minor dependency updates
+
+`.github/workflows/nightly-minor-deps.yml` runs daily (~00:17 AEST) on `dev`.
+`tools/update_minor_deps.py` raises caret ranges in `app/pubspec.yaml`,
+`tools/paluma_cli/pubspec.yaml` and `tools/basemap/package.json` to the newest
+in-major release (`npm-check-updates --target semver` rules: same major for
+1.x+, same minor for 0.x). Versions published in the last **3 days** are
+skipped (`--cooldown`) so a hijacked release has time to be yanked.
+
+Constraint files are the intentional edit. Lockfiles are only re-resolved so
+CI can still install; the job does not chase every transitive bump. It runs
+analyze/tests, then pushes a `chore(deps):` commit straight to `dev` when
+something changed. It does **not** cut a release tag — promote `dev` → `main`
+and merge the release-please PR as usual so GHCR `:latest` updates through the
+normal Release workflow. Branch protection on `dev` needs a bypass for Actions
+if pushes from `GITHUB_TOKEN` are blocked.
+
+Manual dry run from the repo root:
+
+```sh
+python tools/update_minor_deps.py --dry-run
+```
 
 ## Before opening a pull request
 
