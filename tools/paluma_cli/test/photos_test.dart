@@ -50,7 +50,7 @@ void main() {
         .where((entry) =>
             p.posix.split(entry['path']! as String).first == 'photos')
         .toList();
-    expect(photos, hasLength(4));
+    expect(photos, hasLength(5));
     for (final entry in photos) {
       final relative = entry['path']! as String;
       final bytes =

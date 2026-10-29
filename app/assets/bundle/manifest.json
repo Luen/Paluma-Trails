@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "bundle_version": "2026-10-29-70b2daee",
+  "bundle_version": "2026-10-29-4e7e23f5",
   "generator": "paluma_cli 0.1.0",
   "park": "paluma-range",
   "files": [
@@ -91,8 +91,8 @@
     },
     {
       "path": "content/pois.json",
-      "bytes": 31801,
-      "sha256": "947719db5b7344c7a7afcf62fec91dee6f3e2e79d94be0fad297192faf52fc74"
+      "bytes": 34672,
+      "sha256": "43b118c7484f7581edabd4962cfd90d44ed894706f64ec1a12d42fa4982b743a"
     },
     {
       "path": "content/safety.json",
@@ -106,8 +106,8 @@
     },
     {
       "path": "content/sources.json",
-      "bytes": 2246,
-      "sha256": "fcdc0cc8d558d1b22d43ace6b97195f9ad16891a21cc03410e2cf2a1a29c2579"
+      "bytes": 3956,
+      "sha256": "66bc1fe41f12fe71956336800e4d0b454ae041c0551411641728eb15a117123f"
     },
     {
       "path": "content/tracks.geojson",
@@ -118,6 +118,11 @@
       "path": "photos/foxlees-lookout-1922.jpg",
       "bytes": 76111,
       "sha256": "cb9a67778483a6df42432baf860a68623ed7bdcffc336922b38d0e5c6fc7d519"
+    },
+    {
+      "path": "photos/gardes-lookout-wanderstories.jpg",
+      "bytes": 296819,
+      "sha256": "4c71d399998613727497ce704f8e4ace97cb42dd0897e489a452c26a4f6fa070"
     },
     {
       "path": "photos/johnstones-hut-1911.jpg",
@@ -136,7 +141,7 @@
     }
   ],
   "totals": {
-    "files": 26,
-    "bytes": 3567564
+    "files": 27,
+    "bytes": 3868964
   }
 }

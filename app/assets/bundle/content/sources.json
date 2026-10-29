@@ -41,6 +41,27 @@
         "poi historical summaries and citations"
       ],
       "notes": "Read 2026-10-29 using the copy hosted by paluma.org. Printed page numbers are two below PDF page numbers. Existing map coordinates and verification flags are retained. The book does not establish every modern POI name or location."
+    },
+    {
+      "id": "tbwc-shays-trip-reports",
+      "label": "Townsville Bushwalking Club historical Shay’s trip reports (1965 and 1976)",
+      "url": "https://townsvillebushwalkingclub.com/shays-house-mt-spec-1965/",
+      "licence": "Information used with permission from Wilfred Karnoll, confirmed by Luen Warneke on 2026-10-29. Original factual summaries with source and author attribution; no club photographs or sketch maps included.",
+      "used_for": [
+        "shays-clearing historical fire and fruit-tree planting accounts"
+      ],
+      "notes": "Also consult the Waterfall Creek – Shay’s Clearing – Bambaroo Track report (26–27 June 1976) and September 1976 newsletter. These are dated observations, not current access or tree-survival evidence."
+    },
+    {
+      "id": "wanderstories-paluma-guides",
+      "label": "Wanderstories Paluma Range National Park Trails and Bambaroo Track — Luen Warneke and Wilfred Karnoll",
+      "url": "https://wanderstories.space/hiking-at-paluma-range-national-park/",
+      "licence": "Owner permission supplied by Luen Warneke on 2026-10-29 to use photos, information and wording from Wanderstories pages in this project. Original credits retained; no onward licence granted.",
+      "used_for": [
+        "shays-clearing landmark context",
+        "gardes-lookout description and photograph"
+      ],
+      "notes": "Article dates 22 and 25 December 2017; read 29 October 2026. Independently credited third-party images and quoted third-party text require their own source/permission review. The Garde’s photo has no separate photographer credit in the guide; credit is to Wanderstories, without inventing an individual photographer."
     }
   ]
 }

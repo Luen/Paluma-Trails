@@ -76,6 +76,17 @@
         897,
         597
       ]
+    },
+    {
+      "file": "gardes-lookout-wanderstories.jpg",
+      "poi_id": "gardes-lookout",
+      "source_url": "https://images.wanderstories.space/content/images/2019/06/Gardes-Lookout-Paluma.jpg",
+      "source_page": "https://wanderstories.space/hiking-at-paluma-range-national-park/",
+      "caption": "Garde’s Lookout, as captioned in the Wanderstories Paluma guide. Photograph date not recorded.",
+      "original_credit": "Wanderstories; no separate individual photographer credited on the source page.",
+      "sha256": "4c71d399998613727497ce704f8e4ace97cb42dd0897e489a452c26a4f6fa070",
+      "processing": "Original downloaded JPEG, unchanged. Capture date unknown.",
+      "permission": "Owner permission supplied 2026-10-29; see README.md."
     }
   ]
 }

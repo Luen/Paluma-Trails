@@ -387,14 +387,29 @@
         "lat": -18.930199,
         "lon": 146.19776
       },
-      "summary": "A mapped lookout whose individual history still needs verification.",
-      "description": "Venn documents the Gard family's mining around Mt Spec and a water race at Gards' Battery. The book uses the spelling Gard, while this map retains its existing Garde names.\n\nThe book does not separately describe this lookout, explain its name, or establish a link between this exact site and a particular Gard family member. The mining history is regional context rather than a verified history of the lookout.",
+      "summary": "A lookout named in the Wanderstories Paluma guide and Bambaroo Track description.",
+      "description": "The Wanderstories Paluma guide identifies Garde’s Lookout among the area’s rainforest lookouts and captions the photograph shown here with that name. Its Bambaroo Track guide describes the lookout as a place to stop on the descent from the plateau.\n\nFor historical context, Linda Venn documents the Gard family’s mining around Mt Spec and a water race at Gards’ Battery. The book uses Gard while this map retains its existing Garde names. Neither source establishes the origin of this particular lookout’s name or its connection to a specific Gard family member. The photograph’s capture date and the mapped location remain unverified.",
       "qr_id": null,
-      "photos": [],
+      "photos": [
+        {
+          "file": "gardes-lookout-wanderstories.jpg",
+          "caption": "Garde’s Lookout, as captioned in the Wanderstories Paluma guide. Photograph date not recorded.",
+          "credit": "Wanderstories — Paluma Range National Park Trails, by Luen Warneke and Wilfred Karnoll.",
+          "licence": "Used with permission from Luen Warneke of Wanderstories, supplied 29 October 2026. Original copyright retained; no onward licence granted."
+        }
+      ],
       "sources": [
         {
           "label": "Linda Venn, Paluma: The First Eighty Years 1870s–1950s (Thuringowa City Council, 2002), pp. 15, 17–18 (PDF page 17 onward).",
           "url": "https://www.townsville.qld.gov.au/__data/assets/pdf_file/0019/5374/Paluma-The-First-Eighty-Years_web.pdf#page=17"
+        },
+        {
+          "label": "Luen Warneke and Wilfred Karnoll, Paluma Range National Park Trails, Wanderstories, 22 December 2017; Garde’s Lookout photograph and caption, read 29 October 2026.",
+          "url": "https://wanderstories.space/hiking-at-paluma-range-national-park/"
+        },
+        {
+          "label": "Luen Warneke and Wilfred Karnoll, Bambaroo Track, Wanderstories, 25 December 2017; read 29 October 2026.",
+          "url": "https://wanderstories.space/bambaroo-track/"
         }
       ],
       "unverified": true,
@@ -693,14 +708,30 @@
         "lat": -18.932409,
         "lon": 146.1885
       },
-      "summary": "The mapped clearing associated with Shay’s early mountain guesthouse.",
-      "description": "Before the range road, the Shay family hosted visitors near Mt Spec and offered guided walking and horse trips along the Bambaroo Track. Venn describes their guesthouse as two dormitories, a shared room and a kitchen; a bushfire destroyed much of it in 1965.\n\nAn Easter 1930 visitors' book recorded 25 boarders, mostly from Townsville. The book calls it a guesthouse rather than establishing a licensed hotel. The precise footprint at this mapped clearing remains unverified.",
+      "summary": "A former mountain guesthouse site recorded in Paluma bushwalking history.",
+      "description": "Before the range road, the Shay family hosted visitors near Mt Spec and offered guided walking and horse trips along the Bambaroo Track. Venn describes two dormitories, a shared room and a kitchen. An Easter 1930 visitors’ book recorded 25 boarders, mostly from Townsville.\n\nWalkers visiting on 16–17 October 1965 reported finding the house destroyed by a bushfire since their visit two months earlier. Their report describes exploring links towards Bambaroo and Mt Spec from a base camp at Shay’s.\n\nOn 26–27 June 1976, another club party visited the old guesthouse clearing and recorded planting three mango trees and other fruit trees. The club’s September 1976 newsletter credits Roland Gregory with carrying in and planting the young trees. These accounts do not establish which trees survive today.\n\nWanderstories also identifies Shay’s Clearing as an old guesthouse landmark near the connection between Benham’s and Bambaroo tracks. The historical reports describe past routes, not present track condition, access rights or the precise guesthouse footprint.",
       "qr_id": null,
       "photos": [],
       "sources": [
         {
           "label": "Linda Venn, Paluma: The First Eighty Years 1870s–1950s (Thuringowa City Council, 2002), pp. 20–22 (PDF page 22 onward).",
           "url": "https://www.townsville.qld.gov.au/__data/assets/pdf_file/0019/5374/Paluma-The-First-Eighty-Years_web.pdf#page=22"
+        },
+        {
+          "label": "Townsville Bushwalking Club, Shays’ House – Mt Spec; trip report, 16–17 October 1965.",
+          "url": "https://townsvillebushwalkingclub.com/shays-house-mt-spec-1965/"
+        },
+        {
+          "label": "Townsville Bushwalking Club, Waterfall Creek – Shay’s Clearing – Bambaroo Track; trip report, 26–27 June 1976.",
+          "url": "https://townsvillebushwalkingclub.com/waterfall-ck-shays-clearing-bambaroo-track-1976/"
+        },
+        {
+          "label": "Roland Gregory, Waterfall Creek – Shay’s Clearing – Bambaroo Track, Townsville N.F.C. Bushwalkers Newsletter, September 1976.",
+          "url": "https://townsvillebushwalkingclub.com/newsletter-sep-1976/"
+        },
+        {
+          "label": "Luen Warneke and Wilfred Karnoll, Paluma Range National Park Trails, Wanderstories, 22 December 2017; Bambaroo Track section, read 29 October 2026.",
+          "url": "https://wanderstories.space/hiking-at-paluma-range-national-park/#bambaroo-track"
         }
       ],
       "unverified": true,

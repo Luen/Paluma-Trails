@@ -92,7 +92,7 @@ an unrelated site's history or photograph onto the nearest map marker.
 - Site evidence linking Shay's guesthouse footprint to the clearing marker.
 - Further sources for Dolby's hut, unnamed mines, waterfall names and modern
   art sites, which are not established by this book's selected passages.
-- Further photographs of Garde’s and Shay’s sites, with positive identification.
+- Further photographs of Garde’s hut and Shay’s guesthouse, with positive identification.
 - Field verification of current remains and access independently of the book.
 
 ## Photograph permission and selected assets
@@ -101,3 +101,26 @@ Permission supplied by the repository owner covers all book wording and
 photographs for Luen Warneke of Wanderstories. Four site-matched historic
 photographs are included; see [the permission and extraction record](../photos/README.md)
 and `content/photos/catalogue.json`. This does not verify modern site coordinates.
+
+## Shay's and Wanderstories follow-up (2026-10-29)
+
+The club’s 16–17 October 1965 report records finding Shay’s House burnt since a
+visit two months earlier. The 26–27 June 1976 report records planting three mango
+trees and other fruit trees at the old guesthouse site. The September 1976
+newsletter identifies Roland Gregory as the planter. These sources do not
+establish that surviving mango trees were planted by early pioneers, nor that
+any particular trees still survive. The modern AllTrails circuit/start-point
+claim supplied for review was not independently verified and is not included.
+
+Wanderstories identifies Shay’s as an old guesthouse landmark near the
+Benham’s/Bambaroo track connection, and independently captions a photograph of
+Garde’s Lookout. Its Bambaroo Track guide also names the lookout as a stop.
+This strengthens the modern place-name context but does not verify the exact
+map coordinates, origin of the lookout’s name or present route conditions.
+
+The owner authorised use of Wanderstories photos, information and wording.
+Five photographs are now included in total; the additional image is contemporary
+site photography of unknown capture date, not a historic book photograph.
+
+Owner-supplied permissions for the book, Wanderstories and club information are
+recorded in [Source permissions](source-permissions.md).
