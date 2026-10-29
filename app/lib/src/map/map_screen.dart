@@ -20,6 +20,7 @@ import 'location_overlay.dart';
 import 'map_options.dart';
 import 'map_palette.dart';
 import 'poi_groups.dart';
+import 'route_sheet.dart';
 import 'sheets.dart';
 import 'waypoint_sheets.dart';
 
@@ -142,6 +143,11 @@ class _MapScreenState extends State<MapScreen> {
           ],
         ),
         actions: [
+          IconButton(
+            tooltip: 'Plan a walk',
+            onPressed: _openRoutePlanner,
+            icon: const Icon(Icons.route_outlined),
+          ),
           IconButton(
             tooltip: 'Safety and emergency information',
             onPressed: _openSafety,
@@ -811,6 +817,29 @@ class _MapScreenState extends State<MapScreen> {
       store: _waypoints,
       mapCentre: centre,
       onFocus: _focusOn,
+    );
+  }
+
+  /// Opens the route planner. When tracking is on, the next junction ahead is
+  /// a sensible place to start planning from; the walker can change it.
+  void _openRoutePlanner() {
+    showRoutePlanSheet(
+      context,
+      bundle: widget.bundle,
+      initialFromId: _trailFix?.next?.junction.id,
+      onFocus: _focusOnJunction,
+    );
+  }
+
+  /// Jumps to a junction at a walking zoom, leaving follow mode so the camera
+  /// does not spring back on the next fix.
+  Future<void> _focusOnJunction(Junction junction) async {
+    if (_following) setState(() => _following = false);
+    await _controller?.moveCamera(
+      CameraUpdate.newLatLngZoom(
+        LatLng(junction.location.lat, junction.location.lon),
+        15,
+      ),
     );
   }
 

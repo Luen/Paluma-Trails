@@ -22,7 +22,12 @@ view. Epic issues are linked.
 - Web map page and printable map (#22)
 - Auto-download / update of the park bundle with Wi-Fi-or-data preference (#17)
 - Outdoor-friendly map UI pass, high contrast, battery saver (#21)
-- Live trail metrics while tracking: distance walked and the next water (#55)
+- Live trail metrics while tracking: distance walked and the next water (#55) —
+  **shipped**
+- Save your own waypoints on the device and find them again offline (#57) —
+  **shipped**
+- Plan a walk: shortest route, out and back, or a loop, with totals (#20) —
+  **shipped**; see `docs/planning.md`
 - Weather card with cached offline copy (#39) — depends on #38
 
 ## Milestone 2 — Points of interest and QR codes
@@ -58,6 +63,6 @@ view. Epic issues are linked.
 
 ## Backlog ideas
 
-Route planner (#20), elevation profiles (#14), user waypoints (#57), trail notes
+Elevation profiles (#14), trail notes
 for both directions (#58), walk simulation (#59), trip-planning hub (#61), scan
 analytics (#29), funding (#48), cross-linking with wanderstories.space (#47).
