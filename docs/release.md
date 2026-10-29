@@ -63,11 +63,30 @@ the version from the tag, and the Android build number from the workflow run.
 
 ### Nightly dependency bumps
 
-See [AGENTS.md](../AGENTS.md#nightly-minor-dependency-updates). The nightly
-workflow refreshes in-major ranges on `main` after a 3-day publish cooldown,
-tests them, bumps the patch version and back-merges into `dev`. It creates a
-release pinned to the tested commit, then explicitly dispatches the artifact
-and image workflows: events from `GITHUB_TOKEN` do not trigger other workflows.
+The nightly workflow refreshes in-major ranges from `main` after a 3-day
+publish cooldown and tests them, then prepares a `chore/nightly-minor-deps`
+PR against `main`. It never pushes directly to either protected branch.
+
+1. Review and squash-merge the dependency PR with its `fix(deps):` title.
+2. Merge the normal Release Please version PR to bump the patch version and
+   publish. With no release PAT, open that version PR using the Release Please
+   CLI as described above. Existing explicit dispatches start artifact and image
+   builds for releases created with `GITHUB_TOKEN`.
+3. Review the resulting `main` → `dev` sync PR and merge it **with a merge
+   commit** to keep ancestry and shipped versions in sync.
+
+Prepared dependency updates wait on the same branch until reviewed; the next
+nightly run reuses the PR rather than replacing it. Delete a closed, unmerged
+branch to discard it. Merged update branches are cleaned up on the next run.
+
+Automation uses `RELEASE_PLEASE_TOKEN` when configured, otherwise
+`GITHUB_TOKEN`. CI is explicitly dispatched against the proposed head because
+workflow-token-created PR events do not start CI. If Actions cannot create PRs
+under repository policy, the run summary links to a prepared comparison for a
+maintainer to open; no branch-protection bypass is needed. API or authentication
+errors other than that specific policy restriction still fail the run.
+
+See [AGENTS.md](../AGENTS.md#nightly-minor-dependency-updates) for commands.
 
 ### Manual and hotfix tags
 
