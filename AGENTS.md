@@ -231,6 +231,12 @@ releases, credentials or deployments.
 
 ### Remaining verification and external dependencies
 
+- Luen confirmed on 30 October 2026 that he will self-fund the signs, with
+  permission from Wilfred Karnoll. Funding/grants issue #48 is closed at his
+  request; do not reopen grant research or applications. Preserve
+  [the signage funding decision](docs/funding-options.md). Sign design and
+  installation remain #27/#44; hosting remains #69.
+
 - The trip-planning hub reads `trip-planning.json`; keep the check date and
   per-section official sources. It is static planning information, not a live
   alert/booking service. QPWS pages inspected on 30 October disagreed about

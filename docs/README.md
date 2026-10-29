@@ -1,6 +1,7 @@
 # Docs
 
 - [Field testing](field-testing.md) — device matrix, offline/GPS/daylight/battery protocol and report template.
+- [Signage funding decision](funding-options.md) — owner-funded signs and closure of the grant task.
 - [Roadmap](roadmap.md) — epics and milestones, mapped to GitHub issues.
 - [Printable planning map](printable-map.md) — standalone map, reference tables and browser PDF printing.
 - [MVP scope](mvp-scope.md) — first release, field-pilot gates and deferred dependencies.
