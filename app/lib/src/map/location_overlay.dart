@@ -38,19 +38,26 @@ class MapControlButton extends StatelessWidget {
                   ? theme.colorScheme.onPrimaryContainer
                   : theme.colorScheme.onSurface);
 
-    return Tooltip(
-      message: tooltip,
-      child: Material(
-        color: background,
-        shape: const CircleBorder(),
-        elevation: disabled ? 0 : 3,
-        child: InkWell(
-          customBorder: const CircleBorder(),
-          onTap: onPressed,
-          child: SizedBox(
-            width: 48,
-            height: 48,
-            child: Icon(icon, size: 26, color: foreground),
+    return Semantics(
+      button: true,
+      enabled: !disabled,
+      label: tooltip,
+      onTap: onPressed,
+      excludeSemantics: true,
+      child: Tooltip(
+        message: tooltip,
+        child: Material(
+          color: background,
+          shape: const CircleBorder(),
+          elevation: disabled ? 0 : 3,
+          child: InkWell(
+            customBorder: const CircleBorder(),
+            onTap: onPressed,
+            child: SizedBox(
+              width: 48,
+              height: 48,
+              child: Icon(icon, size: 26, color: foreground),
+            ),
           ),
         ),
       ),
