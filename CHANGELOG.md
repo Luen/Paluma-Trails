@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/Luen/Paluma-Trails/compare/v0.2.0...v0.3.0) (2026-10-29)
+
+
+### Features
+
+* **poi:** add sourced Paluma history and offline photographs ([#110](https://github.com/Luen/Paluma-Trails/issues/110)) ([58aa5d2](https://github.com/Luen/Paluma-Trails/commit/58aa5d2db29a27c69366b962b9f0808733e0f2e5))
+
 ## [0.2.0](https://github.com/Luen/Paluma-Trails/compare/v0.1.0...v0.2.0) (2026-10-29)
 
 
