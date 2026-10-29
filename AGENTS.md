@@ -162,3 +162,84 @@ python tools/update_minor_deps.py --dry-run
 4. For UI changes, check light, dark and sunlight modes and large text.
 5. Link the issue and explain the user-visible change; include screenshots for
    UI work.
+
+## Findings to preserve from the October 2026 work
+
+Read the linked records before repeating research or changing the release
+pipeline. These are evidence and implementation limits, not a claim that every
+related GitHub issue is finished. Recheck live GitHub state before acting on PRs,
+releases, credentials or deployments.
+
+### History, photographs and permissions
+
+- Start with [the POI research inventory](content/research/paluma-history.md),
+  [source permissions](content/research/source-permissions.md) and
+  [photo catalogue](content/photos/catalogue.json). The first pass added history
+  or regional context to 12 of 52 existing POIs and five photographs. Other
+  entries still need research; do not imply all sites are documented.
+- Luen supplied permission for Linda Venn's book wording/photographs and
+  Wanderstories wording/information/photographs. He also confirmed permission
+  from Wilfred Karnoll for Townsville Bushwalking Club information. Preserve the
+  exact scope and credits in the permission record. These permissions do not
+  establish a public-domain or Creative Commons licence for onward reuse, and
+  the club information permission must not be broadened to club photographs.
+- The book uses **Gard**; existing `gardes-*` IDs remain stable. Printed book
+  pages are two less than PDF page numbers. The council download may fail;
+  the research inventory links a community-hosted reading copy.
+- Shay's was a guesthouse in the researched accounts; a licensed hotel has not
+  been established. The club reports date from 1965/1976. They do not establish
+  today's surviving trees, structures, access rights or track conditions.
+- Do not substitute nearby sites: Johnstone's hut is not Garde's hut, Cavill's
+  battery is not Gards' Battery, and area history does not verify the exact
+  location of either Witt's marker. Preserve coordinates and `unverified`
+  provenance until new evidence supports a change.
+- Photo files need offline captions, source/collection credits and permission
+  text. Keep source image details, hashes and extraction/crop records in the
+  catalogue. The bundler copies referenced photos; never fix a missing asset by
+  making its display depend on a remote URL. See
+  [the photo QA record](docs/qa/poi-history/README.md).
+
+### Release and update pitfalls
+
+- Set Release Please's **`target-branch: main` explicitly**. Its action defaults
+  to the repository default branch (`dev`), even when triggered by a push to
+  `main`. Run 40886443399 completed successfully but read `dev` and produced no
+  release; [PR #116](https://github.com/Luen/Paluma-Trails/pull/116) records the fix.
+- `GITHUB_TOKEN`-created tags/releases do not automatically trigger downstream
+  push/release workflows. Preserve the explicit workflow-dispatch fallback for
+  artifact builds and GHCR publication. With no release PAT, repository policy
+  may also prohibit Actions from opening release PRs: use the official Release
+  Please CLI/library against `main` with the maintainer's authenticated session,
+  rather than weakening repository permissions or hand-tagging a normal release.
+- A successful version PR or an empty GitHub Release is not release completion.
+  Verify the `Release` and `Publish release image` runs, downloadable AAB,
+  per-ABI APKs, web archive, checksums and expected GHCR tags. Signing secrets
+  absent means debug-signed sideload builds, not Play/TestFlight publication.
+- Bundles currently ship inside app/web assets. Independent bundle download,
+  validated activation and preference-aware weekly updates remain #17/#87.
+  Do not describe packaged-content loading as a completed background updater.
+  See [the content release runbook](docs/content-releases.md).
+
+### Remaining verification and external dependencies
+
+- Use [the field-test protocol](docs/field-testing.md) and
+  [report template](docs/field-test-report.md). Component previews, widget tests
+  and CI do not establish real GPS, battery behaviour, TalkBack/VoiceOver on
+  devices, track accessibility or verified reception points (#60).
+- Check current blockers before implementing services: report recipients and
+  fields (#31), privacy/retention (#36), and the proposed intake decision in
+  ADR 0004 precede a live reporting backend. Store accounts/signing (#52/#66),
+  web hosting (#69) and physical sign permission (#27/#44) require owner or
+  external setup; do not invent approvals or silently contact third parties.
+- For QPWS alerts, the owner's `WS-Maps` repo has `scrapers/qpwsAlerts.js` and
+  emits `QueenslandNationalParkAlerts.geojson`. QPWS `longLat` values may be
+  latitude/longitude; GeoJSON must be longitude/latitude. Historical/cached
+  alerts must not be presented as current or as evidence a park is open.
+- The owner confirmed BOM data permission in #37. On 2026-10-29, the
+  `api.weather.bom.gov.au` location-search response used by WS-Maps nevertheless
+  carried an explicit restriction on API reuse. Do not assume the data
+  permission covers that API. BOM's published product documentation lists QLD
+  Précis XML `IDQ11295`; the inspected feed had Ingham/Townsville but no Paluma
+  location. Do not silently label a nearby town's forecast as Paluma. Recheck
+  [BOM data services](https://www.bom.gov.au/resources/data-services), the
+  authorised product and attribution/caching scope before choosing #39's feed.
