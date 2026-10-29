@@ -13,6 +13,10 @@
         {
           "type": "generic",
           "path": "app/pubspec.yaml"
+        },
+        {
+          "type": "generic",
+          "path": "app/lib/src/app_version.dart"
         }
       ]
     }
