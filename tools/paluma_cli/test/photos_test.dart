@@ -16,7 +16,7 @@ void main() {
     scratch = Directory.systemTemp.createTempSync('paluma-photos-');
     repo = Repo(scratch.path);
     final source = Repo.locate();
-    for (final directory in ['data', 'schema', 'photos']) {
+    for (final directory in ['data', 'schema', 'photos', 'research']) {
       final from = Directory(p.join(source.contentDir, directory));
       for (final file in from.listSync(recursive: true).whereType<File>()) {
         final target = File(p.join(
@@ -91,5 +91,79 @@ void main() {
       photo['licence'] = '';
     });
     expect(ContentValidator(repo).validate(), isNotEmpty);
+  });
+
+  void changeCatalogue(void Function(List<dynamic>) change) {
+    final file = File(p.join(repo.contentDir, 'photos', 'catalogue.json'));
+    final data = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
+    change(data['images'] as List);
+    file.writeAsStringSync(jsonEncode(data));
+  }
+
+  test('every published photo needs a catalogue record for its POI', () {
+    changeCatalogue((images) => images.removeAt(0));
+    expect(ContentValidator(repo).validate(),
+        contains(contains('has no catalogue record')));
+  });
+
+  test('a record for a different POI cannot silently reassign a photograph',
+      () {
+    changeCatalogue((images) => images.first['poi_id'] = 'another-site');
+    expect(ContentValidator(repo).validate(),
+        contains(contains('johnstones-hut has no catalogue record')));
+  });
+
+  test('changed image bytes invalidate the recorded provenance hash', () {
+    final file =
+        File(p.join(repo.contentDir, 'photos', 'johnstones-hut-1911.jpg'));
+    file.writeAsBytesSync([0], mode: FileMode.append);
+    expect(ContentValidator(repo).validate(),
+        contains(contains('SHA-256 mismatch: johnstones-hut-1911.jpg')));
+  });
+
+  test('duplicate provenance records are rejected', () {
+    changeCatalogue((images) => images.add(images.first));
+    expect(ContentValidator(repo).validate(),
+        contains(contains('duplicate photo catalogue record')));
+  });
+
+  test('original collection credit and caption must remain in the catalogue',
+      () {
+    changeCatalogue((images) {
+      images.first['original_credit'] = ' ';
+      images.first.remove('caption');
+    });
+    final problems = ContentValidator(repo).validate();
+    expect(problems, contains(contains('needs original_credit')));
+    expect(problems, contains(contains('needs caption')));
+  });
+
+  test('permission records must exist inside the content directory', () {
+    for (final reference in [
+      '',
+      '../research/missing.md',
+      '../../../AGENTS.md',
+      '/tmp/permission.md'
+    ]) {
+      changeCatalogue(
+          (images) => images.first['permission_record'] = reference);
+      expect(ContentValidator(repo).validate(),
+          contains(contains('permission_record')),
+          reason: reference);
+    }
+  });
+
+  test('missing or malformed catalogue gives a validation error, not a crash',
+      () {
+    final file = File(p.join(repo.contentDir, 'photos', 'catalogue.json'));
+    file.deleteSync();
+    expect(ContentValidator(repo).validate(),
+        contains(contains('missing or unreadable')));
+    file.writeAsStringSync('{broken');
+    expect(ContentValidator(repo).validate(),
+        contains('photo catalogue is not valid JSON'));
+    file.writeAsStringSync('{"images": {}}');
+    expect(ContentValidator(repo).validate(),
+        contains('photo catalogue must contain an images array'));
   });
 }

@@ -57,3 +57,20 @@ The source URL, page, hash and processing record are in `catalogue.json`.
 This permission does not extend the book permission to club photographs/maps.
 
 See also the consolidated [source permission record](../research/source-permissions.md).
+
+## Adding or replacing a photograph
+
+Every photograph referenced by a POI must have a matching `file` + `poi_id`
+entry in `catalogue.json`. Include its original caption/collection credit,
+SHA-256 of the exact source bytes, source page or extraction details, and a
+`permission_record` path relative to this directory. Permission records are
+Markdown files kept inside `content/`; do not store private contact details or
+credentials. The POI's offline photo still needs its own caption, credit and
+licence/permission wording.
+
+Content validation checks the catalogue, image hashes and permission-record
+links before building a bundle. Replacing the image, assigning it to another
+POI or removing its provenance record must be an explicit reviewed update.
+The automated checks establish consistency, not the legal sufficiency of a
+permission or the correct identification of a historical site. Those remain
+part of the human content review. No new reuse licence is granted by this check.
