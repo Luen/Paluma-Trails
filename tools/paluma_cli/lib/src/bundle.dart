@@ -30,10 +30,28 @@ class BundleBuilder {
     _copyBasemap(
         Directory(repo.basemapDir), Directory(p.join(target.path, 'basemap')));
 
+    _copyPhotos(target);
+
     final manifest = _manifestFor(target);
     File(p.join(target.path, 'manifest.json')).writeAsStringSync(
         '${const JsonEncoder.withIndent('  ').convert(manifest)}\n');
     return manifest;
+  }
+
+  void _copyPhotos(Directory target) {
+    final pois = jsonDecode(
+      File(p.join(repo.dataDir, 'pois.json')).readAsStringSync(),
+    ) as Map<String, Object?>;
+    for (final poi in (pois['pois'] as List).cast<Map<String, Object?>>()) {
+      for (final photo in (poi['photos'] as List? ?? const [])
+          .cast<Map<String, Object?>>()) {
+        final file = photo['file']! as String;
+        final destination = File(p.join(target.path, 'photos', file));
+        destination.parent.createSync(recursive: true);
+        File(p.join(repo.contentDir, 'photos', file))
+            .copySync(destination.path);
+      }
+    }
   }
 
   void _copyData(Directory from, Directory to) {

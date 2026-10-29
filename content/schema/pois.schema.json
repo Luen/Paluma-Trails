@@ -33,12 +33,12 @@
             "items": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["file", "caption"],
+              "required": ["file", "caption", "credit", "licence"],
               "properties": {
-                "file": { "type": "string" },
-                "caption": { "type": "string" },
-                "credit": { "type": ["string", "null"] },
-                "licence": { "type": ["string", "null"] }
+                "file": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*\\.(jpg|jpeg|png|webp)$", "description": "Filename in content/photos; nested paths and remote URLs are not accepted."},
+                "caption": { "type": "string", "minLength": 1 },
+                "credit": { "type": "string", "minLength": 1 },
+                "licence": { "type": "string", "minLength": 1 }
               }
             }
           },

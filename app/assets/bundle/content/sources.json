@@ -5,7 +5,11 @@
       "label": "Wanderstories Paluma Range National Park Trails (uMap 264617)",
       "url": "https://wanderstories.space/paluma-maps/",
       "licence": "Maintained by the project author and volunteers; used with permission. Field-verify before treating as authoritative.",
-      "used_for": ["tracks", "junctions", "pois"],
+      "used_for": [
+        "tracks",
+        "junctions",
+        "pois"
+      ],
       "notes": "Exported 2026-10-16 and stored at content/sources/umap-264617.geojson. Junction numbering matches the physical markers on the tracks."
     },
     {
@@ -13,7 +17,9 @@
       "label": "Protomaps basemap (derived from OpenStreetMap)",
       "url": "https://protomaps.com",
       "licence": "Data © OpenStreetMap contributors under ODbL 1.0; tiles and styles by Protomaps under ISC",
-      "used_for": ["basemap"],
+      "used_for": [
+        "basemap"
+      ],
       "notes": "Extract for the park bounds, zooms 0-15, built from the 2026-10-15 daily build. Regenerate with tools/basemap/build_basemap.sh."
     },
     {
@@ -21,8 +27,41 @@
       "label": "Noto Sans font ranges (Regular, Medium, Italic)",
       "url": "https://fonts.google.com/noto",
       "licence": "SIL Open Font License 1.1",
-      "used_for": ["basemap labels"],
+      "used_for": [
+        "basemap labels"
+      ],
       "notes": "Latin ranges 0-767 only (Basic Latin, Latin-1 Supplement, Latin Extended-A), so non-Latin labels are blank offline."
+    },
+    {
+      "id": "venn-paluma-2002",
+      "label": "Linda Venn, Paluma: The First Eighty Years 1870s–1950s (Thuringowa City Council, February 2002)",
+      "url": "https://www.townsville.qld.gov.au/__data/assets/pdf_file/0019/5374/Paluma-The-First-Eighty-Years_web.pdf",
+      "licence": "Copyright Thuringowa City Council, 2002; all rights reserved. POI history is newly written factual summary with page citations, not copied book text. Photograph permissions are recorded separately.",
+      "used_for": [
+        "poi historical summaries and citations"
+      ],
+      "notes": "Read 2026-10-29 using the copy hosted by paluma.org. Printed page numbers are two below PDF page numbers. Existing map coordinates and verification flags are retained. The book does not establish every modern POI name or location."
+    },
+    {
+      "id": "tbwc-shays-trip-reports",
+      "label": "Townsville Bushwalking Club historical Shay’s trip reports (1965 and 1976)",
+      "url": "https://townsvillebushwalkingclub.com/shays-house-mt-spec-1965/",
+      "licence": "Information used with permission from Wilfred Karnoll, confirmed by Luen Warneke on 2026-10-29. Original factual summaries with source and author attribution; no club photographs or sketch maps included.",
+      "used_for": [
+        "shays-clearing historical fire and fruit-tree planting accounts"
+      ],
+      "notes": "Also consult the Waterfall Creek – Shay’s Clearing – Bambaroo Track report (26–27 June 1976) and September 1976 newsletter. These are dated observations, not current access or tree-survival evidence."
+    },
+    {
+      "id": "wanderstories-paluma-guides",
+      "label": "Wanderstories Paluma Range National Park Trails and Bambaroo Track — Luen Warneke and Wilfred Karnoll",
+      "url": "https://wanderstories.space/hiking-at-paluma-range-national-park/",
+      "licence": "Owner permission supplied by Luen Warneke on 2026-10-29 to use photos, information and wording from Wanderstories pages in this project. Original credits retained; no onward licence granted.",
+      "used_for": [
+        "shays-clearing landmark context",
+        "gardes-lookout description and photograph"
+      ],
+      "notes": "Article dates 22 and 25 December 2017; read 29 October 2026. Independently credited third-party images and quoted third-party text require their own source/permission review. The Garde’s photo has no separate photographer credit in the guide; credit is to Wanderstories, without inventing an individual photographer."
     }
   ]
 }

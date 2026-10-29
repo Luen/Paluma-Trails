@@ -88,6 +88,13 @@ class ContentValidator {
         in (data['pois.json']!['pois'] as List).cast<Map<String, Object?>>()) {
       final id = poi['id']! as String;
       if (!poiIds.add(id)) problems.add('duplicate poi id: $id');
+      for (final photo in (poi['photos'] as List? ?? const [])
+          .cast<Map<String, Object?>>()) {
+        final file = photo['file']! as String;
+        if (!File(p.join(repo.contentDir, 'photos', file)).existsSync()) {
+          problems.add('poi $id references missing photo: $file');
+        }
+      }
       final qr = poi['qr_id'];
       if (qr is String && !qrIds.add(qr)) {
         problems.add('duplicate poi qr_id: $qr');
