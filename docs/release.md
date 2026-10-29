@@ -1,5 +1,8 @@
 # Releases
 
+Content revisions follow [the content release runbook](content-releases.md),
+including offline verification and corrective releases.
+
 ## Versioning and release PRs
 
 Version bumps and the changelog are managed by

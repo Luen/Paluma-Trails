@@ -2,6 +2,7 @@
 
 - [Roadmap](roadmap.md) — epics and milestones, mapped to GitHub issues.
 - [Branding](branding.md) — logo, icon, palette, typography and look-and-feel rules.
+- [Content releases](content-releases.md) — review, bundle, deliver and recover a content update.
 - [Content model](content-model.md) — how tracks, junctions, POIs and segments fit together.
 - [Location and the next junction](location.md) — how the blue dot and along-track junction distances work.
 - [Architecture decisions](decisions/) — ADRs, one file per decision.
