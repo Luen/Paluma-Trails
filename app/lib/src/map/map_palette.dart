@@ -28,12 +28,19 @@ abstract final class MapPalette {
   static const poiStroke = '#FFFFFF';
   static const labelHalo = '#FFFFFF';
 
+  /// The walker's own pins. Deliberately not a content colour: these are the
+  /// one kind of marker the walker put there. A deep plum rather than a red,
+  /// so it stays distinct from the junction ring for every colour vision.
+  static const waypoint = '#5E0035';
+  static const waypointLabel = '#880E4F';
+
   // Sunlight mode: the same hues where they already pass, pushed to black and
   // white where a marker needs more contrast.
   static const sunlightJunctionFill = '#FFFFFF';
   static const sunlightJunctionStroke = '#000000';
   static const sunlightLabel = '#000000';
   static const sunlightPoi = '#0D47A1';
+  static const sunlightWaypoint = '#3E0022';
 
   /// Track classes drawn as a solid line. Anything else (today, the `other`
   /// class of informal or unclassified tracks) is drawn dashed.

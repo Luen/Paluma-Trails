@@ -13,10 +13,13 @@ import '../location/location_prompts.dart';
 import '../location/location_service.dart';
 import '../location/trail_locator.dart';
 import '../safety_screen.dart';
+import '../waypoints/waypoint.dart';
+import '../waypoints/waypoint_store.dart';
 import 'location_overlay.dart';
 import 'map_options.dart';
 import 'map_palette.dart';
 import 'sheets.dart';
+import 'waypoint_sheets.dart';
 
 /// The offline map: basemap from the bundled PMTiles archive, trail content
 /// from the bundled GeoJSON, and tap-to-inspect sheets on top.
@@ -33,6 +36,7 @@ class _MapScreenState extends State<MapScreen> {
   static const _tracksSource = 'paluma-tracks-source';
   static const _junctionsSource = 'paluma-junctions-source';
   static const _poisSource = 'paluma-pois-source';
+  static const _waypointsSource = 'paluma-waypoints-source';
 
   static const _tracksCasingLayer = 'paluma-tracks-casing';
   static const _tracksLayer = 'paluma-tracks';
@@ -41,6 +45,8 @@ class _MapScreenState extends State<MapScreen> {
   static const _junctionsLabelLayer = 'paluma-junctions-label';
   static const _poisLayer = 'paluma-pois';
   static const _poisLabelLayer = 'paluma-pois-label';
+  static const _waypointsLayer = 'paluma-waypoints';
+  static const _waypointsLabelLayer = 'paluma-waypoints-label';
 
   MapLibreMapController? _controller;
   var _layersAdded = false;
@@ -54,6 +60,7 @@ class _MapScreenState extends State<MapScreen> {
 
   late final LocationService _location;
   late final TrailLocator _trailLocator;
+  late final WaypointStore _waypoints;
   TrailFix? _trailFix;
 
   /// Whether the camera should follow the walker's fixes.
@@ -77,6 +84,8 @@ class _MapScreenState extends State<MapScreen> {
     );
     _location.fix.addListener(_onFix);
     _location.status.addListener(_onLocationStatusChanged);
+    _waypoints = WaypointStore()..addListener(_onWaypointsChanged);
+    unawaited(_waypoints.load());
   }
 
   @override
@@ -100,6 +109,8 @@ class _MapScreenState extends State<MapScreen> {
     _location.fix.removeListener(_onFix);
     _location.status.removeListener(_onLocationStatusChanged);
     _location.dispose();
+    _waypoints.removeListener(_onWaypointsChanged);
+    _waypoints.dispose();
     super.dispose();
   }
 
@@ -224,6 +235,12 @@ class _MapScreenState extends State<MapScreen> {
                   onPressed: _openDisplaySettings,
                 ),
                 const SizedBox(height: 10),
+                MapControlButton(
+                  icon: Icons.push_pin_outlined,
+                  tooltip: 'Your waypoints',
+                  onPressed: _layersAdded ? _openWaypoints : null,
+                ),
+                const SizedBox(height: 10),
                 LocateButton(
                   status: _location.status.value,
                   following: _following,
@@ -307,6 +324,22 @@ class _MapScreenState extends State<MapScreen> {
         _poiLabelProperties(_sunlight),
         minzoom: 13.5,
       );
+      await controller.addGeoJsonSource(
+        _waypointsSource,
+        waypointsFeatureCollection(_waypoints.waypoints),
+        promoteId: 'id',
+      );
+      await controller.addCircleLayer(
+        _waypointsSource,
+        _waypointsLayer,
+        _waypointProperties(_sunlight),
+      );
+      await controller.addSymbolLayer(
+        _waypointsSource,
+        _waypointsLabelLayer,
+        _waypointLabelProperties(_sunlight),
+        minzoom: 14,
+      );
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -351,6 +384,14 @@ class _MapScreenState extends State<MapScreen> {
         _poisLabelLayer,
         _poiLabelProperties(_sunlight),
       );
+      await controller.setLayerProperties(
+        _waypointsLayer,
+        _waypointProperties(_sunlight),
+      );
+      await controller.setLayerProperties(
+        _waypointsLabelLayer,
+        _waypointLabelProperties(_sunlight),
+      );
     } catch (_) {
       // The map may already be gone; the next style load adds the layers
       // again with the current colours.
@@ -378,6 +419,23 @@ class _MapScreenState extends State<MapScreen> {
       // with the current choice.
     }
   }
+
+  /// Rebuilds the waypoint source after a pin is added, renamed or deleted.
+  Future<void> _applyWaypoints() async {
+    final controller = _controller;
+    if (controller == null || !_layersAdded) return;
+    try {
+      await controller.setGeoJsonSource(
+        _waypointsSource,
+        waypointsFeatureCollection(_waypoints.waypoints),
+      );
+    } catch (_) {
+      // The map may already be gone; the next style load builds the source
+      // with the saved pins.
+    }
+  }
+
+  void _onWaypointsChanged() => unawaited(_applyWaypoints());
 
   static List<Object> _casingWidth(bool sunlight) => [
     'interpolate',
@@ -524,6 +582,40 @@ class _MapScreenState extends State<MapScreen> {
         textOffset: const [0, 0.6],
       );
 
+  /// The walker's pins are drawn a size larger than content POIs and named at a
+  /// lower zoom, so "mine" never has to be guessed from the colour alone.
+  static CircleLayerProperties _waypointProperties(bool sunlight) =>
+      CircleLayerProperties(
+        circleRadius: [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          8,
+          sunlight ? 6.5 : 4.5,
+          14,
+          sunlight ? 11.0 : 8.0,
+        ],
+        circleColor: sunlight
+            ? MapPalette.sunlightWaypoint
+            : MapPalette.waypoint,
+        circleStrokeColor: MapPalette.poiStroke,
+        circleStrokeWidth: sunlight ? 3.0 : 2.5,
+      );
+
+  static SymbolLayerProperties _waypointLabelProperties(bool sunlight) =>
+      SymbolLayerProperties(
+        textField: ['get', 'name'],
+        textFont: ['Noto-Sans-Medium'],
+        textSize: sunlight ? 14.0 : 11.0,
+        textColor: sunlight
+            ? MapPalette.sunlightLabel
+            : MapPalette.waypointLabel,
+        textHaloColor: MapPalette.labelHalo,
+        textHaloWidth: 2.0,
+        textAnchor: 'top',
+        textOffset: const [0, 0.6],
+      );
+
   void _openDisplaySettings() {
     final options = _options;
     if (options != null) showDisplaySettingsSheet(context, options: options);
@@ -555,6 +647,17 @@ class _MapScreenState extends State<MapScreen> {
         final track = widget.bundle.tracksById[featureId];
         if (track != null) {
           showTrackSheet(context, bundle: widget.bundle, track: track);
+        }
+      case _waypointsLayer:
+      case _waypointsLabelLayer:
+        final waypoint = _waypoints.byId(featureId);
+        if (waypoint != null) {
+          showWaypointSheet(
+            context,
+            store: _waypoints,
+            waypoint: waypoint,
+            onFocus: _focusOn,
+          );
         }
     }
   }
@@ -684,6 +787,32 @@ class _MapScreenState extends State<MapScreen> {
 
   void _openJunction(Junction junction) {
     showJunctionSheet(context, bundle: widget.bundle, junction: junction);
+  }
+
+  /// Opens the walker's pins, saving new ones where the map is looking.
+  void _openWaypoints() {
+    final target = _controller?.cameraPosition?.target;
+    final centre = target == null
+        ? widget.bundle.park.center
+        : GeoPoint(target.latitude, target.longitude);
+    showWaypointsSheet(
+      context,
+      store: _waypoints,
+      mapCentre: centre,
+      onFocus: _focusOn,
+    );
+  }
+
+  /// Jumps to a saved pin at a walking zoom, leaving follow mode so the camera
+  /// does not spring back on the next fix.
+  Future<void> _focusOn(Waypoint waypoint) async {
+    if (_following) setState(() => _following = false);
+    await _controller?.moveCamera(
+      CameraUpdate.newLatLngZoom(
+        LatLng(waypoint.location.lat, waypoint.location.lon),
+        15,
+      ),
+    );
   }
 
   void _openSafety() {
