@@ -44,9 +44,17 @@ expire; set a reminder and rotate the secret before it does.
    The Android `versionCode` is the workflow run number; the `versionName` is
    the tag without the leading `v`.
 
-The version annotation in `app/pubspec.yaml` (`# x-release-please-version`) is
-what keeps the app version in sync. Do not remove it. Release builds take the
-version from the tag anyway, and the build number from the workflow run.
+The version annotation in `app/pubspec.yaml` and
+`app/lib/src/app_version.dart` (`# x-release-please-version`) is what keeps the
+app version in sync. Do not remove either marker. The constant is what walkers
+see on About and the map chip (including the website). Release builds also take
+the version from the tag, and the Android build number from the workflow run.
+
+### Nightly dependency bumps
+
+See [AGENTS.md](../AGENTS.md#nightly-minor-dependency-updates). The nightly
+workflow only refreshes in-major ranges on `dev` after a 3-day publish
+cooldown; it does not create tags or push images by itself.
 
 ### Manual and hotfix tags
 

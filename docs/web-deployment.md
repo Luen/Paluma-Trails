@@ -1,7 +1,8 @@
 # Web build and Docker image
 
 The Flutter web build is a static site. `app/Dockerfile` builds it in a Flutter
-build stage and serves it with Caddy.
+build stage and serves it with Caddy. The map chip and About screen show
+`kAppVersion` so you can confirm which ship build is running behind the tunnel.
 
 ## Run locally
 
