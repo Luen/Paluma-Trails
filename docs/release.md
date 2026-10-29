@@ -1,5 +1,8 @@
 # Releases
 
+Content revisions follow [the content release runbook](content-releases.md),
+including offline verification and corrective releases.
+
 ## Versioning and release PRs
 
 Version bumps and the changelog are managed by
@@ -11,9 +14,17 @@ list the same change twice. The exception is the `dev` → `main` promotion PR:
 use a merge commit there so the individual commits reach `main` and appear in
 the changelog.
 
-Release Please needs a `RELEASE_PLEASE_TOKEN` secret. The built-in
-`GITHUB_TOKEN` cannot be used for this: tags and releases it creates do not
-trigger other workflows, so the Release workflow would never build the assets.
+Release Please uses `RELEASE_PLEASE_TOKEN` when configured, otherwise the
+repository's `GITHUB_TOKEN`. Token-created release/tag events do not start other
+workflows, so the fallback explicitly dispatches the artifact and image builds.
+A PAT enables automatic release PR creation. Without one, a maintainer uses
+the Release Please CLI with their authenticated GitHub account to open the
+release PR; the workflow then creates the release after that PR is merged.
+Run **CI → Run workflow** against the release PR's head branch if no checks
+started; never treat missing checks as passing. Repository Actions PR-creation
+permissions are not changed by this fallback.
+
+An optional PAT can be configured as follows.
 
 Create a fine-grained personal access token for only this repository with:
 
@@ -30,7 +41,7 @@ expire; set a reminder and rotate the secret before it does.
 1. Promote `dev` to `main` with a pull request and wait for CI.
 2. Release Please opens or updates a `chore(main): release X.Y.Z` pull request
    with the next version and changelog. If it does not appear, run **Release
-   Please → Run workflow** on `main` and check the warning in the job log.
+   Please → Run workflow** on `main` and check the job log and repository Actions PR-creation permissions.
 3. Review the release PR, then merge it when CI is green. Merging creates the
    `vX.Y.Z` tag and a GitHub Release with the changelog.
 4. The tag starts `.github/workflows/release.yml`, which builds and appends:
@@ -44,9 +55,19 @@ expire; set a reminder and rotate the secret before it does.
    The Android `versionCode` is the workflow run number; the `versionName` is
    the tag without the leading `v`.
 
-The version annotation in `app/pubspec.yaml` (`# x-release-please-version`) is
-what keeps the app version in sync. Do not remove it. Release builds take the
-version from the tag anyway, and the build number from the workflow run.
+The version annotation in `app/pubspec.yaml` and
+`app/lib/src/app_version.dart` (`# x-release-please-version`) is what keeps the
+app version in sync. Do not remove either marker. The constant is what walkers
+see on About and the map chip (including the website). Release builds also take
+the version from the tag, and the Android build number from the workflow run.
+
+### Nightly dependency bumps
+
+See [AGENTS.md](../AGENTS.md#nightly-minor-dependency-updates). The nightly
+workflow refreshes in-major ranges on `main` after a 3-day publish cooldown,
+tests them, bumps the patch version and back-merges into `dev`. It creates a
+release pinned to the tested commit, then explicitly dispatches the artifact
+and image workflows: events from `GITHUB_TOKEN` do not trigger other workflows.
 
 ### Manual and hotfix tags
 
@@ -107,9 +128,14 @@ Debug keys differ between machines, so uninstall an existing app before
 installing a CI build if the signature does not match:
 
 ```sh
-adb uninstall space.wanderstories.paluma_trails
+adb uninstall space.wanderstories.paluma
 adb install app-arm64-v8a-release.apk
 ```
+
+Until the Android application id is renamed in `app/`, sideloaded debug or CI
+builds may still use `space.wanderstories.paluma_trails` — uninstall that id if
+`adb` reports the package is not found. See
+[Signing and store credentials](signing.md#store-identifiers).
 
 Do not commit `key.properties` or the keystore; both are ignored by git.
 
@@ -119,5 +145,6 @@ Do not commit `key.properties` or the keystore; both are ignored by git.
   in #66. Store delivery will use in-repo fastlane lanes once those secrets
   exist; see [ADR 0007](decisions/0007-release-tooling.md).
 - Promotion from `dev` to `main` is still a manual pull request.
-- The web image is published by the Release workflow; where it is deployed from
-  is tracked in #69.
+- The web image is published by `.github/workflows/release-publish.yml` on
+  `release: published` (or explicitly dispatched by the nightly deps release). Where it is deployed
+  from is tracked in #69.

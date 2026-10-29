@@ -1,15 +1,19 @@
 # Docs
 
+- [Field testing](field-testing.md) — device matrix, offline/GPS/daylight/battery protocol and report template.
 - [Roadmap](roadmap.md) — epics and milestones, mapped to GitHub issues.
 - [Branding](branding.md) — logo, icon, palette, typography and look-and-feel rules.
+- [Content releases](content-releases.md) — review, bundle, deliver and recover a content update.
 - [Content model](content-model.md) — how tracks, junctions, POIs and segments fit together.
 - [Location and the next junction](location.md) — how the blue dot and along-track junction distances work.
 - [Architecture decisions](decisions/) — ADRs, one file per decision.
 - [Store assets](store/) — icon and feature graphic, generated from the artwork in `app/assets/icon/`.
 - [Releases](release.md) — cutting a release, Android sideloading and the size budget.
-- [Signing and store credentials](signing.md) — upload keystore, Play App Signing, App Store Connect and release approvals.
+- [Signing and store credentials](signing.md) — store identifiers (`space.wanderstories.paluma`), upload keystore, Play App Signing, App Store Connect and release approvals.
 - [Web build and deployment](web-deployment.md) — Docker image, GHCR tags and caching.
 - [Basemap pipeline](../tools/basemap/README.md) — how the offline PMTiles archive is produced.
+
+- [Contributing content](content-editing.md) — suggest sourced corrections without installing development tools.
 
 ## Working agreements
 

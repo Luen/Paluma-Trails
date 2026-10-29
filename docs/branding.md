@@ -363,6 +363,12 @@ Rules:
   screenshots use a simulated GPS fix with real junction distances; see
   `docs/store/README.md`.
 
+Historic POI photographs appear uncropped in the app with captions, original
+collection credits and permission statements. Source JPEGs, book-page locators
+and the owner-supplied permission record live in `content/photos/`. The images
+show historical scenes, with dates in their captions; they do not depict current
+track conditions. Photo captions/credits use the theme and support large text.
+
 ## Asset inventory and workflow
 
 | Asset | Source | Output |

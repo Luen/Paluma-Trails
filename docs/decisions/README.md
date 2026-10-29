@@ -12,6 +12,7 @@ decision, rationale, alternatives, consequences. Keep them under a page.
 | [0005](0005-repo-structure.md) | Monorepo layout | Accepted |
 | [0006](0006-branching-and-releases.md) | Branching model and release flow | Accepted |
 | [0007](0007-release-tooling.md) | Release tooling for store delivery: GitHub Actions + in-repo fastlane | Accepted |
+| [0008](0008-content-editing.md) | Content editing: reviewed requests and source JSON | Accepted |
 
 ## Template
 

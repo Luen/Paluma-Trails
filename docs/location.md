@@ -69,3 +69,6 @@ Walk times reuse the bundle's flat-terrain pace (see
 - Emulator: `adb emu geo fix <lon> <lat>` walks the emulator through a track;
   the card should count down to the next junction, add to the walked distance
   and offer the next water point.
+
+For repeatable on-track checks, device coverage and a results template, use
+[the field-test plan](field-testing.md) (#51).
