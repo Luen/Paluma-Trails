@@ -35,6 +35,11 @@ jobs:
         run: |
           dart run tools/paluma_cli/bin/paluma_cli.dart bundle build --out /tmp/bundle
           diff -r /tmp/bundle app/assets/bundle
+      - name: Rebuild the printable planning map and check it is committed
+        working-directory: .
+        run: |
+          dart run tools/paluma_cli/bin/paluma_cli.dart content print-map --out /tmp/printable-map.html
+          diff /tmp/printable-map.html app/web/printable-map.html
 
   app:
     name: App (analyze + test + build)

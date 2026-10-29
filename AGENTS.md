@@ -44,6 +44,7 @@ cd tools/paluma_cli && dart pub get && cd ../..
 dart run tools/paluma_cli/bin/paluma_cli.dart content validate
 dart run tools/paluma_cli/bin/paluma_cli.dart bundle build --out /tmp/bundle
 diff -r /tmp/bundle app/assets/bundle
+dart run tools/paluma_cli/bin/paluma_cli.dart content print-map
 
 # Brand artwork and colour checks (from the repository root)
 python tools/brand/colour_check.py
@@ -64,6 +65,10 @@ tool/test_create_upload_keystore.sh
   content and store copy.
 - **Content source of truth.** Edit `content/data/**` and regenerate the bundle;
   do not hand-edit `app/assets/bundle/content/**`.
+- **Printable map.** Regenerate `app/web/printable-map.html` after source content
+  or map palette changes. CI checks freshness. The page contains inline SVG
+  and needs no external assets; preserve its credits, unverified notice and
+  estimated-time labels. See [docs/printable-map.md](docs/printable-map.md).
 - **Branding.** Use the palette and rules in
   [docs/branding.md](docs/branding.md). Do not add unexplained hex values to
   widgets; use `Theme.of(context).colorScheme` and `textTheme`, `BrandColors`

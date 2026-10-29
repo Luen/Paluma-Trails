@@ -31,6 +31,7 @@ dart run tools/paluma_cli/bin/paluma_cli.dart content graph
 # For every content revision:
 dart run tools/paluma_cli/bin/paluma_cli.dart content validate
 dart run tools/paluma_cli/bin/paluma_cli.dart bundle build
+dart run tools/paluma_cli/bin/paluma_cli.dart content print-map
 ```
 
 For a basemap refresh, use [the basemap pipeline](../tools/basemap/README.md)
@@ -55,6 +56,8 @@ Reproduce CI from the repository root (choose a fresh scratch output path):
 dart run tools/paluma_cli/bin/paluma_cli.dart content validate
 dart run tools/paluma_cli/bin/paluma_cli.dart bundle build --out /tmp/paluma-review-bundle
 diff -r /tmp/paluma-review-bundle app/assets/bundle
+dart run tools/paluma_cli/bin/paluma_cli.dart content print-map --out /tmp/paluma-review-map.html
+diff /tmp/paluma-review-map.html app/web/printable-map.html
 (cd app && flutter pub get && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test)
 ```
 

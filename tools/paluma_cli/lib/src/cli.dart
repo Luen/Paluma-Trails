@@ -7,6 +7,7 @@ import 'package:path/path.dart' as p;
 import 'bundle.dart';
 import 'graph.dart';
 import 'import_umap.dart';
+import 'printable_map.dart';
 import 'repo.dart';
 import 'validate.dart';
 
@@ -15,7 +16,7 @@ class PalumaCli {
   Future<int> run(List<String> args) async {
     final runner = CommandRunner<int>(
       'paluma_cli',
-      'Paluma Trails content tooling: import, validate, graph, bundle.',
+      'Paluma Trails content tooling: import, validate, graph, bundle, print-map.',
     )
       ..addCommand(_ContentCommand())
       ..addCommand(_BundleCommand());
@@ -36,6 +37,7 @@ class _ContentCommand extends Command<int> {
     addSubcommand(_ValidateCommand());
     addSubcommand(_GraphCommand());
     addSubcommand(_ImportUmapCommand());
+    addSubcommand(_PrintMapCommand());
   }
 
   @override
@@ -148,6 +150,43 @@ class _ImportUmapCommand extends Command<int> {
       ..writeln('  pois:       ${(pois['pois'] as List).length}')
       ..writeln('  segments:   ${(segments['segments'] as List).length}');
     return 0;
+  }
+}
+
+class _PrintMapCommand extends Command<int> {
+  _PrintMapCommand() {
+    argParser.addOption('out',
+        help: 'Output HTML file (defaults to app/web/printable-map.html).');
+  }
+
+  @override
+  String get name => 'print-map';
+
+  @override
+  String get description => 'Generate the standalone printable planning map.';
+
+  @override
+  Future<int> run() async {
+    final repo = Repo.locate();
+    final problems = ContentValidator(repo).validate();
+    if (problems.isNotEmpty) {
+      stderr.writeln(
+          'Refusing to print invalid content:\n${problems.join('\n')}');
+      return 1;
+    }
+    final out =
+        argResults!.option('out') ?? repo.path('app/web/printable-map.html');
+    try {
+      final html = PrintableMap(repo).render();
+      final file = File(out);
+      file.parent.createSync(recursive: true);
+      file.writeAsStringSync(html);
+      stdout.writeln('Wrote printable planning map: $out');
+      return 0;
+    } on FileSystemException catch (error) {
+      stderr.writeln('Could not write printable map: ${error.message}');
+      return 1;
+    }
   }
 }
 
