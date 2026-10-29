@@ -67,10 +67,11 @@ docker compose up -d
 curl -fsS http://127.0.0.1:8098/ | head
 ```
 
-Prerelease tags (with a hyphen) are not also tagged `:latest`, so pin
-`PALUMA_WEB_TAG` (or the default in `docker-compose.yml`) until a stable
-release. If Docker warns that `linux/amd64` does not match the host, the
-published tag is still single-arch — republish with the multi-arch workflow
+`docker-compose.yml` defaults to `:latest` so Watchtower (or a manual
+`docker compose pull`) picks up new stable publishes. Prerelease tags (with a
+hyphen) do not move `:latest`; pin with `PALUMA_WEB_TAG=0.1.0-rc.2` if you need
+a specific build. If Docker warns that `linux/amd64` does not match the host,
+the published tag is still single-arch — republish with the multi-arch workflow
 above, then `docker compose pull` again.
 
 ## Hosting

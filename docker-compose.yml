@@ -1,6 +1,6 @@
 services:
   web:
-    image: ghcr.io/luen/paluma-trails-web:${PALUMA_WEB_TAG:-0.1.0-rc.2}
+    image: ghcr.io/luen/paluma-trails-web:${PALUMA_WEB_TAG:-latest}
     build:
       context: ./app
     container_name: paluma-trails-web
