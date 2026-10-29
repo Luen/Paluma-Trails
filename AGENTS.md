@@ -129,7 +129,9 @@ on **`main`**:
 2. Analyze / test / brand colour check when constraint files moved.
 3. Patch-bump `version.txt`, `app/pubspec.yaml`, `kAppVersion` and
    `.release-please-manifest.json`, commit to `main`, create a GitHub Release
-   (which runs `release-publish.yml` for GHCR `:latest`).
+   pinned to the tested commit, then explicitly dispatch `release.yml` on its
+   tag and `release-publish.yml` for GHCR `:latest`. `GITHUB_TOKEN` events do
+   not start those workflows automatically.
 4. Back-merge `main` → `dev` (fast-forward, else a merge commit in a scratch
    worktree, else open a `chore/sync-main-to-dev` PR).
 
@@ -137,9 +139,9 @@ Constraint files are the intentional edit. Lockfiles are only re-resolved so
 CI can still install. Branch protection on `main` / `dev` needs a bypass for
 Actions if pushes from `GITHUB_TOKEN` are blocked.
 
-Two workflows push the web image, and they are the only ones that should:
+Only `release-publish.yml` pushes the web image. The nightly workflow invokes
+it explicitly for dependency patches; feature releases use the release event.
 
-- `nightly-minor-deps-release.yml` — nightly in-range dependency bumps
 - `release-publish.yml` — on `release: published` (plus `workflow_dispatch`
   with a `tag` input to re-publish an existing release). Feature releases from
   release-please use the same path.

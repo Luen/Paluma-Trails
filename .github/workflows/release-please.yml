@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
   issues: write
   pull-requests: write
 
@@ -17,21 +18,22 @@ concurrency:
 jobs:
   release-please:
     runs-on: ubuntu-latest
+    env:
+      USING_PAT: ${{ secrets.RELEASE_PLEASE_TOKEN != '' }}
     steps:
-      - name: Check the release token
-        id: token
-        env:
-          RELEASE_PLEASE_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
-        run: |
-          if [[ -z "${RELEASE_PLEASE_TOKEN}" ]]; then
-            echo "configured=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::RELEASE_PLEASE_TOKEN is not set; skipping release-please. See docs/release.md."
-          else
-            echo "configured=true" >> "$GITHUB_OUTPUT"
-          fi
       - uses: googleapis/release-please-action@v5
-        if: steps.token.outputs.configured == 'true'
+        id: release
         with:
-          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+      - name: Build releases created with the workflow token
+        if: steps.release.outputs.release_created == 'true' && env.USING_PAT != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag_name }}
+        run: |
+          set -euo pipefail
+          gh workflow run release.yml --ref "$RELEASE_TAG" -f "version=${RELEASE_TAG#v}"
+          gh workflow run release-publish.yml --ref main -f "tag=${RELEASE_TAG}"

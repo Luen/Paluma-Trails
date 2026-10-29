@@ -22,6 +22,7 @@ concurrency:
 
 permissions:
   contents: write
+  actions: write
   packages: write
   pull-requests: write
 
@@ -129,7 +130,6 @@ jobs:
             app/lib/src/app_version.dart \
             .release-please-manifest.json
           git commit -m "chore(deps): nightly in-major dependency update (${{ steps.version.outputs.version }})"
-          git pull --rebase origin main
           git push origin HEAD:main
 
       # Keep dev level with main. Runs straight after the bump lands so a
@@ -174,5 +174,18 @@ jobs:
             echo "Release $TAG already exists"
             exit 0
           fi
-          gh release create "$TAG" --target main --title "$TAG" \
+          gh release create "$TAG" --target "$(git rev-parse HEAD)" --title "$TAG" \
             --notes "Nightly in-major dependency update (${TAG})."
+
+      # GITHUB_TOKEN events do not trigger tag/release workflows. Dispatch them
+      # explicitly against the immutable tag created above.
+      - name: Build release artifacts and publish image
+        if: steps.changes.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          TAG="v${VERSION}"
+          gh workflow run release.yml --ref "$TAG" -f "version=${VERSION}"
+          gh workflow run release-publish.yml --ref main -f "tag=${TAG}"
