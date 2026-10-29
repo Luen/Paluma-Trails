@@ -1,15 +1,31 @@
 {
-  "updated": "2026-10-26",
+  "updated": "2026-10-30",
   "intro": "Paluma is remote walking country. Phone reception is unreliable, weather changes quickly and help can take hours to reach you. The offline map works without a signal; your battery, water and a plan are what you rely on.",
   "emergency": {
-    "headline": "In an emergency, call 000. If the call does not connect, try 112.",
+    "headline": "In an emergency, call 000. On a mobile, 112 connects to the same emergency service.",
     "steps": [
+      "Do not send an SMS directly to 000 or 112; these numbers do not receive text messages.",
       "Give your coordinates from this screen and the number of the nearest junction.",
       "Say how many people are with you and what the injury or hazard is.",
       "Stay where you are if it is safe to do so, keep warm and dry, and make yourself easy to find.",
-      "If a call will not connect, send an SMS with your coordinates and junction number — it may leave when a call cannot."
+      "For a call over a mobile network, coverage from at least one provider is needed. Dialling 112 does not create reception where no mobile network is available.",
+      "If a call cannot connect, keep yourself safe and seek help from people nearby or another available way to contact emergency services."
     ]
   },
+  "sources": [
+    {
+      "label": "ACMA — Emergency calls; mobile coverage, emergency numbers and text messages (checked 30 October 2026)",
+      "url": "https://www.acma.gov.au/emergency-calls"
+    },
+    {
+      "label": "Australian Government — Using other emergency numbers; 112, direct SMS and separate NRS relay services (checked 30 October 2026)",
+      "url": "https://www.infrastructure.gov.au/media-communications/phone/triple-zero/using-other-emergency-numbers"
+    },
+    {
+      "label": "Australian Government — How to call Triple Zero; giving your location and trouble connecting (checked 30 October 2026)",
+      "url": "https://www.infrastructure.gov.au/media-communications/phone/triple-zero/how-call-triple-zero-000"
+    }
+  ],
   "sections": [
     {
       "title": "Before you set out",

@@ -62,6 +62,36 @@
         "gardes-lookout description and photograph"
       ],
       "notes": "Article dates 22 and 25 December 2017; read 29 October 2026. Independently credited third-party images and quoted third-party text require their own source/permission review. The Garde’s photo has no separate photographer credit in the guide; credit is to Wanderstories, without inventing an individual photographer."
+    },
+    {
+      "id": "acma-emergency-calls",
+      "label": "ACMA — Emergency calls",
+      "url": "https://www.acma.gov.au/emergency-calls",
+      "licence": "Project text paraphrases official guidance; original agency material remains subject to its own published terms.",
+      "used_for": [
+        "safety.json emergency contact guidance"
+      ],
+      "notes": "Checked 2026-10-30. Factual reference only; no agency endorsement asserted. This is not a review of all other safety sections."
+    },
+    {
+      "id": "australian-government-emergency-numbers",
+      "label": "Australian Government — Using other emergency numbers",
+      "url": "https://www.infrastructure.gov.au/media-communications/phone/triple-zero/using-other-emergency-numbers",
+      "licence": "Project text paraphrases official guidance; original agency material remains subject to its own published terms.",
+      "used_for": [
+        "safety.json emergency contact guidance"
+      ],
+      "notes": "Checked 2026-10-30. Factual reference only; no agency endorsement asserted. This is not a review of all other safety sections."
+    },
+    {
+      "id": "australian-government-call-triple-zero",
+      "label": "Australian Government — How to call Triple Zero",
+      "url": "https://www.infrastructure.gov.au/media-communications/phone/triple-zero/how-call-triple-zero-000",
+      "licence": "Project text paraphrases official guidance; original agency material remains subject to its own published terms.",
+      "used_for": [
+        "safety.json emergency contact guidance"
+      ],
+      "notes": "Checked 2026-10-30. Factual reference only; no agency endorsement asserted. This is not a review of all other safety sections."
     }
   ]
 }

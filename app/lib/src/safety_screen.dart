@@ -7,6 +7,7 @@ import 'content/bundle_repository.dart';
 import 'location/emergency_planner.dart';
 import 'location/location_prompts.dart';
 import 'location/location_service.dart';
+import 'map/source_link.dart';
 import 'map/format.dart';
 
 /// What to do when something goes wrong, and where the walker is right now.
@@ -106,6 +107,18 @@ class _SafetyScreenState extends State<SafetyScreen> {
             'closures and current conditions before you set out.',
             style: theme.textTheme.bodySmall,
           ),
+          if (safety.sources.isNotEmpty) ...[
+            const SizedBox(height: 24),
+            Semantics(
+              header: true,
+              child: Text(
+                'Emergency contact sources',
+                style: theme.textTheme.titleMedium,
+              ),
+            ),
+            for (final source in safety.sources)
+              SourceLink(label: source.label, url: source.url),
+          ],
         ],
       ),
     );
