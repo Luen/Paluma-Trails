@@ -209,6 +209,7 @@ class Poi {
     this.qrId,
     this.unverified = false,
     this.sources = const [],
+    this.photos = const [],
   });
 
   final String id;
@@ -220,6 +221,7 @@ class Poi {
   final String? qrId;
   final bool unverified;
   final List<PoiSource> sources;
+  final List<PoiPhoto> photos;
 
   factory Poi.fromJson(Map<String, Object?> json) => Poi(
     id: json['id']! as String,
@@ -230,10 +232,36 @@ class Poi {
     description: json['description'] as String?,
     qrId: json['qr_id'] as String?,
     unverified: (json['unverified'] as bool?) ?? false,
+    photos: ((json['photos'] as List?) ?? const [])
+        .cast<Map<String, Object?>>()
+        .map(PoiPhoto.fromJson)
+        .toList(growable: false),
     sources: ((json['sources'] as List?) ?? const [])
         .cast<Map<String, Object?>>()
         .map(PoiSource.fromJson)
         .toList(growable: false),
+  );
+}
+
+/// A bundled photograph with its caption, attribution and reuse terms.
+class PoiPhoto {
+  const PoiPhoto({
+    required this.file,
+    required this.caption,
+    required this.credit,
+    required this.licence,
+  });
+
+  final String file;
+  final String caption;
+  final String credit;
+  final String licence;
+
+  factory PoiPhoto.fromJson(Map<String, Object?> json) => PoiPhoto(
+    file: json['file']! as String,
+    caption: json['caption']! as String,
+    credit: json['credit']! as String,
+    licence: json['licence']! as String,
   );
 }
 

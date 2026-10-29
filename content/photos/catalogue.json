@@ -1,0 +1,81 @@
+{
+  "book_sha256": "212b8696b7932d5dcca7f2daf422e33e13ffe01b1faab8c581a5d59603ca899f",
+  "images": [
+    {
+      "file": "johnstones-hut-1911.jpg",
+      "poi_id": "johnstones-hut",
+      "printed_page": 15,
+      "pdf_page": 17,
+      "crop_fraction": [
+        0.066,
+        0.677,
+        0.487,
+        0.875
+      ],
+      "caption": "Jack Johnstone’s maple-slab hut at Mt Spec, 1911.",
+      "original_credit": "Hinchinbrook Shire, Hinchinbrook Collection",
+      "sha256": "594f32b5be786ee7e97dbc0d6f5762446b6a52b7e8a59cb51edca240ade61052",
+      "dimensions": [
+        627,
+        420
+      ]
+    },
+    {
+      "file": "foxlees-lookout-1922.jpg",
+      "poi_id": "foxlees-lookout",
+      "printed_page": 19,
+      "pdf_page": 21,
+      "crop_fraction": [
+        0.529,
+        0.652,
+        0.93,
+        0.829
+      ],
+      "caption": "Mayor W H Green’s party resting near Foxlee’s lookout, 22 March 1922.",
+      "original_credit": "W J Laurie, Thuringowa Collection",
+      "sha256": "cb9a67778483a6df42432baf860a68623ed7bdcffc336922b38d0e5c6fc7d519",
+      "dimensions": [
+        597,
+        376
+      ]
+    },
+    {
+      "file": "star-valley-lookout-1940s.jpg",
+      "poi_id": "star-valley-lookout",
+      "printed_page": 44,
+      "pdf_page": 46,
+      "crop_fraction": [
+        0.073,
+        0.06,
+        0.493,
+        0.5
+      ],
+      "caption": "Star Valley Lookout on Mt Spec Road, early 1940s.",
+      "original_credit": "W J Laurie, Venn Collection",
+      "sha256": "c470e3aab7d5c7061ace158bc0588692df70beac986add244dc9124526e4f4e8",
+      "dimensions": [
+        625,
+        934
+      ]
+    },
+    {
+      "file": "mcclellands-lookout-1942.jpg",
+      "poi_id": "mcclellands-lookout",
+      "printed_page": 55,
+      "pdf_page": 57,
+      "crop_fraction": [
+        0.069,
+        0.566,
+        0.672,
+        0.847
+      ],
+      "caption": "US Army soldiers building a generator-unloading ramp on the former Loop Road, now part of McClelland’s Lookout picnic area, 1942.",
+      "original_credit": "Raschak, Thuringowa Collection",
+      "sha256": "2060d73e2463f893cf905984e436035f9cb4e6d2679821883ad509be236ee02a",
+      "dimensions": [
+        897,
+        597
+      ]
+    }
+  ]
+}

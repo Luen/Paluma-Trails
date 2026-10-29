@@ -264,11 +264,16 @@
         "lat": -18.999955,
         "lon": 146.187826
       },
-      "summary": null,
-      "description": null,
+      "summary": "A waterfall with a name linked to the Benham family and changing creek names.",
+      "description": "Venn explains that the creek now called Benham's Creek was originally named Ethel Creek by the Benham brothers. A surveyor applied Ethel to a larger stream farther north, and the original creek was officially renamed Benham's in 1939.\n\nThe book places Ethel Creek Falls west of Paluma. Its 2002 access description is historical and does not establish present access rights or a walking route.",
       "qr_id": null,
       "photos": [],
-      "sources": [],
+      "sources": [
+        {
+          "label": "Linda Venn, Paluma: The First Eighty Years 1870s–1950s (Thuringowa City Council, 2002), pp. 9 (PDF page 11 onward).",
+          "url": "https://www.townsville.qld.gov.au/__data/assets/pdf_file/0019/5374/Paluma-The-First-Eighty-Years_web.pdf#page=11"
+        }
+      ],
       "unverified": true,
       "source": "wanderstories-umap-264617"
     },
@@ -312,11 +317,23 @@
         "lat": -18.948849,
         "lon": 146.210022
       },
-      "summary": null,
-      "description": null,
+      "summary": "A lookout connected with tin miner and packer Philip Foxlee.",
+      "description": "Philip Foxlee cut a pack track from Mutarnee towards Mt Spec along the northern side of Mt Leach. Venn identifies a natural lookout near the top that carries his name. The book includes a photograph of Mayor W H Green's party resting near Foxlee's lookout on 22 March 1922, during an investigation of a possible water supply.\n\nDescriptions of the old track in this 2002 history do not establish its present condition or access.",
       "qr_id": null,
-      "photos": [],
-      "sources": [],
+      "photos": [
+        {
+          "file": "foxlees-lookout-1922.jpg",
+          "caption": "Mayor W H Green’s party resting near Foxlee’s lookout, 22 March 1922.",
+          "credit": "W J Laurie, Thuringowa Collection. Paluma: The First Eighty Years 1870s–1950s; author Linda Venn; published by Thuringowa City Council, February 2002, p. 19.",
+          "licence": "Used with permission given to Luen Warneke of Wanderstories, confirmed by the repository owner on 2026-10-29. Copyright retained; no onward licence granted."
+        }
+      ],
+      "sources": [
+        {
+          "label": "Linda Venn, Paluma: The First Eighty Years 1870s–1950s (Thuringowa City Council, 2002), pp. 12, 19–20 (PDF page 14 onward).",
+          "url": "https://www.townsville.qld.gov.au/__data/assets/pdf_file/0019/5374/Paluma-The-First-Eighty-Years_web.pdf#page=14"
+        }
+      ],
       "unverified": true,
       "source": "wanderstories-umap-264617"
     },
@@ -328,11 +345,16 @@
         "lat": -18.947575,
         "lon": 146.193987
       },
-      "summary": null,
-      "description": null,
+      "summary": "A tin-mining battery with a documented rainforest water race.",
+      "description": "Linda Venn records a water race at Gards' Battery surveyed in the 1980s, winding for about 150 metres through the rainforest. Such channels supplied water for separating tin from gravel or for hydraulic sluicing.\n\nThe book spells the family name Gard. Tom Gard worked around Mt Spec with his brother at the turn of the twentieth century and with his sons in the 1920s. The mapped location and surviving remains still need field verification.",
       "qr_id": null,
       "photos": [],
-      "sources": [],
+      "sources": [
+        {
+          "label": "Linda Venn, Paluma: The First Eighty Years 1870s–1950s (Thuringowa City Council, 2002), pp. 15, 17–18 (PDF page 17 onward).",
+          "url": "https://www.townsville.qld.gov.au/__data/assets/pdf_file/0019/5374/Paluma-The-First-Eighty-Years_web.pdf#page=17"
+        }
+      ],
       "unverified": true,
       "source": "wanderstories-umap-264617"
     },
@@ -344,11 +366,16 @@
         "lat": -18.947389,
         "lon": 146.19414
       },
-      "summary": null,
-      "description": null,
+      "summary": "A mapped clearing in the Gard family mining area; hut details remain unconfirmed.",
+      "description": "The Gard family were among the small mining partnerships around Mt Spec. Venn places Tom Gard here with his brother around the turn of the twentieth century and with his sons in the 1920s.\n\nThe book documents Gards' Battery and its water race, but does not identify this clearing as a particular Gard hut or date its construction. This marker retains the map's existing location; the hut association needs further evidence.",
       "qr_id": null,
       "photos": [],
-      "sources": [],
+      "sources": [
+        {
+          "label": "Linda Venn, Paluma: The First Eighty Years 1870s–1950s (Thuringowa City Council, 2002), pp. 15, 17–18 (PDF page 17 onward).",
+          "url": "https://www.townsville.qld.gov.au/__data/assets/pdf_file/0019/5374/Paluma-The-First-Eighty-Years_web.pdf#page=17"
+        }
+      ],
       "unverified": true,
       "source": "wanderstories-umap-264617"
     },
@@ -360,11 +387,16 @@
         "lat": -18.930199,
         "lon": 146.19776
       },
-      "summary": null,
-      "description": null,
+      "summary": "A mapped lookout whose individual history still needs verification.",
+      "description": "Venn documents the Gard family's mining around Mt Spec and a water race at Gards' Battery. The book uses the spelling Gard, while this map retains its existing Garde names.\n\nThe book does not separately describe this lookout, explain its name, or establish a link between this exact site and a particular Gard family member. The mining history is regional context rather than a verified history of the lookout.",
       "qr_id": null,
       "photos": [],
-      "sources": [],
+      "sources": [
+        {
+          "label": "Linda Venn, Paluma: The First Eighty Years 1870s–1950s (Thuringowa City Council, 2002), pp. 15, 17–18 (PDF page 17 onward).",
+          "url": "https://www.townsville.qld.gov.au/__data/assets/pdf_file/0019/5374/Paluma-The-First-Eighty-Years_web.pdf#page=17"
+        }
+      ],
       "unverified": true,
       "source": "wanderstories-umap-264617"
     },
@@ -392,11 +424,23 @@
         "lat": -18.954906,
         "lon": 146.192316
       },
-      "summary": null,
-      "description": null,
+      "summary": "The hut site associated with long-time Mt Spec tin miner Jack Johnstone.",
+      "description": "Jack Johnstone, also recorded as Johnson, came from Denmark in the 1880s and spent about fifty years around Mt Spec. Venn describes him sluicing alluvial tin at the head of Spec Creek in 1916 and growing fruit and vegetables.\n\nA 1911 photograph shows his hut built from maple slabs. Venn reports lilies and gravel foundations at the clearing; these are historical observations, not a statement that the same remains are visible today.",
       "qr_id": null,
-      "photos": [],
-      "sources": [],
+      "photos": [
+        {
+          "file": "johnstones-hut-1911.jpg",
+          "caption": "Jack Johnstone’s maple-slab hut at Mt Spec, 1911.",
+          "credit": "Hinchinbrook Shire, Hinchinbrook Collection. Paluma: The First Eighty Years 1870s–1950s; author Linda Venn; published by Thuringowa City Council, February 2002, p. 15.",
+          "licence": "Used with permission given to Luen Warneke of Wanderstories, confirmed by the repository owner on 2026-10-29. Copyright retained; no onward licence granted."
+        }
+      ],
+      "sources": [
+        {
+          "label": "Linda Venn, Paluma: The First Eighty Years 1870s–1950s (Thuringowa City Council, 2002), pp. 15, 18 (PDF page 17 onward).",
+          "url": "https://www.townsville.qld.gov.au/__data/assets/pdf_file/0019/5374/Paluma-The-First-Eighty-Years_web.pdf#page=17"
+        }
+      ],
       "unverified": true,
       "source": "wanderstories-umap-264617"
     },
@@ -504,11 +548,23 @@
         "lat": -19.006612,
         "lon": 146.213135
       },
-      "summary": null,
-      "description": null,
+      "summary": "Named for a range-road supervisor; later part of Paluma’s wartime radar story.",
+      "description": "The lookout commemorates W H McClelland, the Main Roads officer who supervised construction of the Mt Spec Tourist Road. Venn also places the American radar antenna in what became the lookout picnic area.\n\nThe book describes soldiers of the 16th Platoon, Company E, arriving in Paluma in March 1942. A photograph records them building a generator-unloading ramp on the former Loop Road, identified in the caption as part of the later picnic area.",
       "qr_id": null,
-      "photos": [],
-      "sources": [],
+      "photos": [
+        {
+          "file": "mcclellands-lookout-1942.jpg",
+          "caption": "US Army soldiers building a generator-unloading ramp on the former Loop Road, now part of McClelland’s Lookout picnic area, 1942.",
+          "credit": "Raschak, Thuringowa Collection. Paluma: The First Eighty Years 1870s–1950s; author Linda Venn; published by Thuringowa City Council, February 2002, p. 55.",
+          "licence": "Used with permission given to Luen Warneke of Wanderstories, confirmed by the repository owner on 2026-10-29. Copyright retained; no onward licence granted."
+        }
+      ],
+      "sources": [
+        {
+          "label": "Linda Venn, Paluma: The First Eighty Years 1870s–1950s (Thuringowa City Council, 2002), pp. 9, 55, 60 (PDF page 11 onward).",
+          "url": "https://www.townsville.qld.gov.au/__data/assets/pdf_file/0019/5374/Paluma-The-First-Eighty-Years_web.pdf#page=11"
+        }
+      ],
       "unverified": true,
       "source": "wanderstories-umap-264617"
     },
@@ -568,11 +624,16 @@
         "lat": -18.941511,
         "lon": 146.188565
       },
-      "summary": null,
-      "description": null,
+      "summary": "The mountain at the centre of Paluma’s mining and early tourism history.",
+      "description": "Venn records several competing explanations for the name Mt Spec: a packhorse, a vessel, or mining speculation. The book does not settle the origin.\n\nIn 1930 a party cleared an old wagon road from Shay's towards the summit and reported taking two cars to the top. This is a historical account, not evidence of a present-day vehicle route or permission to drive there.",
       "qr_id": null,
       "photos": [],
-      "sources": [],
+      "sources": [
+        {
+          "label": "Linda Venn, Paluma: The First Eighty Years 1870s–1950s (Thuringowa City Council, 2002), pp. 8, 21 (PDF page 10 onward).",
+          "url": "https://www.townsville.qld.gov.au/__data/assets/pdf_file/0019/5374/Paluma-The-First-Eighty-Years_web.pdf#page=10"
+        }
+      ],
       "unverified": true,
       "source": "wanderstories-umap-264617"
     },
@@ -632,11 +693,16 @@
         "lat": -18.932409,
         "lon": 146.1885
       },
-      "summary": null,
-      "description": null,
+      "summary": "The mapped clearing associated with Shay’s early mountain guesthouse.",
+      "description": "Before the range road, the Shay family hosted visitors near Mt Spec and offered guided walking and horse trips along the Bambaroo Track. Venn describes their guesthouse as two dormitories, a shared room and a kitchen; a bushfire destroyed much of it in 1965.\n\nAn Easter 1930 visitors' book recorded 25 boarders, mostly from Townsville. The book calls it a guesthouse rather than establishing a licensed hotel. The precise footprint at this mapped clearing remains unverified.",
       "qr_id": null,
       "photos": [],
-      "sources": [],
+      "sources": [
+        {
+          "label": "Linda Venn, Paluma: The First Eighty Years 1870s–1950s (Thuringowa City Council, 2002), pp. 20–22 (PDF page 22 onward).",
+          "url": "https://www.townsville.qld.gov.au/__data/assets/pdf_file/0019/5374/Paluma-The-First-Eighty-Years_web.pdf#page=22"
+        }
+      ],
       "unverified": true,
       "source": "wanderstories-umap-264617"
     },
@@ -664,11 +730,23 @@
         "lat": -19.013906,
         "lon": 146.18057
       },
-      "summary": null,
-      "description": null,
+      "summary": "A lookout appearing in early range-road photographs and timber-camp history.",
+      "description": "Venn reproduces an early-1940s photograph of Star Valley Lookout on the Mt Spec Road, west of Paluma, overlooking the Star River Basin. The timber-industry chapter also describes Beedell's substantial camp at Star Valley Lookout, with a log cabin and machinery sheds.\n\nThese records explain the place's historical setting; the photograph does not locate surviving structures or confirm their present condition.",
       "qr_id": null,
-      "photos": [],
-      "sources": [],
+      "photos": [
+        {
+          "file": "star-valley-lookout-1940s.jpg",
+          "caption": "Star Valley Lookout on Mt Spec Road, early 1940s.",
+          "credit": "W J Laurie, Venn Collection. Paluma: The First Eighty Years 1870s–1950s; author Linda Venn; published by Thuringowa City Council, February 2002, p. 44.",
+          "licence": "Used with permission given to Luen Warneke of Wanderstories, confirmed by the repository owner on 2026-10-29. Copyright retained; no onward licence granted."
+        }
+      ],
+      "sources": [
+        {
+          "label": "Linda Venn, Paluma: The First Eighty Years 1870s–1950s (Thuringowa City Council, 2002), pp. 44–45 (PDF page 46 onward).",
+          "url": "https://www.townsville.qld.gov.au/__data/assets/pdf_file/0019/5374/Paluma-The-First-Eighty-Years_web.pdf#page=46"
+        }
+      ],
       "unverified": true,
       "source": "wanderstories-umap-264617"
     },
@@ -808,11 +886,16 @@
         "lat": -18.999719,
         "lon": 146.211119
       },
-      "summary": null,
-      "description": null,
+      "summary": "One of two mapped Witt’s lookout points; wartime accounts name the lookout area.",
+      "description": "Venn records an emergency radio-telegraph station at Witts Lookout as a backup if the American radar unit's telephone line failed. It was not continuously staffed.\n\nThe book does not distinguish this map's lower and upper lookout markers, so the station cannot be assigned to this exact point from that account. This history does not establish present-day mobile reception.",
       "qr_id": null,
       "photos": [],
-      "sources": [],
+      "sources": [
+        {
+          "label": "Linda Venn, Paluma: The First Eighty Years 1870s–1950s (Thuringowa City Council, 2002), pp. 60 (PDF page 62 onward).",
+          "url": "https://www.townsville.qld.gov.au/__data/assets/pdf_file/0019/5374/Paluma-The-First-Eighty-Years_web.pdf#page=62"
+        }
+      ],
       "unverified": true,
       "source": "wanderstories-umap-264617"
     },
@@ -824,11 +907,16 @@
         "lat": -19.000049,
         "lon": 146.210603
       },
-      "summary": null,
-      "description": null,
+      "summary": "One of two mapped Witt’s lookout points; the exact wartime station site is unconfirmed.",
+      "description": "During the Second World War, an emergency radio-telegraph station at Witts Lookout backed up the American radar unit's telephone connection, according to Venn. It was not continuously staffed.\n\nThe account does not separate the lower and upper lookout locations shown on this map. It provides historical context rather than proof that the station stood at this marker or that a phone will work here today.",
       "qr_id": null,
       "photos": [],
-      "sources": [],
+      "sources": [
+        {
+          "label": "Linda Venn, Paluma: The First Eighty Years 1870s–1950s (Thuringowa City Council, 2002), pp. 60 (PDF page 62 onward).",
+          "url": "https://www.townsville.qld.gov.au/__data/assets/pdf_file/0019/5374/Paluma-The-First-Eighty-Years_web.pdf#page=62"
+        }
+      ],
       "unverified": true,
       "source": "wanderstories-umap-264617"
     }

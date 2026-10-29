@@ -36,8 +36,9 @@ dart run tools/paluma_cli/bin/paluma_cli.dart bundle build
 For a basemap refresh, use [the basemap pipeline](../tools/basemap/README.md)
 first and update its build-date provenance in `sources.json`. Basemap inputs
 live under `content/basemap/`; commit both those inputs and the rebuilt assets.
-Photos need permission and credits, plus offline packaging/rendering support;
-a `photos` entry alone does not make an image available in the current app.
+Photos need permission and credits. Store image files under `content/photos/`
+and reference their filenames from the POI’s `photos` list; the bundler includes
+referenced photos for offline display. See [the content model](content-model.md#photographs).
 
 ## Review and verify
 

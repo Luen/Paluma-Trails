@@ -29,6 +29,7 @@ flutter:
   assets:
     - assets/bundle/manifest.json
     - assets/bundle/content/
+    - assets/bundle/photos/
     - assets/bundle/basemap/paluma.pmtiles
     - assets/bundle/basemap/style.json
     - assets/bundle/basemap/fonts/Noto-Sans-Regular/
