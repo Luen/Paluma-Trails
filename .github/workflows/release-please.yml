@@ -25,6 +25,9 @@ jobs:
         id: release
         with:
           token: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}
+          # Repositories may disallow Actions from creating PRs. Without a PAT,
+          # a maintainer opens the release PR with the Release Please CLI.
+          skip-github-pull-request: ${{ env.USING_PAT != 'true' }}
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
       - name: Build releases created with the workflow token

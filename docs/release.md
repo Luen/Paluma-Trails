@@ -17,9 +17,12 @@ the changelog.
 Release Please uses `RELEASE_PLEASE_TOKEN` when configured, otherwise the
 repository's `GITHUB_TOKEN`. Token-created release/tag events do not start other
 workflows, so the fallback explicitly dispatches the artifact and image builds.
-A PAT lets release PR checks start automatically. Without one, approve any
-waiting workflow runs or dispatch **CI → Run workflow** against the release
-PR's head branch before merging; never treat missing checks as passing.
+A PAT enables automatic release PR creation. Without one, a maintainer uses
+the Release Please CLI with their authenticated GitHub account to open the
+release PR; the workflow then creates the release after that PR is merged.
+Run **CI → Run workflow** against the release PR's head branch if no checks
+started; never treat missing checks as passing. Repository Actions PR-creation
+permissions are not changed by this fallback.
 
 An optional PAT can be configured as follows.
 
