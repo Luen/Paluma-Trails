@@ -56,6 +56,15 @@ CI runs exactly these checks, plus `flutter build web --release` and a debug APK
   If you cannot cite it, mark it as needing verification in the relevant issue
   instead of writing it as fact.
 
+## Design and branding
+
+Read [`docs/branding.md`](docs/branding.md) before changing UI, colours, type,
+icons or store artwork. Colours come from the theme, `BrandColors` or
+`MapPalette`, never a new hex value in a widget. The brand artwork is generated
+by [`tools/brand/`](tools/brand/README.md); run
+`python tools/brand/colour_check.py` after touching any palette. UI pull
+requests complete the brand review checklist in the PR template.
+
 ## Commit messages
 
 Conventional Commits, because release tooling reads them:

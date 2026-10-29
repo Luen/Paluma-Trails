@@ -1,18 +1,28 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show setEquals;
 import 'package:flutter/material.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
 import '../about_screen.dart';
+import '../brand/brand.dart';
 import '../content/bundle_repository.dart';
 import '../content/models.dart';
+import '../location/location_prompts.dart';
 import '../location/location_service.dart';
 import '../location/trail_locator.dart';
+import '../location/walk_tracker.dart';
+import '../safety_screen.dart';
+import '../waypoints/waypoint.dart';
+import '../waypoints/waypoint_store.dart';
 import 'location_overlay.dart';
 import 'map_options.dart';
+import 'map_palette.dart';
+import 'poi_groups.dart';
+import 'route_sheet.dart';
 import 'sheets.dart';
+import 'waypoint_sheets.dart';
 
 /// The offline map: basemap from the bundled PMTiles archive, trail content
 /// from the bundled GeoJSON, and tap-to-inspect sheets on top.
@@ -29,13 +39,17 @@ class _MapScreenState extends State<MapScreen> {
   static const _tracksSource = 'paluma-tracks-source';
   static const _junctionsSource = 'paluma-junctions-source';
   static const _poisSource = 'paluma-pois-source';
+  static const _waypointsSource = 'paluma-waypoints-source';
 
   static const _tracksCasingLayer = 'paluma-tracks-casing';
   static const _tracksLayer = 'paluma-tracks';
+  static const _informalTracksLayer = 'paluma-tracks-informal';
   static const _junctionsLayer = 'paluma-junctions';
   static const _junctionsLabelLayer = 'paluma-junctions-label';
   static const _poisLayer = 'paluma-pois';
   static const _poisLabelLayer = 'paluma-pois-label';
+  static const _waypointsLayer = 'paluma-waypoints';
+  static const _waypointsLabelLayer = 'paluma-waypoints-label';
 
   MapLibreMapController? _controller;
   var _layersAdded = false;
@@ -43,8 +57,14 @@ class _MapScreenState extends State<MapScreen> {
   MapOptions? _options;
   var _sunlight = false;
 
+  /// The POI categories hidden by the current display options, so the map
+  /// filter is only rebuilt when the choice actually changes.
+  Set<String> _hiddenPoiCategories = const {};
+
   late final LocationService _location;
   late final TrailLocator _trailLocator;
+  late final WaypointStore _waypoints;
+  late final WalkTracker _walk;
   TrailFix? _trailFix;
 
   /// Whether the camera should follow the walker's fixes.
@@ -60,14 +80,19 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     super.initState();
     _location = LocationService();
+    _walk = WalkTracker();
     _trailLocator = TrailLocator.fromGeoJson(
       tracksGeoJson: widget.bundle.tracksGeoJson,
       origin: widget.bundle.park.center,
       junctions: widget.bundle.junctions,
+      pois: widget.bundle.pois,
+      waterCategories: PoiGroup.water.categories.toSet(),
       paceKmh: widget.bundle.estimate.paceKmh,
     );
     _location.fix.addListener(_onFix);
     _location.status.addListener(_onLocationStatusChanged);
+    _waypoints = WaypointStore()..addListener(_onWaypointsChanged);
+    unawaited(_waypoints.load());
   }
 
   @override
@@ -80,6 +105,10 @@ class _MapScreenState extends State<MapScreen> {
       _sunlight = options.sunlight;
       if (_layersAdded) unawaited(_applyLayerStyle());
     }
+    if (!setEquals(_hiddenPoiCategories, options.hiddenPoiCategories)) {
+      _hiddenPoiCategories = options.hiddenPoiCategories;
+      if (_layersAdded) unawaited(_applyPoiVisibility());
+    }
   }
 
   @override
@@ -87,6 +116,8 @@ class _MapScreenState extends State<MapScreen> {
     _location.fix.removeListener(_onFix);
     _location.status.removeListener(_onLocationStatusChanged);
     _location.dispose();
+    _waypoints.removeListener(_onWaypointsChanged);
+    _waypoints.dispose();
     super.dispose();
   }
 
@@ -98,13 +129,36 @@ class _MapScreenState extends State<MapScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(bundle.park.name),
+        title: Row(
+          children: [
+            const TrailPinMark(
+              height: 30,
+              accentColor: BrandColors.sand,
+              semanticLabel: BrandText.name,
+            ),
+            const SizedBox(width: 12),
+            Flexible(
+              child: Text(bundle.park.name, overflow: TextOverflow.ellipsis),
+            ),
+          ],
+        ),
         actions: [
+          IconButton(
+            tooltip: 'Plan a walk',
+            onPressed: _openRoutePlanner,
+            icon: const Icon(Icons.route_outlined),
+          ),
+          IconButton(
+            tooltip: 'Safety and emergency information',
+            onPressed: _openSafety,
+            icon: const Icon(Icons.health_and_safety_outlined),
+          ),
           IconButton(
             tooltip: 'About this app',
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
-                builder: (_) => AboutScreen(bundle: bundle),
+                builder: (_) =>
+                    AboutScreen(bundle: bundle, location: _location),
               ),
             ),
             icon: const Icon(Icons.info_outline),
@@ -163,11 +217,12 @@ class _MapScreenState extends State<MapScreen> {
                     status: _location.status.value,
                     fix: _location.fix.value,
                     trail: _trailFix,
+                    walkedM: _walk.metres,
                     onJunctionTap: _openJunction,
                   ),
                   const SizedBox(height: 6),
                 ],
-                _BundleChip(version: bundle.manifest.bundleVersion),
+                _OfflineChip(version: bundle.manifest.bundleVersion),
               ],
             ),
           ),
@@ -185,9 +240,18 @@ class _MapScreenState extends State<MapScreen> {
                 const SizedBox(height: 10),
                 MapControlButton(
                   icon: Icons.tune,
-                  tooltip: 'Outdoor display and battery options',
-                  highlighted: options.sunlight || options.batterySaver,
+                  tooltip: 'Map key and display options',
+                  highlighted:
+                      options.sunlight ||
+                      options.batterySaver ||
+                      !options.allPoiGroupsVisible,
                   onPressed: _openDisplaySettings,
+                ),
+                const SizedBox(height: 10),
+                MapControlButton(
+                  icon: Icons.push_pin_outlined,
+                  tooltip: 'Your waypoints',
+                  onPressed: _layersAdded ? _openWaypoints : null,
                 ),
                 const SizedBox(height: 10),
                 LocateButton(
@@ -243,6 +307,13 @@ class _MapScreenState extends State<MapScreen> {
         _tracksSource,
         _tracksLayer,
         _tracksProperties(_sunlight),
+        filter: _solidTracksFilter,
+      );
+      await controller.addLineLayer(
+        _tracksSource,
+        _informalTracksLayer,
+        _informalTracksProperties(_sunlight),
+        filter: _informalTracksFilter,
       );
       await controller.addCircleLayer(
         _junctionsSource,
@@ -265,6 +336,22 @@ class _MapScreenState extends State<MapScreen> {
         _poisLabelLayer,
         _poiLabelProperties(_sunlight),
         minzoom: 13.5,
+      );
+      await controller.addGeoJsonSource(
+        _waypointsSource,
+        waypointsFeatureCollection(_waypoints.waypoints),
+        promoteId: 'id',
+      );
+      await controller.addCircleLayer(
+        _waypointsSource,
+        _waypointsLayer,
+        _waypointProperties(_sunlight),
+      );
+      await controller.addSymbolLayer(
+        _waypointsSource,
+        _waypointsLabelLayer,
+        _waypointLabelProperties(_sunlight),
+        minzoom: 14,
       );
     } catch (error) {
       if (mounted) {
@@ -291,6 +378,10 @@ class _MapScreenState extends State<MapScreen> {
         _tracksProperties(_sunlight),
       );
       await controller.setLayerProperties(
+        _informalTracksLayer,
+        _informalTracksProperties(_sunlight),
+      );
+      await controller.setLayerProperties(
         _junctionsLayer,
         _junctionProperties(_sunlight),
       );
@@ -306,11 +397,58 @@ class _MapScreenState extends State<MapScreen> {
         _poisLabelLayer,
         _poiLabelProperties(_sunlight),
       );
+      await controller.setLayerProperties(
+        _waypointsLayer,
+        _waypointProperties(_sunlight),
+      );
+      await controller.setLayerProperties(
+        _waypointsLabelLayer,
+        _waypointLabelProperties(_sunlight),
+      );
     } catch (_) {
       // The map may already be gone; the next style load adds the layers
       // again with the current colours.
     }
   }
+
+  /// Rebuilds the POI source after a display option changed.
+  ///
+  /// Layers keep their style and interaction; only the features handed to
+  /// MapLibre change. A layer filter would be cheaper, but the web plugin does
+  /// not convert a Dart filter list for `setFilter`, and this works the same on
+  /// every platform.
+  Future<void> _applyPoiVisibility() async {
+    final controller = _controller;
+    if (controller == null || !_layersAdded) return;
+    try {
+      await controller.setGeoJsonSource(
+        _poisSource,
+        widget.bundle.poisFeatureCollection(
+          hiddenCategories: _hiddenPoiCategories,
+        ),
+      );
+    } catch (_) {
+      // The map may already be gone; the next style load builds the source
+      // with the current choice.
+    }
+  }
+
+  /// Rebuilds the waypoint source after a pin is added, renamed or deleted.
+  Future<void> _applyWaypoints() async {
+    final controller = _controller;
+    if (controller == null || !_layersAdded) return;
+    try {
+      await controller.setGeoJsonSource(
+        _waypointsSource,
+        waypointsFeatureCollection(_waypoints.waypoints),
+      );
+    } catch (_) {
+      // The map may already be gone; the next style load builds the source
+      // with the saved pins.
+    }
+  }
+
+  void _onWaypointsChanged() => unawaited(_applyWaypoints());
 
   static List<Object> _casingWidth(bool sunlight) => [
     'interpolate',
@@ -338,29 +476,51 @@ class _MapScreenState extends State<MapScreen> {
 
   static LineLayerProperties _tracksCasingProperties(bool sunlight) =>
       LineLayerProperties(
-        lineColor: '#0B3D2E',
+        lineColor: MapPalette.casing,
         lineOpacity: sunlight ? 0.6 : 0.35,
         lineWidth: _casingWidth(sunlight),
       );
+
+  /// Solid classes on one layer, informal tracks dashed on another: a filter
+  /// split rather than a data-driven dash array, which not every MapLibre
+  /// platform supports.
+  static const List<Object> _solidTracksFilter = [
+    'match',
+    ['get', 'class'],
+    MapPalette.solidClasses,
+    true,
+    false,
+  ];
+
+  static const List<Object> _informalTracksFilter = [
+    'match',
+    ['get', 'class'],
+    MapPalette.solidClasses,
+    false,
+    true,
+  ];
 
   static LineLayerProperties _tracksProperties(bool sunlight) =>
       LineLayerProperties(
         lineColor: [
           'match',
           ['get', 'class'],
-          'walk',
-          '#2E7D32',
-          'track',
-          '#2E7D32',
           'mtb',
-          '#6A1B9A',
+          MapPalette.mtbTrack,
           'road',
-          '#607D8B',
+          MapPalette.road,
           'connector',
-          '#8D6E63',
-          '#455A64',
+          MapPalette.connector,
+          MapPalette.walkingTrack,
         ],
         lineWidth: _trackWidth(sunlight),
+      );
+
+  static LineLayerProperties _informalTracksProperties(bool sunlight) =>
+      LineLayerProperties(
+        lineColor: MapPalette.walkingTrack,
+        lineWidth: _trackWidth(sunlight),
+        lineDasharray: MapPalette.informalDash,
       );
 
   static CircleLayerProperties _junctionProperties(bool sunlight) =>
@@ -374,8 +534,12 @@ class _MapScreenState extends State<MapScreen> {
           14,
           sunlight ? 10.0 : 7.0,
         ],
-        circleColor: sunlight ? '#FFFFFF' : '#FFF8E1',
-        circleStrokeColor: sunlight ? '#000000' : '#BF360C',
+        circleColor: sunlight
+            ? MapPalette.sunlightJunctionFill
+            : MapPalette.junctionFill,
+        circleStrokeColor: sunlight
+            ? MapPalette.sunlightJunctionStroke
+            : MapPalette.junctionStroke,
         circleStrokeWidth: sunlight ? 3.0 : 2.0,
       );
 
@@ -395,8 +559,10 @@ class _MapScreenState extends State<MapScreen> {
           14,
           sunlight ? 16.0 : 12.0,
         ],
-        textColor: sunlight ? '#000000' : '#3E2723',
-        textHaloColor: '#FFFFFF',
+        textColor: sunlight
+            ? MapPalette.sunlightLabel
+            : MapPalette.junctionLabel,
+        textHaloColor: MapPalette.labelHalo,
         textHaloWidth: sunlight ? 2.0 : 0.0,
         textAllowOverlap: false,
       );
@@ -412,8 +578,8 @@ class _MapScreenState extends State<MapScreen> {
           14,
           sunlight ? 9.0 : 6.5,
         ],
-        circleColor: sunlight ? '#0D47A1' : '#0277BD',
-        circleStrokeColor: '#FFFFFF',
+        circleColor: sunlight ? MapPalette.sunlightPoi : MapPalette.poi,
+        circleStrokeColor: MapPalette.poiStroke,
         circleStrokeWidth: sunlight ? 2.5 : 1.5,
       );
 
@@ -422,8 +588,42 @@ class _MapScreenState extends State<MapScreen> {
         textField: ['get', 'name'],
         textFont: ['Noto-Sans-Regular'],
         textSize: sunlight ? 13.5 : 10.5,
-        textColor: sunlight ? '#000000' : '#0D47A1',
-        textHaloColor: '#FFFFFF',
+        textColor: sunlight ? MapPalette.sunlightLabel : MapPalette.poiLabel,
+        textHaloColor: MapPalette.labelHalo,
+        textHaloWidth: 2.0,
+        textAnchor: 'top',
+        textOffset: const [0, 0.6],
+      );
+
+  /// The walker's pins are drawn a size larger than content POIs and named at a
+  /// lower zoom, so "mine" never has to be guessed from the colour alone.
+  static CircleLayerProperties _waypointProperties(bool sunlight) =>
+      CircleLayerProperties(
+        circleRadius: [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          8,
+          sunlight ? 6.5 : 4.5,
+          14,
+          sunlight ? 11.0 : 8.0,
+        ],
+        circleColor: sunlight
+            ? MapPalette.sunlightWaypoint
+            : MapPalette.waypoint,
+        circleStrokeColor: MapPalette.poiStroke,
+        circleStrokeWidth: sunlight ? 3.0 : 2.5,
+      );
+
+  static SymbolLayerProperties _waypointLabelProperties(bool sunlight) =>
+      SymbolLayerProperties(
+        textField: ['get', 'name'],
+        textFont: ['Noto-Sans-Medium'],
+        textSize: sunlight ? 14.0 : 11.0,
+        textColor: sunlight
+            ? MapPalette.sunlightLabel
+            : MapPalette.waypointLabel,
+        textHaloColor: MapPalette.labelHalo,
         textHaloWidth: 2.0,
         textAnchor: 'top',
         textOffset: const [0, 0.6],
@@ -456,9 +656,21 @@ class _MapScreenState extends State<MapScreen> {
           showPoiSheet(context, bundle: widget.bundle, poi: poi);
         }
       case _tracksLayer:
+      case _informalTracksLayer:
         final track = widget.bundle.tracksById[featureId];
         if (track != null) {
           showTrackSheet(context, bundle: widget.bundle, track: track);
+        }
+      case _waypointsLayer:
+      case _waypointsLabelLayer:
+        final waypoint = _waypoints.byId(featureId);
+        if (waypoint != null) {
+          showWaypointSheet(
+            context,
+            store: _waypoints,
+            waypoint: waypoint,
+            onFocus: _focusOn,
+          );
         }
     }
   }
@@ -467,7 +679,10 @@ class _MapScreenState extends State<MapScreen> {
     if (!mounted) return;
     setState(() {
       // A stopped stream must not leave a stale junction on the card.
-      if (!_location.isTracking) _trailFix = null;
+      if (!_location.isTracking) {
+        _trailFix = null;
+        _walk.reset();
+      }
     });
   }
 
@@ -475,6 +690,7 @@ class _MapScreenState extends State<MapScreen> {
     final fix = _location.fix.value;
     if (fix == null) return;
 
+    _walk.add(fix.position);
     final trailFix = _trailLocator.locate(
       fix.position,
       bearingDeg: fix.bearingDeg,
@@ -550,44 +766,8 @@ class _MapScreenState extends State<MapScreen> {
       return;
     }
 
-    final status = await _location.start();
-    if (!mounted) return;
-
-    if (status == LocationStatus.servicesDisabled) {
-      _notify(
-        'Location services are off — turn them on to see your position.',
-        actionLabel: 'Settings',
-        onAction: _location.openLocationSettings,
-      );
-      return;
-    }
-    if (status == LocationStatus.permissionDenied) {
-      _notify(
-        'Location permission is needed to show where you are.',
-        actionLabel: 'Ask again',
-        onAction: _onLocatePressed,
-      );
-      return;
-    }
-    if (status == LocationStatus.permissionDeniedForever) {
-      if (kIsWeb) {
-        _notify(
-          'Location permission was denied — allow it in the browser site '
-          'settings.',
-        );
-      } else {
-        _notify(
-          'Location permission was denied — grant it in the app settings.',
-          actionLabel: 'Settings',
-          onAction: _location.openAppSettings,
-        );
-      }
-      return;
-    }
-    if (status == LocationStatus.failed) {
-      _notify('The device did not report a position — tap again to retry.');
-      return;
-    }
+    final started = await startLocationWithPrompts(context, _location);
+    if (!mounted || !started) return;
 
     setState(() => _following = true);
     _centreAfterFollowingStarts();
@@ -626,14 +806,60 @@ class _MapScreenState extends State<MapScreen> {
     showJunctionSheet(context, bundle: widget.bundle, junction: junction);
   }
 
-  void _notify(String message, {String? actionLabel, VoidCallback? onAction}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        duration: const Duration(seconds: 6),
-        action: actionLabel == null || onAction == null
-            ? null
-            : SnackBarAction(label: actionLabel, onPressed: onAction),
+  /// Opens the walker's pins, saving new ones where the map is looking.
+  void _openWaypoints() {
+    final target = _controller?.cameraPosition?.target;
+    final centre = target == null
+        ? widget.bundle.park.center
+        : GeoPoint(target.latitude, target.longitude);
+    showWaypointsSheet(
+      context,
+      store: _waypoints,
+      mapCentre: centre,
+      onFocus: _focusOn,
+    );
+  }
+
+  /// Opens the route planner. When tracking is on, the next junction ahead is
+  /// a sensible place to start planning from; the walker can change it.
+  void _openRoutePlanner() {
+    showRoutePlanSheet(
+      context,
+      bundle: widget.bundle,
+      initialFromId: _trailFix?.next?.junction.id,
+      onFocus: _focusOnJunction,
+    );
+  }
+
+  /// Jumps to a junction at a walking zoom, leaving follow mode so the camera
+  /// does not spring back on the next fix.
+  Future<void> _focusOnJunction(Junction junction) async {
+    if (_following) setState(() => _following = false);
+    await _controller?.moveCamera(
+      CameraUpdate.newLatLngZoom(
+        LatLng(junction.location.lat, junction.location.lon),
+        15,
+      ),
+    );
+  }
+
+  /// Jumps to a saved pin at a walking zoom, leaving follow mode so the camera
+  /// does not spring back on the next fix.
+  Future<void> _focusOn(Waypoint waypoint) async {
+    if (_following) setState(() => _following = false);
+    await _controller?.moveCamera(
+      CameraUpdate.newLatLngZoom(
+        LatLng(waypoint.location.lat, waypoint.location.lon),
+        15,
+      ),
+    );
+  }
+
+  void _openSafety() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) =>
+            SafetyScreen(bundle: widget.bundle, location: _location),
       ),
     );
   }
@@ -655,8 +881,9 @@ class _MapScreenState extends State<MapScreen> {
   }
 }
 
-class _BundleChip extends StatelessWidget {
-  const _BundleChip({required this.version});
+/// Says the map works without reception, and which bundle is on the device.
+class _OfflineChip extends StatelessWidget {
+  const _OfflineChip({required this.version});
 
   final String version;
 
@@ -665,14 +892,28 @@ class _BundleChip extends StatelessWidget {
     final theme = Theme.of(context);
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface.withValues(alpha: 0.8),
+        color: theme.colorScheme.surface.withValues(alpha: 0.85),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        child: Text(
-          'Offline bundle $version',
-          style: theme.textTheme.labelSmall,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.offline_pin_outlined,
+              size: 16,
+              color: theme.colorScheme.primary,
+            ),
+            const SizedBox(width: 4),
+            Flexible(
+              child: Text(
+                'Offline map ready · bundle $version',
+                style: theme.textTheme.labelMedium,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
         ),
       ),
     );

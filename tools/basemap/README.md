@@ -21,6 +21,11 @@ PROTOMAPS_BUILD=20261015 ../../tools/basemap/build_basemap.sh
 cd ../.. && dart run tools/paluma_cli/bin/paluma_cli.dart bundle build
 ```
 
+`build_basemap.sh` is the supported entry point. If you invoke
+`generate_style.mjs` yourself, run it from the **repository root** with a path
+relative to that root (for example `content/basemap/style.json`). The script
+refuses absolute paths outside the working directory.
+
 `PROTOMAPS_BUILD` is a build date from <https://build.protomaps.com> (a new
 `YYYYMMDD.pmtiles` appears daily). The script writes only the park's tiles, using
 HTTP range requests, so it downloads ~1.6 MB rather than the whole planet.

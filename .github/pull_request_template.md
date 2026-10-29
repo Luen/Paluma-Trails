@@ -9,6 +9,7 @@
 - [ ] `dart run tools/paluma_cli/bin/paluma_cli.dart bundle build` run and committed if content changed
 - [ ] Works offline (or the part that cannot is labelled in the UI)
 - [ ] Estimates are labelled as estimates; new facts have sources
+- [ ] UI, icon, store or web change: the [brand review checklist](../docs/branding.md#brand-review-checklist) is done (light, dark, sunlight, large text)
 
 ## Screenshots / recordings
 

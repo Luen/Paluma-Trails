@@ -1,6 +1,12 @@
-# Paluma-Trails
+<p align="center">
+  <img src="docs/brand/readme-header.svg" alt="Paluma Trails: Every track and junction, offline." width="100%">
+</p>
 
-Paluma-Trails is a project concept for a website and Flutter/React Native/Kotlin Multiplatform mobile app to help
+# Paluma Trails
+
+**Every track and junction, offline.**
+
+Paluma Trails is a project concept for a website ([paluma.wanderstories.space](https://paluma.wanderstories.space/)) and Flutter/React Native/Kotlin Multiplatform mobile app to help
 people explore Paluma Range National Park. It aims to make useful trail
 information available before and during a walk, including when there is no
 mobile reception.
@@ -90,13 +96,14 @@ From the repository root:
 docker compose up --build
 ```
 
-Then open <http://localhost:8080>. See
-[`docs/web-deployment.md`](docs/web-deployment.md) for the image tags and
-caching.
+Then open <http://localhost:8098>. See
+[`docs/web-deployment.md`](docs/web-deployment.md) for the image tags, home
+server pull steps, and caching.
 
 ## Project docs
 
 - [`docs/roadmap.md`](docs/roadmap.md) — milestones and which issue covers what
 - [`docs/decisions/`](docs/decisions/) — architecture decision records
 - [`docs/content-model.md`](docs/content-model.md) — how the trail data is structured
+- [`docs/branding.md`](docs/branding.md) — name, logo, colours, type and voice
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) — how to build, test and send changes

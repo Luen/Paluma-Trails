@@ -2,40 +2,37 @@
 
 The artwork is original to Paluma Trails. It is not derived from any third-party
 icon set, so it can be used in the app, the web build and the store listing.
+Read [the branding guide](../../../docs/branding.md) before changing the mark,
+palette or usage rules.
 
 ## Source artwork
 
 | File | Purpose |
 | --- | --- |
-| `icon.svg` | 1024×1024 master: tile background + trail pin |
+| `icon.svg` | 1024×1024 master: tile background + junction pin |
 | `icon_foreground.svg` | Adaptive-icon foreground (transparent, inside the 66 dp safe zone) |
 | `icon_monochrome.svg` | Android 13+ themed-icon layer (alpha only, transparent) |
 | `icon_android12.svg` | Android 12+ splash icon (960×960, inside the 640 dp circle) |
-| `icon_splash.svg` | Pin-only mark used by the older splash screens and the web loader |
+| `icon_splash.svg` | Pin-only mark used by the older splash screens and the web loader (transparent) |
 | `feature_graphic.svg` | 1024×500 Play Store feature graphic |
+
+All of these SVGs are **generated** by `tools/brand/build_brand.py` from one
+definition of the junction-pin mark, which also writes `web/favicon.svg`. Edit
+the script, not the SVGs.
 
 Palette: rainforest green `#14532D`, cream `#F4ECD8`, sand `#E9C46A`.
 
 The matching PNGs are committed next to the SVGs because the generators consume
-PNG files. Render them after changing an SVG (any SVG renderer works; this is the
-command used on macOS):
+PNG files. Render them after changing an SVG:
 
 ```sh
-CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-
-"$CHROME" --headless=new --disable-gpu --hide-scrollbars \
-  --force-device-scale-factor=1 --window-size=1024,1024 \
-  --screenshot=assets/icon/icon.png "file://$PWD/assets/icon/icon.svg"
-
-"$CHROME" --headless=new --disable-gpu --hide-scrollbars \
-  --force-device-scale-factor=1 --window-size=1024,1024 \
-  --default-background-color=00000000 \
-  --screenshot=assets/icon/icon_foreground.png \
-  "file://$PWD/assets/icon/icon_foreground.svg"
-
-# Repeat for icon_monochrome.png (1024×1024), icon_splash.png (1024×1024),
-# icon_android12.png (960×960) and icon_512.png (512×512).
+tools/brand/render_png.sh   # from the repository root
 ```
+
+It uses headless Chrome and keeps the transparent layers (foreground,
+monochrome, Android 12 and legacy splash) transparent. A splash PNG rendered on
+white puts a white square on the rainforest launch screen, so check the alpha
+channel if you render them another way.
 
 ## Generated outputs
 

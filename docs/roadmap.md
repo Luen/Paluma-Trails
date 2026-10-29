@@ -22,12 +22,19 @@ view. Epic issues are linked.
 - Web map page and printable map (#22)
 - Auto-download / update of the park bundle with Wi-Fi-or-data preference (#17)
 - Outdoor-friendly map UI pass, high contrast, battery saver (#21)
+- Live trail metrics while tracking: distance walked and the next water (#55) —
+  **shipped**
+- Save your own waypoints on the device and find them again offline (#57) —
+  **shipped**
+- Plan a walk: shortest route, out and back, or a loop, with totals (#20) —
+  **shipped**; see `docs/planning.md`
 - Weather card with cached offline copy (#39) — depends on #38
 
 ## Milestone 2 — Points of interest and QR codes
 
 - Shortlist and research POIs; content with citations (#24)
 - Offline POI detail pages with historic photos and credits (#26, #28)
+- Toggleable marker groups so the map stays readable (#56)
 - QR URL scheme so codes never change (#25)
 - Sign design, permissions, installation (#27, #44)
 
@@ -40,9 +47,10 @@ view. Epic issues are linked.
 
 ## Milestone 4 — Weather, conditions and safety
 
+- Safety guidance and the offline emergency screen (#41, #42) — **shipped**;
+  reception points (#60) still need field verification
 - Investigate BOM access and licensing (#38)
 - Park alerts and closures (#40)
-- Safety guidance content (#41)
 - Emergency screen: coordinates and known reception points (#42, #60)
 
 ## Milestone 5 — Launch, quality and operations
@@ -55,7 +63,6 @@ view. Epic issues are linked.
 
 ## Backlog ideas
 
-Route planner (#20), elevation profiles (#14), live trail metrics (#55), POI
-category toggles (#56), user waypoints (#57), trail notes for both directions
-(#58), walk simulation (#59), trip-planning hub (#61), scan analytics (#29),
-funding (#48), cross-linking with wanderstories.space (#47).
+Elevation profiles (#14), trail notes
+for both directions (#58), walk simulation (#59), trip-planning hub (#61), scan
+analytics (#29), funding (#48), cross-linking with wanderstories.space (#47).

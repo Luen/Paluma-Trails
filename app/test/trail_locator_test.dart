@@ -101,6 +101,120 @@ void main() {
     });
   });
 
+  group('TrailLocator water points', () {
+    // The same 222 m straight track north, with water beside it.
+    const track = TrackPolyline(
+      id: 'straight',
+      points: [GeoPoint(0, 0), GeoPoint(0.002, 0)],
+    );
+    const pois = <String, Poi>{
+      // 44.5 m along the track.
+      'falls': Poi(
+        id: 'falls',
+        name: 'Falls',
+        category: 'waterfall',
+        location: GeoPoint(0.0004, 0),
+      ),
+      // 111.2 m along, 22 m east of the line: attached, since water sits
+      // beside the walking line.
+      'creek': Poi(
+        id: 'creek',
+        name: 'Creek',
+        category: 'water',
+        location: GeoPoint(0.001, 0.0002),
+        unverified: true,
+      ),
+      // Not water, so never reported as the next water point.
+      'hut': Poi(
+        id: 'hut',
+        name: 'Hut',
+        category: 'hut',
+        location: GeoPoint(0.0006, 0),
+      ),
+      // Too far from the track to be attached.
+      'spring': Poi(
+        id: 'spring',
+        name: 'Spring',
+        category: 'water',
+        location: GeoPoint(0.0015, 0.002),
+      ),
+    };
+
+    TrailLocator build() => TrailLocator(
+      origin: const GeoPoint(0, 0),
+      tracks: const [track],
+      junctions: const {},
+      pois: pois,
+      paceKmh: 4,
+    );
+
+    test('reports the next water in the direction of travel', () {
+      final fix = build().locate(_northOf(20), bearingDeg: 0, speedMps: 1.4);
+
+      expect(fix!.nextWater!.poi.id, 'falls');
+      expect(fix.nextWater!.distanceM, closeTo(24.5, 1));
+      expect(fix.nextWater!.walkMinutes, 1);
+      expect(fix.nextWater!.ahead, isTrue);
+      expect(fix.nextWater!.directionKnown, isTrue);
+    });
+
+    test('follows the bearing, not the nearest water', () {
+      final fix = build().locate(
+        _northOf(130),
+        bearingDeg: 180,
+        speedMps: 1.4,
+      )!;
+
+      expect(fix.nextWater!.poi.id, 'creek');
+      expect(fix.nextWater!.distanceM, closeTo(18.8, 1));
+      expect(fix.nextWater!.ahead, isTrue);
+    });
+
+    test('is honest about direction when standing still', () {
+      final fix = build().locate(_northOf(20), bearingDeg: 0, speedMps: 0)!;
+
+      expect(fix.nextWater!.poi.id, 'falls');
+      expect(fix.nextWater!.directionKnown, isFalse);
+      expect(fix.nextWater!.ahead, isFalse);
+    });
+
+    test('skips points that are not water and points off the track', () {
+      final locator = TrailLocator(
+        origin: const GeoPoint(0, 0),
+        tracks: const [track],
+        junctions: const {},
+        pois: const {
+          'hut': Poi(
+            id: 'hut',
+            name: 'Hut',
+            category: 'hut',
+            location: GeoPoint(0.0004, 0),
+          ),
+          'spring': Poi(
+            id: 'spring',
+            name: 'Spring',
+            category: 'water',
+            location: GeoPoint(0.0015, 0.002),
+          ),
+        },
+        paceKmh: 4,
+      );
+
+      expect(locator.locate(_northOf(20))!.nextWater, isNull);
+    });
+
+    test('is null when the track has no water beside it', () {
+      final locator = TrailLocator(
+        origin: const GeoPoint(0, 0),
+        tracks: const [track],
+        junctions: const {},
+        paceKmh: 4,
+      );
+
+      expect(locator.locate(_northOf(20))!.nextWater, isNull);
+    });
+  });
+
   group('TrailLocator track switching', () {
     // Two parallel tracks 40 m apart; the walker starts on the west one.
     const tracks = [
@@ -191,6 +305,7 @@ void main() {
   group('TrailLocator against the shipped Paluma content', () {
     late List<TrackPolyline> tracks;
     late Map<String, Junction> junctions;
+    late Map<String, Poi> pois;
     late TrailLocator locator;
 
     setUpAll(() {
@@ -207,6 +322,14 @@ void main() {
                 .cast<Map<String, Object?>>())
           junction['id']! as String: Junction.fromJson(junction),
       };
+      final poisJson = jsonDecode(
+        File('$root/pois.json').readAsStringSync(),
+      ) as Map<String, Object?>;
+      pois = {
+        for (final poi
+            in (poisJson['pois'] as List).cast<Map<String, Object?>>())
+          poi['id']! as String: Poi.fromJson(poi),
+      };
       final park = jsonDecode(
         File('$root/park.json').readAsStringSync(),
       ) as Map<String, Object?>;
@@ -214,6 +337,7 @@ void main() {
         origin: GeoPoint.fromJson(park['center']! as Map<String, Object?>),
         tracks: tracks,
         junctions: junctions,
+        pois: pois,
         paceKmh: 4,
       );
     });
@@ -251,6 +375,26 @@ void main() {
       expect(second.track.id, 'paluma-track-circuit-5');
       expect(second.next!.junction.id, 'j1');
       expect(second.next!.distanceM, closeTo(80, 3));
+    });
+
+    test('finds water beside the real tracks', () {
+      final found = <String, String>{};
+      for (final junction in junctions.values) {
+        final water = locator.locate(junction.location)?.nextWater;
+        if (water != null) found[junction.id] = water.poi.id;
+      }
+
+      expect(found, isNotEmpty);
+      // Gold Creek Falls sits on the track, so a walker at a junction nearby
+      // must be offered it.
+      expect(found.values, contains('gold-creek-falls'));
+      for (final id in found.values) {
+        expect(
+          const {'water', 'waterfall', 'swimming'},
+          contains(pois[id]!.category),
+          reason: '$id is not drinking water',
+        );
+      }
     });
   });
 }

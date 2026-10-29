@@ -2,6 +2,8 @@
 /// can be unit-tested directly.
 library;
 
+import '../content/models.dart';
+
 /// Formats a distance in metres the way walkers write it: metres under a
 /// kilometre, one decimal up to 10 km, whole kilometres above that.
 String formatDistance(num meters) {
@@ -72,6 +74,16 @@ String formatPoiCategory(String value) => switch (value) {
   'junction' => 'Junction',
   _ => 'Point of interest',
 };
+
+/// Formats a coordinate pair the way the emergency services ask for it:
+/// `18.94185° S, 146.18868° E`. Five decimals is about a metre, which is what
+/// a search team needs; the default of four is about eleven metres and is
+/// enough for a junction card.
+String formatCoordinates(GeoPoint point, {int decimals = 4}) {
+  final lat = point.lat.abs().toStringAsFixed(decimals);
+  final lon = point.lon.abs().toStringAsFixed(decimals);
+  return '$lat° ${point.lat >= 0 ? 'N' : 'S'}, $lon° ${point.lon >= 0 ? 'E' : 'W'}';
+}
 
 /// Formats an ascent, or null when the source has no elevation data.
 String? formatAscent(double? ascentM) {

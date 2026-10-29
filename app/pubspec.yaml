@@ -1,5 +1,5 @@
 name: paluma_trails
-description: Offline-first trail guide for Paluma Range National Park.
+description: Offline trail map for Paluma Range National Park.
 publish_to: 'none'
 version: 0.1.0+1 # x-release-please-version
 
@@ -15,6 +15,8 @@ dependencies:
   path_provider: ^2.1.6
   geolocator: ^14.1.1
   flutter_native_splash: ^2.4.8
+  url_launcher: ^6.3.3
+  shared_preferences: ^2.5.6
 
 dev_dependencies:
   flutter_test:
@@ -33,6 +35,17 @@ flutter:
     - assets/bundle/basemap/fonts/Noto-Sans-Medium/
     - assets/bundle/basemap/fonts/Noto-Sans-Italic/
     - assets/bundle/basemap/sprites/
+    - assets/fonts/atkinson_hyperlegible_next/OFL.txt
+  # The interface typeface, bundled so it renders offline; see
+  # docs/branding.md#typography. Map labels use the basemap's own glyphs.
+  fonts:
+    - family: AtkinsonHyperlegibleNext
+      fonts:
+        - asset: assets/fonts/atkinson_hyperlegible_next/AtkinsonHyperlegibleNext-Regular.ttf
+        - asset: assets/fonts/atkinson_hyperlegible_next/AtkinsonHyperlegibleNext-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/atkinson_hyperlegible_next/AtkinsonHyperlegibleNext-Bold.ttf
+          weight: 700
 
 # Generated with `dart run flutter_launcher_icons` and
 # `dart run flutter_native_splash:create`; see assets/icon/README.md.

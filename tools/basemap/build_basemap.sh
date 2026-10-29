@@ -33,7 +33,9 @@ pmtiles extract \
   --download-threads=8
 
 echo "==> Style"
-node "$REPO_ROOT/tools/basemap/generate_style.mjs" "$TARGET/style.json"
+# Pass a path relative to the repo root so generate_style.mjs can confine the
+# write (absolute paths outside cwd are refused).
+( cd "$REPO_ROOT" && node tools/basemap/generate_style.mjs content/basemap/style.json )
 
 echo "==> Fonts"
 for font in "${FONTS[@]}"; do

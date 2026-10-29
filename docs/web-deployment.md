@@ -11,9 +11,16 @@ From the repository root:
 docker compose up --build
 ```
 
-Then open <http://localhost:8080>. The first build downloads the Flutter SDK
-(about 1.6 GB) and takes a few minutes, so allow several GB of free disk;
-`docker compose down` stops it.
+Then open <http://localhost:8098>. Override the host port or image tag if
+needed:
+
+```sh
+PALUMA_WEB_PORT=8080 docker compose up --build
+PALUMA_WEB_TAG=latest docker compose pull && docker compose up -d
+```
+
+The first build downloads the Flutter SDK (about 1.6 GB) and takes a few
+minutes, so allow several GB of free disk; `docker compose down` stops it.
 
 ### Build notes
 
@@ -21,6 +28,10 @@ The build stage installs Flutter 3.47.7 from the official release archive
 instead of using a registry image: the available Flutter images still carry
 Dart 3.12, while the app needs Dart 3.13.5. Keep `FLUTTER_VERSION` in
 `app/Dockerfile` in sync when the project's Flutter version changes.
+
+Flutter's Linux SDK is amd64-only, so the Dockerfile pins the build stage to
+`linux/amd64`. The Caddy runtime is published for both `linux/amd64` and
+`linux/arm64` so an Odroid or Raspberry Pi can pull a native image.
 
 Caddy adds an SPA fallback and sets:
 
@@ -31,16 +42,37 @@ Caddy adds an SPA fallback and sets:
 
 ## Published image
 
-On a `v*` tag the Release workflow builds `app/Dockerfile`, starts the image,
-checks the landing page and the service-worker cache header, then pushes:
+On a `v*` tag the Release workflow smoke-tests an amd64 image, then pushes a
+multi-arch (`linux/amd64`, `linux/arm64`) manifest:
 
 - `ghcr.io/luen/paluma-trails-web:<version>` for every release;
 - `ghcr.io/luen/paluma-trails-web:latest` for stable versions (no hyphen in the
   version).
 
-Manual Release runs build and smoke-test the image but do not push it. The GHCR
-package is private by default; make it public in the package settings if the
-host should pull it anonymously.
+A manual Release run builds and smoke-tests the image. Tick **Push the
+multi-arch web image to GHCR** to publish without cutting a git tag (useful to
+republish the same version for arm64). The GHCR package is private by default;
+make it public in the package settings if the host should pull it anonymously.
+
+## Home server (pull only)
+
+On a host that already has Docker (for example the Odroid), use the root
+`docker-compose.yml`. No `.env` is required for the static site:
+
+```sh
+mkdir -p ~/paluma-trails && cd ~/paluma-trails
+# place or clone docker-compose.yml here, then:
+docker compose pull
+docker compose up -d
+curl -fsS http://127.0.0.1:8098/ | head
+```
+
+`docker-compose.yml` defaults to `:latest` so Watchtower (or a manual
+`docker compose pull`) picks up new stable publishes. Prerelease tags (with a
+hyphen) do not move `:latest`; pin with `PALUMA_WEB_TAG=0.1.0-rc.2` if you need
+a specific build. If Docker warns that `linux/amd64` does not match the host,
+the published tag is still single-arch — republish with the multi-arch workflow
+above, then `docker compose pull` again.
 
 ## Hosting
 

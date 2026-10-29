@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import '../content/bundle_repository.dart';
 import '../content/models.dart';
 import 'format.dart';
+import 'map_key.dart';
 import 'map_options.dart';
+import 'map_palette.dart';
+import 'poi_groups.dart';
 
 /// Bottom sheets for the map's tappable features: junctions, POIs and tracks.
 
@@ -11,58 +14,121 @@ Future<void> showJunctionSheet(
   BuildContext context, {
   required LoadedBundle bundle,
   required Junction junction,
-}) => _show(context, JunctionSheet(bundle: bundle, junction: junction));
+}) => showMapSheet(context, JunctionSheet(bundle: bundle, junction: junction));
 
 Future<void> showPoiSheet(
   BuildContext context, {
   required LoadedBundle bundle,
   required Poi poi,
-}) => _show(context, PoiSheet(poi: poi));
+}) => showMapSheet(context, PoiSheet(poi: poi));
 
 Future<void> showTrackSheet(
   BuildContext context, {
   required LoadedBundle bundle,
   required TrackSummary track,
-}) => _show(context, TrackSheet(bundle: bundle, track: track));
+}) => showMapSheet(context, TrackSheet(bundle: bundle, track: track));
 
-/// Outdoor display choices: sunlight mode and battery saver.
+/// Outdoor display choices (sunlight mode and battery saver), then the map
+/// key.
 Future<void> showDisplaySettingsSheet(
   BuildContext context, {
   required MapOptions options,
-}) => showModalBottomSheet<void>(
-  context: context,
-  showDragHandle: true,
-  builder: (context) => SafeArea(
-    child: ListenableBuilder(
-      listenable: options,
-      builder: (context, _) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SwitchListTile(
-            value: options.sunlight,
-            onChanged: (value) => options.sunlight = value,
-            secondary: const Icon(Icons.wb_sunny_outlined),
-            title: const Text('Sunlight mode'),
-            subtitle: const Text(
-              'High-contrast colours and heavier map lines for bright days.',
-            ),
+}) => showMapSheet(
+  context,
+  ListenableBuilder(
+    listenable: options,
+    builder: (context, _) => ListView(
+      shrinkWrap: true,
+      padding: const EdgeInsets.only(bottom: 16),
+      children: [
+        SwitchListTile(
+          value: options.sunlight,
+          onChanged: (value) => options.sunlight = value,
+          secondary: const Icon(Icons.wb_sunny_outlined),
+          title: const Text('Sunlight mode'),
+          subtitle: const Text(
+            'High-contrast colours and heavier map lines for bright days.',
           ),
-          SwitchListTile(
-            value: options.batterySaver,
-            onChanged: (value) => options.batterySaver = value,
-            secondary: const Icon(Icons.battery_saver_outlined),
-            title: const Text('Battery saver'),
-            subtitle: const Text(
-              'Fewer GPS updates and no compass; distances stay approximate.',
-            ),
+        ),
+        SwitchListTile(
+          value: options.batterySaver,
+          onChanged: (value) => options.batterySaver = value,
+          secondary: const Icon(Icons.battery_saver_outlined),
+          title: const Text('Battery saver'),
+          subtitle: const Text(
+            'Fewer GPS updates and no compass; distances stay approximate.',
           ),
-        ],
-      ),
+        ),
+        const Divider(height: 24),
+        _PoiGroupToggles(options: options),
+        const Divider(height: 24),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: MapKey(),
+        ),
+      ],
     ),
   ),
 );
 
-Future<void> _show(BuildContext context, Widget child) =>
+/// Points of interest grouped by what a walker needs: water, lookouts,
+/// camping, history and everything else. Hiding a group is a display choice,
+/// not a content change.
+class _PoiGroupToggles extends StatelessWidget {
+  const _PoiGroupToggles({required this.options});
+
+  final MapOptions options;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Points of interest',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
+              ),
+              if (!options.allPoiGroupsVisible)
+                TextButton(
+                  onPressed: options.showAllPoiGroups,
+                  child: const Text('Show all'),
+                ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: Text(
+            'Hide the markers you do not need today. Everything stays in the '
+            'offline map; only the drawing changes.',
+            style: theme.textTheme.bodySmall,
+          ),
+        ),
+        for (final group in PoiGroup.values)
+          SwitchListTile(
+            value: options.isPoiGroupVisible(group),
+            onChanged: (value) => options.setPoiGroupVisible(group, value),
+            secondary: Icon(group.icon),
+            title: Text(group.label),
+            subtitle: Text(group.description),
+          ),
+      ],
+    );
+  }
+}
+
+/// Opens one of the map's bottom sheets: dragging handle, safe area and a cap
+/// at 70% of the screen so the map stays visible behind it.
+Future<void> showMapSheet(BuildContext context, Widget child) =>
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
@@ -100,11 +166,7 @@ class JunctionSheet extends StatelessWidget {
       children: [
         Row(
           children: [
-            CircleAvatar(
-              backgroundColor: theme.colorScheme.primary,
-              foregroundColor: theme.colorScheme.onPrimary,
-              child: Text('${junction.number}'),
-            ),
+            JunctionBadge(number: junction.number),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -118,14 +180,7 @@ class JunctionSheet extends StatelessWidget {
                 ],
               ),
             ),
-            if (junction.unverified)
-              const Tooltip(
-                message: 'Not yet checked against the tracks or official maps',
-                child: Chip(
-                  label: Text('Unverified'),
-                  visualDensity: VisualDensity.compact,
-                ),
-              ),
+            if (junction.unverified) const UnverifiedChip(),
           ],
         ),
         if (junction.notes != null) ...[
@@ -189,11 +244,7 @@ class _SegmentTile extends StatelessWidget {
 
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      leading: CircleAvatar(
-        backgroundColor: theme.colorScheme.surfaceContainerHighest,
-        foregroundColor: theme.colorScheme.onSurfaceVariant,
-        child: Text('${other?.number ?? '?'}'),
-      ),
+      leading: JunctionBadge(number: other?.number, size: 36),
       title: Text(other?.label ?? segment.otherEnd(junction.id)!),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -231,9 +282,11 @@ class PoiSheet extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(
-              _iconForCategory(poi.category),
-              color: theme.colorScheme.primary,
+            // The same blue as the POI dot on the map.
+            CircleAvatar(
+              backgroundColor: MapPalette.color(MapPalette.poi),
+              foregroundColor: MapPalette.color(MapPalette.poiStroke),
+              child: Icon(_iconForCategory(poi.category)),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -249,14 +302,7 @@ class PoiSheet extends StatelessWidget {
                 ],
               ),
             ),
-            if (poi.unverified)
-              const Tooltip(
-                message: 'Not yet checked against the tracks or official maps',
-                child: Chip(
-                  label: Text('Unverified'),
-                  visualDensity: VisualDensity.compact,
-                ),
-              ),
+            if (poi.unverified) const UnverifiedChip(),
           ],
         ),
         if (poi.summary != null) ...[
@@ -331,7 +377,12 @@ class TrackSheet extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(Icons.route_outlined, color: theme.colorScheme.primary),
+            SizedBox(
+              width: 40,
+              child: Center(
+                child: TrackClassSwatch(trackClass: track.trackClass),
+              ),
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -342,14 +393,7 @@ class TrackSheet extends StatelessWidget {
                 ],
               ),
             ),
-            if (track.unverified)
-              const Tooltip(
-                message: 'Not yet checked against the tracks or official maps',
-                child: Chip(
-                  label: Text('Unverified'),
-                  visualDensity: VisualDensity.compact,
-                ),
-              ),
+            if (track.unverified) const UnverifiedChip(),
           ],
         ),
         if (segments.isNotEmpty) ...[
@@ -359,6 +403,22 @@ class TrackSheet extends StatelessWidget {
       ],
     );
   }
+}
+
+/// Marks content that has not been checked on the ground or against official
+/// maps. Words, not just a colour, so it survives sunlight and colour vision.
+class UnverifiedChip extends StatelessWidget {
+  const UnverifiedChip({super.key});
+
+  @override
+  Widget build(BuildContext context) => const Tooltip(
+    message: 'Not yet checked against the tracks or official maps',
+    child: Chip(
+      avatar: Icon(Icons.help_outline, size: 18),
+      label: Text('Unverified'),
+      visualDensity: VisualDensity.compact,
+    ),
+  );
 }
 
 class _SectionTitle extends StatelessWidget {
@@ -389,11 +449,4 @@ class _Fact extends StatelessWidget {
     label: Text(label),
     visualDensity: VisualDensity.compact,
   );
-}
-
-/// `-18.941853, 146.188682` → `18.9419° S, 146.1887° E`.
-String formatCoordinates(GeoPoint point) {
-  final lat = point.lat.abs().toStringAsFixed(4);
-  final lon = point.lon.abs().toStringAsFixed(4);
-  return '$lat° ${point.lat >= 0 ? 'N' : 'S'}, $lon° ${point.lon >= 0 ? 'E' : 'W'}';
 }
