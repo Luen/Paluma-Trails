@@ -8,6 +8,7 @@ import 'location/location_service.dart';
 import 'map/source_link.dart';
 import 'safety_screen.dart';
 import 'trip_planning_screen.dart';
+import 'web_resources.dart';
 
 /// Park facts, attributions and the licence/disclaimer notes that should stay
 /// one tap away from the map.
@@ -152,7 +153,7 @@ class AboutScreen extends StatelessWidget {
         if (kIsWeb)
           SourceLink(
             label: 'Printable planning map · save as PDF',
-            url: Uri.base.resolve('printable-map.html').toString(),
+            url: siteResourceUri('printable-map.html').toString(),
           ),
         const SourceLink(
           label: 'Paluma trails and history — Wanderstories',

@@ -253,6 +253,11 @@ releases, credentials or deployments.
 - PMTiles web QA needs a byte-range-capable HTTP server. Python's basic
   `http.server` can draw the overlays but fail the basemap requests; use the
   production Caddy setup or a proper range-capable test server.
+- POI launch paths are nested. For the current origin-root deployment, use
+  `siteResourceUri` for web basemap/font/sprite and print-page URLs; resolving
+  against `Uri.base` with a relative path would request `/poi/assets/...`.
+  Browser routing does not establish native verified App Links or offline
+  camera scanning. See [POI launch QA](docs/qa/poi-links/README.md).
 
 - Use [the field-test protocol](docs/field-testing.md) and
   [report template](docs/field-test-report.md). Component previews, widget tests
