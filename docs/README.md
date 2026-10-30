@@ -1,11 +1,17 @@
 # Docs
 
 - [Field testing](field-testing.md) — device matrix, offline/GPS/daylight/battery protocol and report template.
+- [Signage funding decision](funding-options.md) — owner-funded signs and closure of the grant task.
 - [Roadmap](roadmap.md) — epics and milestones, mapped to GitHub issues.
+- [Printable planning map](printable-map.md) — standalone map, reference tables and browser PDF printing.
+- [MVP scope](mvp-scope.md) — first release, field-pilot gates and deferred dependencies.
 - [Branding](branding.md) — logo, icon, palette, typography and look-and-feel rules.
 - [Content releases](content-releases.md) — review, bundle, deliver and recover a content update.
 - [Content model](content-model.md) — how tracks, junctions, POIs and segments fit together.
 - [Location and the next junction](location.md) — how the blue dot and along-track junction distances work.
+- [Walk preview](walk-preview.md) — offline simulated track playback and its isolation from real GPS/waypoints.
+- [Trip planning and photos](trip-planning.md) — dated offline access, camping and facility notes and a credited POI gallery.
+- [Weather data investigation](weather-data-investigation.md) — BOM products, Paluma coverage and cache requirements before the weather widget.
 - [Architecture decisions](decisions/) — ADRs, one file per decision.
 - [Store assets](store/) — icon and feature graphic, generated from the artwork in `app/assets/icon/`.
 - [Releases](release.md) — cutting a release, Android sideloading and the size budget.

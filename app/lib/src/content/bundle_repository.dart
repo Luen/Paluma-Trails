@@ -4,8 +4,10 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
 
+import '../web_resources.dart';
 import 'bundle_storage.dart';
 import 'models.dart';
+import 'trip_planning.dart';
 
 /// Everything the app needs from the offline bundle, resolved for this device.
 class LoadedBundle {
@@ -24,11 +26,13 @@ class LoadedBundle {
     required this.pmtilesUri,
     required this.assetsBaseUri,
     required this.storageDirectory,
+    this.tripPlanning,
   });
 
   final BundleManifest manifest;
   final Park park;
   final SafetyContent safety;
+  final TripPlanningContent? tripPlanning;
   final List<TrackSummary> tracks;
   final Map<String, TrackSummary> tracksById;
   final Map<String, Junction> junctions;
@@ -179,6 +183,14 @@ class BundleRepository {
     final safety = SafetyContent.fromJson(
       decodeJsonObject(await read('content/safety.json')),
     );
+    // Older packaged bundles predate the hub. A declared but unreadable file
+    // remains a bundle error rather than silently hiding damaged content.
+    final tripPlanning =
+        manifest.files.any((file) => file.path == 'content/trip-planning.json')
+        ? TripPlanningContent.fromJson(
+            decodeJsonObject(await read('content/trip-planning.json')),
+          )
+        : null;
     final junctionsJson = decodeJsonObject(
       await read('content/junctions.json'),
     );
@@ -200,6 +212,7 @@ class BundleRepository {
       manifest: manifest,
       park: park,
       safety: safety,
+      tripPlanning: tripPlanning,
       tracks: tracks,
       tracksById: {for (final track in tracks) track.id: track},
       junctions: {
@@ -242,7 +255,7 @@ class BundleRepository {
         assetsBaseUri: basemap.toString().replaceFirst(RegExp(r'/$'), ''),
       );
     }
-    final base = Uri.base.resolve('assets/$_assetRoot/basemap').toString();
+    final base = siteResourceUri('assets/$_assetRoot/basemap').toString();
     return (pmtilesUri: '$base/paluma.pmtiles', assetsBaseUri: base);
   }
 }

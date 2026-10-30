@@ -1,5 +1,11 @@
 # Content model
 
+Safety guidance may include optional `sources` entries with an offline-readable
+label and an HTTPS URL. The app displays them as explicit online source links;
+the guidance itself stays bundled. Older bundles without these references still
+decode. Emergency-contact changes should cite current official sources; see
+[the research record](../content/research/emergency-contact-guidance.md).
+
 Everything a walker sees on the map, in junction cards and on POI pages comes from
 `content/data/paluma/`. The app never invents content at runtime; it renders exactly
 what the bundle contains, so a content fix is a data change plus a release.
@@ -25,14 +31,21 @@ what the bundle contains, so a content fix is a data change plus a release.
 | `junctions.json` | yes | Numbered junctions and their notes |
 | `pois.json` | yes | Points of interest, text, sources |
 | `safety.json` | yes | Offline safety guidance and emergency steps |
+| `trip-planning.json` | yes | Dated pre-visit notes with per-section official references |
 | `segments.json` | no — generated | Junction-to-junction graph with distances/times |
 | `sources.json` | yes | Provenance and licences of each data source |
 
 ## Conventions
 
+Trip planning is bundled planning information, not a live conditions service.
+Each section needs non-empty paragraphs and HTTPS source links, with an explicit
+check date. Older bundles without the optional asset show an explanatory fallback
+and retain their gallery. See [trip planning](trip-planning.md).
+
 - **IDs** are lowercase slugs: `gardes-clearing`, `pbr-track`, `j7`. They are
   permanent — QR codes encode them (#25), so renaming an id breaks a sign on a
-  track. Add new ids rather than reusing old ones.
+  track. Add new ids rather than reusing old ones. The link form and the rules
+  a sign relies on are in [qr-codes.md](qr-codes.md).
 - **Coordinates** are WGS84. GeoJSON uses `[longitude, latitude]`; JSON objects
   use `{"lat": …, "lon": …}`.
 - **Distances** in metres, times in whole minutes.

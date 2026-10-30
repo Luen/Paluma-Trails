@@ -56,3 +56,9 @@ workflow (AAB/APK + IPA + web, tag, GitHub Release, store uploads).
   workflow. Manual tags remain supported for hotfixes and prereleases.
   Release Please uses a `RELEASE_PLEASE_TOKEN` PAT because tags created with
   `GITHUB_TOKEN` do not trigger workflows.
+- **2026-10-30:** Nightly dependency updates respect the existing PR and CI
+  requirements on `main`: prepare a reviewed dependency PR, then use the normal
+  Release Please version PR and publication path. Release Please proposes a
+  `main` → `dev` sync PR after publication. Merge that sync with a merge commit.
+  When Actions PR creation is disabled, hand off a prepared comparison link to
+  a maintainer; do not grant a branch-protection bypass.

@@ -7,6 +7,11 @@ the device's own location provider and the distances from the offline bundle.
 
 ## Flow
 
+An explicitly labelled [walk preview](walk-preview.md) uses a separate mock
+location driver after the user starts it from About. It pauses an existing real
+GPS stream and isolates simulated positions from saved waypoints and safety
+screens. The flow below describes normal live tracking.
+
 1. Nothing runs until the walker taps the locate button. The app then asks for
    permission (or explains how to fix a refusal, a switched-off location service
    or a failed stream) and starts listening for fixes. A stream failure stops

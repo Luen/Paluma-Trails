@@ -1,0 +1,59 @@
+{
+  "checked": "2026-10-30",
+  "intro": "Use these offline notes before your visit to Paluma Range National Park. They are planning information, not live road, facility or track conditions. Check official alerts, weather and booking details while you have reception; follow signs and closures at the site.",
+  "sections": [
+    {
+      "title": "Getting there",
+      "paragraphs": [
+        "The park has separate Mount Spec and Jourama Falls sections. Choose your destination before setting off; a park-wide map centre is not a trailhead.",
+        "For Mount Spec, leave the Bruce Highway for Barrett Road. Mount Spec Road climbs towards Paluma village; it is winding, with particular caution needed for buses, caravans and campervans. Big Crystal Creek is reached separately via Spiegelhauer Road from Barrett Road.",
+        "For Jourama Falls, turn from the Bruce Highway onto Jourama Road. This unsealed approach crosses causeways; wet-season flooding can prevent access. Check road conditions and your vehicle's suitability before travelling."
+      ],
+      "sources": [
+        {"label": "QPWS — Visiting Paluma Range safely: access and road cautions", "url": "https://parks.qld.gov.au/parks/paluma-range/visiting-safely"}
+      ]
+    },
+    {
+      "title": "Camping and bookings",
+      "paragraphs": [
+        "QPWS lists two designated camping areas with facilities: Big Crystal Creek and Jourama Falls. Camping permits and fees apply; display the booking-number tag at your campsite. Arrange your permit before leaving reception and check current availability and conditions online.",
+        "Remote bush camping at Mount Spec north of Paluma and Mount Halifax south of Paluma is hike-in only, for experienced bushwalkers. Check the specific area's permit and preparation requirements; a mapped clearing does not establish permission to camp."
+      ],
+      "sources": [
+        {"label": "QPWS — Paluma Range camping: areas, permits and conditions", "url": "https://parks.qld.gov.au/parks/paluma-range/camping"}
+      ]
+    },
+    {
+      "title": "Big Crystal Creek facilities",
+      "paragraphs": [
+        "The camping area is beside Big Crystal Creek, near the day-use area, on the Spiegelhauer Road approach. QPWS lists flushing toilets, cold showers, picnic tables and gas barbecues. Bring drinking water and confirm facilities and access before your visit.",
+        "QPWS describes assisted wheelchair access to facilities at the day-use area. This does not establish accessibility of walking tracks. Large caravans and buses over 22 seats are not recommended for the narrow camping-area access."
+      ],
+      "sources": [
+        {"label": "QPWS — Big Crystal Creek camping: facilities and access limitations", "url": "https://parks.qld.gov.au/parks/paluma-range/camping/big-crystal-creek"},
+        {"label": "Queensland National Parks Booking Service — Big Crystal Creek", "url": "https://book.parks.qld.gov.au/big-crystal-creek-camping-area"}
+      ]
+    },
+    {
+      "title": "Jourama Falls facilities",
+      "paragraphs": [
+        "The camping area is beside Waterview Creek. QPWS lists flushing toilets, cold showers, picnic tables and gas barbecues, with space for tents and touring vehicles. Check current access and booking details; the approach can flood.",
+        "QPWS prohibits open fires and generators at this camping area. Confirm the current rules before travelling and take your rubbish out. Facility listings are not a guarantee that everything is operating on arrival."
+      ],
+      "sources": [
+        {"label": "QPWS — Jourama Falls camping: facilities, rules and booking link", "url": "https://parks.qld.gov.au/parks/paluma-range/camping/jourama-falls"}
+      ]
+    },
+    {
+      "title": "Before leaving reception",
+      "paragraphs": [
+        "Check QPWS park alerts for your destination, the weather forecast and road conditions. Save your booking details and tell someone your intended route and return time. This page does not fetch alerts, availability or forecasts.",
+        "Keep the offline map, a charged phone and a paper backup ready. Use the app's Safety & emergency page for emergency contact guidance and coordinates when location is enabled. Do not rely on a photo or a facility listing to establish present access."
+      ],
+      "sources": [
+        {"label": "QPWS — Park alerts: check Paluma Range National Park before visiting", "url": "https://parks.qld.gov.au/park-alerts"},
+        {"label": "QPWS — Visiting Paluma Range safely: pre-visit advice", "url": "https://parks.qld.gov.au/parks/paluma-range/visiting-safely"}
+      ]
+    }
+  ]
+}

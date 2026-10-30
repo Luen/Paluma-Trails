@@ -1,21 +1,31 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
 import 'app_version.dart';
 import 'brand/brand.dart';
 import 'content/bundle_repository.dart';
 import 'location/location_service.dart';
+import 'map/source_link.dart';
 import 'safety_screen.dart';
+import 'trip_planning_screen.dart';
+import 'web_resources.dart';
 
 /// Park facts, attributions and the licence/disclaimer notes that should stay
 /// one tap away from the map.
 class AboutScreen extends StatelessWidget {
-  const AboutScreen({super.key, required this.bundle, this.location});
+  const AboutScreen({
+    super.key,
+    required this.bundle,
+    this.location,
+    this.onWalkPreview,
+  });
 
   final LoadedBundle bundle;
 
   /// When the map supplies its location service, the safety page can show the
   /// walker's coordinates without starting a second GPS stream.
   final LocationService? location;
+  final VoidCallback? onWalkPreview;
 
   @override
   Widget build(BuildContext context) {
@@ -104,6 +114,14 @@ class AboutScreen extends StatelessWidget {
         const SizedBox(height: 24),
         const _SectionTitle('App'),
         const _KeyValue('Version', kAppVersion),
+        if (onWalkPreview != null) ...[
+          const SizedBox(height: 12),
+          OutlinedButton.icon(
+            onPressed: onWalkPreview,
+            icon: const Icon(Icons.play_circle_outline),
+            label: const Text('Preview a walk · simulated'),
+          ),
+        ],
         const SizedBox(height: 24),
         const _SectionTitle('Offline bundle'),
         _KeyValue('Version', manifest.bundleVersion),
@@ -120,6 +138,31 @@ class AboutScreen extends StatelessWidget {
         const SizedBox(height: 24),
         const _SectionTitle('Walking times'),
         Text(bundle.estimate.label, style: theme.textTheme.bodyMedium),
+        const SizedBox(height: 24),
+        const _SectionTitle('Walking guides'),
+        OutlinedButton.icon(
+          style: OutlinedButton.styleFrom(minimumSize: const Size(0, 48)),
+          onPressed: () => Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => TripPlanningScreen(bundle: bundle),
+            ),
+          ),
+          icon: const Icon(Icons.travel_explore),
+          label: const Text('Trip planning and photos · offline'),
+        ),
+        if (kIsWeb)
+          SourceLink(
+            label: 'Printable planning map · save as PDF',
+            url: siteResourceUri('printable-map.html').toString(),
+          ),
+        const SourceLink(
+          label: 'Paluma trails and history — Wanderstories',
+          url: 'https://wanderstories.space/hiking-at-paluma-range-national-park/',
+        ),
+        const SourceLink(
+          label: 'Paluma maps — Wanderstories',
+          url: 'https://wanderstories.space/paluma-maps/',
+        ),
         const SizedBox(height: 24),
         const _SectionTitle('Credits'),
         for (final attribution in park.attributions)

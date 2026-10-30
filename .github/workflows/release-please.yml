@@ -24,6 +24,8 @@ jobs:
       - uses: googleapis/release-please-action@v5
         id: release
         with:
+          # The repository default is dev; releases belong to main.
+          target-branch: main
           token: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}
           # Repositories may disallow Actions from creating PRs. Without a PAT,
           # a maintainer opens the release PR with the Release Please CLI.
@@ -40,3 +42,17 @@ jobs:
           set -euo pipefail
           gh workflow run release.yml --ref "$RELEASE_TAG" -f "version=${RELEASE_TAG#v}"
           gh workflow run release-publish.yml --ref main -f "tag=${RELEASE_TAG}"
+      - name: Checkout release tooling for back-merge PR
+        if: steps.release.outputs.release_created == 'true'
+        uses: actions/checkout@v5
+        with:
+          ref: main
+      - name: Propose main back to dev
+        if: steps.release.outputs.release_created == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}
+          GH_WORKFLOW_TOKEN: ${{ github.token }}
+        run: |
+          bash tools/open_automation_pr.sh dev main \
+            "chore: sync released main into dev" \
+            "Brings released versions and dependencies back into dev. Merge with a merge commit after CI passes to preserve branch ancestry."

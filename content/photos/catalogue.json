@@ -4,6 +4,7 @@
     {
       "file": "johnstones-hut-1911.jpg",
       "poi_id": "johnstones-hut",
+      "permission_record": "../research/source-permissions.md",
       "printed_page": 15,
       "pdf_page": 17,
       "crop_fraction": [
@@ -23,6 +24,7 @@
     {
       "file": "foxlees-lookout-1922.jpg",
       "poi_id": "foxlees-lookout",
+      "permission_record": "../research/source-permissions.md",
       "printed_page": 19,
       "pdf_page": 21,
       "crop_fraction": [
@@ -42,6 +44,7 @@
     {
       "file": "star-valley-lookout-1940s.jpg",
       "poi_id": "star-valley-lookout",
+      "permission_record": "../research/source-permissions.md",
       "printed_page": 44,
       "pdf_page": 46,
       "crop_fraction": [
@@ -61,6 +64,7 @@
     {
       "file": "mcclellands-lookout-1942.jpg",
       "poi_id": "mcclellands-lookout",
+      "permission_record": "../research/source-permissions.md",
       "printed_page": 55,
       "pdf_page": 57,
       "crop_fraction": [
@@ -80,6 +84,7 @@
     {
       "file": "gardes-lookout-wanderstories.jpg",
       "poi_id": "gardes-lookout",
+      "permission_record": "../research/source-permissions.md",
       "source_url": "https://images.wanderstories.space/content/images/2019/06/Gardes-Lookout-Paluma.jpg",
       "source_page": "https://wanderstories.space/hiking-at-paluma-range-national-park/",
       "caption": "Garde’s Lookout, as captioned in the Wanderstories Paluma guide. Photograph date not recorded.",

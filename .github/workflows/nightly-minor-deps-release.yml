@@ -1,13 +1,5 @@
-# Nightly dependency refresh → patch release (main).
-#
-# Raises caret / in-major npm ranges after a publish cooldown, then when
-# constraint files moved: analyze/test, patch-bump ship versions, commit to
-# main, back-merge into dev, and cut a GitHub Release (release-please
-# manifest is updated in the same commit so the next feature release stays
-# consistent). Publishing the Release triggers release-publish.yml for GHCR.
-#
-# Constraint files are the intentional edit; lockfiles are only re-resolved
-# so CI can still install.
+# Nightly dependency refresh → reviewed dependency PR → Release Please.
+# Production branches remain protected; versioning/publication happen after merge.
 
 name: Nightly minor deps release
 
@@ -23,7 +15,6 @@ concurrency:
 permissions:
   contents: write
   actions: write
-  packages: write
   pull-requests: write
 
 env:
@@ -39,23 +30,56 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}
+
+      # Do not replace an update that is still awaiting review.
+      - name: Check for pending dependency update
+        id: pending
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}
+          GH_WORKFLOW_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          branch=chore/nightly-minor-deps
+          # Squash merging does not preserve ancestry. Match the merged PR's
+          # head SHA before cleaning up its branch, never an unreviewed update.
+          merged_head="$(gh pr list --base main --head "$branch" --state merged \
+            --limit 1 --json headRefOid --jq '.[0].headRefOid // empty')"
+          remote_head="$(git ls-remote --heads origin "$branch" | cut -f1)"
+          if [[ -n "$remote_head" && "$remote_head" == "$merged_head" ]]; then
+            git push origin --delete "$branch"
+          fi
+          if git ls-remote --exit-code --heads origin "$branch"; then
+            bash tools/open_automation_pr.sh main chore/nightly-minor-deps \
+              "fix(deps): nightly in-major dependency update" \
+              "Updates dependencies after the 3-day cooldown. Merge after CI passes; Release Please handles the patch version and publication."
+            echo "pending=true" >> "$GITHUB_OUTPUT"
+          else
+            status=$?
+            if [[ "$status" != 2 ]]; then exit "$status"; fi
+            echo "pending=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - uses: subosito/flutter-action@v2
+        if: steps.pending.outputs.pending != 'true'
         with:
           channel: stable
           cache: true
 
       - uses: dart-lang/setup-dart@v1
+        if: steps.pending.outputs.pending != 'true'
 
       - uses: actions/setup-node@v7
+        if: steps.pending.outputs.pending != 'true'
         with:
           node-version: 24
 
       - name: Raise in-major ranges (3-day cooldown)
+        if: steps.pending.outputs.pending != 'true'
         run: python tools/update_minor_deps.py --cooldown-days "${COOLDOWN_DAYS}"
 
       - name: Detect constraint-file changes
+        if: steps.pending.outputs.pending != 'true'
         id: changes
         run: |
           set -euo pipefail
@@ -94,98 +118,26 @@ jobs:
         if: steps.changes.outputs.changed == 'true'
         run: python tools/brand/colour_check.py
 
-      - name: Bump patch version
-        if: steps.changes.outputs.changed == 'true'
-        id: version
-        run: |
-          set -euo pipefail
-          old="$(tr -d '[:space:]' < version.txt)"
-          IFS=. read -r maj min pat <<< "$old"
-          new="${maj}.${min}.$((pat + 1))"
-          echo "${new}" > version.txt
-          # pubspec: keep the x-release-please-version marker; bump build +1.
-          line="$(grep -E '^version:' app/pubspec.yaml | head -n1)"
-          raw="$(echo "${line#version: }" | sed 's/[[:space:]]*#.*//' | tr -d '[:space:]')"
-          build="${raw##*+}"
-          if [[ "$build" == "$raw" ]]; then build=0; fi
-          new_build=$((build + 1))
-          sed -i -E "s/^version: .*/version: ${new}+${new_build} # x-release-please-version/" app/pubspec.yaml
-          sed -i -E "s/const String kAppVersion = '[^']*'/const String kAppVersion = '${new}'/" \
-            app/lib/src/app_version.dart
-          python -c "import json; from pathlib import Path; p=Path('.release-please-manifest.json'); d=json.loads(p.read_text()); d['.']='${new}'; p.write_text(json.dumps(d)+'\n')"
-          echo "version=${new}" >> "$GITHUB_OUTPUT"
-          echo "Bumped to ${new}+${new_build}"
-
-      - name: Commit dependency bump
+      - name: Commit dependency update to a review branch
         if: steps.changes.outputs.changed == 'true'
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c chore/nightly-minor-deps
           git add \
             app/pubspec.yaml app/pubspec.lock \
             tools/paluma_cli/pubspec.yaml tools/paluma_cli/pubspec.lock \
-            tools/basemap/package.json \
-            version.txt \
-            app/lib/src/app_version.dart \
-            .release-please-manifest.json
-          git commit -m "chore(deps): nightly in-major dependency update (${{ steps.version.outputs.version }})"
-          git push origin HEAD:main
+            tools/basemap/package.json
+          git commit -m "fix(deps): nightly in-major dependency update"
+          git push origin HEAD:refs/heads/chore/nightly-minor-deps
 
-      # Keep dev level with main. Runs straight after the bump lands so a
-      # failure further down (release) cannot leave dev behind.
-      - name: Sync main back to dev
+      - name: Open dependency PR and start CI
         if: steps.changes.outputs.changed == 'true'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}
+          GH_WORKFLOW_TOKEN: ${{ github.token }}
         run: |
-          set -euo pipefail
-          git fetch origin main dev
-          if git merge-base --is-ancestor origin/dev origin/main; then
-            git push origin origin/main:refs/heads/dev
-            echo "dev fast-forwarded to main"
-            exit 0
-          fi
-          SYNC_DIR="$(mktemp -d)"
-          git worktree add --detach "$SYNC_DIR" origin/dev
-          if git -C "$SYNC_DIR" merge --no-edit \
-              -m "chore: merge main into dev (nightly deps)" origin/main; then
-            git -C "$SYNC_DIR" push origin HEAD:dev
-            echo "merged main into dev"
-          else
-            echo "::warning::Could not merge main into dev automatically; opening a PR instead"
-            git push -f origin origin/main:refs/heads/chore/sync-main-to-dev
-            gh pr create --base dev --head chore/sync-main-to-dev \
-              --title "chore: sync main into dev" \
-              --body "Automated back-merge of the nightly dependency release conflicted. Resolve manually so dev does not drift behind main." \
-              || echo "A sync PR is already open"
-          fi
-          git worktree remove --force "$SYNC_DIR"
-
-      - name: Create GitHub Release
-        if: steps.changes.outputs.changed == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ steps.version.outputs.version }}
-        run: |
-          set -euo pipefail
-          TAG="v${VERSION}"
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            echo "Release $TAG already exists"
-            exit 0
-          fi
-          gh release create "$TAG" --target "$(git rev-parse HEAD)" --title "$TAG" \
-            --notes "Nightly in-major dependency update (${TAG})."
-
-      # GITHUB_TOKEN events do not trigger tag/release workflows. Dispatch them
-      # explicitly against the immutable tag created above.
-      - name: Build release artifacts and publish image
-        if: steps.changes.outputs.changed == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ steps.version.outputs.version }}
-        run: |
-          set -euo pipefail
-          TAG="v${VERSION}"
-          gh workflow run release.yml --ref "$TAG" -f "version=${VERSION}"
-          gh workflow run release-publish.yml --ref main -f "tag=${TAG}"
+          bash tools/open_automation_pr.sh main chore/nightly-minor-deps \
+            "fix(deps): nightly in-major dependency update" \
+            "Updates dependencies after the 3-day cooldown. Merge after CI passes; Release Please handles the patch version and publication. Delete the branch after merge (or to discard the update)."

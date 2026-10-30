@@ -1,5 +1,6 @@
 import 'package:paluma_trails/src/content/bundle_repository.dart';
 import 'package:paluma_trails/src/content/models.dart';
+import 'package:paluma_trails/src/content/trip_planning.dart';
 
 /// A small hand-built bundle for widget tests: two junctions, one segment,
 /// one track and one POI.
@@ -11,7 +12,11 @@ LoadedBundle testBundle({
   String tracksGeoJson = '{"type":"FeatureCollection","features":[]}',
   Map<String, Junction>? junctions,
   List<Segment>? segments,
+  SafetyContent? safety,
+  TripPlanningContent? tripPlanning,
+  Map<String, Poi>? pois,
 }) => LoadedBundle(
+  tripPlanning: tripPlanning,
   manifest: const BundleManifest(
     schemaVersion: 1,
     bundleVersion: 'test-0000',
@@ -34,19 +39,20 @@ LoadedBundle testBundle({
     emergencyNotes: 'Ask for Queensland Ambulance Service.',
     attributions: [Attribution(label: 'OpenStreetMap', licence: 'ODbL')],
   ),
-  safety: const SafetyContent(
-    updated: '2026-10-26',
-    intro: 'Test safety intro.',
-    emergencyHeadline:
-        'In an emergency, call 000. If the call does not connect, try 112.',
-    emergencySteps: ['Give your coordinates.', 'Stay where you are.'],
-    sections: [
-      SafetySection(
-        title: 'Before you set out',
-        items: ['Tell someone where you are going.'],
+  safety:
+      safety ??
+      const SafetyContent(
+        updated: '2026-10-26',
+        intro: 'Test safety intro.',
+        emergencyHeadline: 'In an emergency, call 000. On a mobile, 112 connects to the same emergency service.',
+        emergencySteps: ['Give your coordinates.', 'Stay where you are.'],
+        sections: [
+          SafetySection(
+            title: 'Before you set out',
+            items: ['Tell someone where you are going.'],
+          ),
+        ],
       ),
-    ],
-  ),
   tracks: const [
     TrackSummary(
       id: 'tāngaroa-walking-track',
@@ -78,16 +84,18 @@ LoadedBundle testBundle({
           location: GeoPoint(-18.945, 146.19),
         ),
       },
-  pois: const {
-    'little-crystal-creek-falls': Poi(
-      id: 'little-crystal-creek-falls',
-      name: 'Little Crystal Creek Falls',
-      category: 'waterfall',
-      location: GeoPoint(-18.99, 146.24),
-      description: 'A short steep walk to the falls.',
-      unverified: true,
-    ),
-  },
+  pois:
+      pois ??
+      const {
+        'little-crystal-creek-falls': Poi(
+          id: 'little-crystal-creek-falls',
+          name: 'Little Crystal Creek Falls',
+          category: 'waterfall',
+          location: GeoPoint(-18.99, 146.24),
+          description: 'A short steep walk to the falls.',
+          unverified: true,
+        ),
+      },
   segments:
       segments ??
       (withSegment

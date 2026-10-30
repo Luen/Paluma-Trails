@@ -6,6 +6,7 @@ import 'package:json_schema/json_schema.dart';
 import 'package:path/path.dart' as p;
 
 import 'repo.dart';
+import 'photo_catalogue.dart';
 
 /// Validates every content file against its JSON Schema and checks the
 /// references between files.
@@ -22,6 +23,7 @@ class ContentValidator {
     'segments.json': 'segments.schema.json',
     'sources.json': 'sources.schema.json',
     'safety.json': 'safety.schema.json',
+    'trip-planning.json': 'trip-planning.schema.json',
   };
 
   /// Returns a list of human-readable problems; empty means valid.
@@ -61,6 +63,10 @@ class ContentValidator {
     if (problems.isNotEmpty) return problems;
 
     problems.addAll(_referentialChecks(data));
+    problems.addAll(validatePhotoCatalogue(
+      repo,
+      (data['pois.json']!['pois'] as List).cast<Map<String, Object?>>(),
+    ));
     return problems;
   }
 

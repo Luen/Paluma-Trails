@@ -369,6 +369,22 @@ and the owner-supplied permission record live in `content/photos/`. The images
 show historical scenes, with dates in their captions; they do not depict current
 track conditions. Photo captions/credits use the theme and support large text.
 
+Source citations retain readable offline labels. Web sources use a 48 dp
+minimum button with an external-link icon and “Read online” wording, so a walker
+can distinguish bundled information from a page requiring connectivity.
+
+Walk-preview controls use themed cards and 48 dp playback actions. The preview
+title and GPS-off label stay explicit, speed is labelled as preview speed, and
+controls wrap/scroll at large text sizes. A simulation must never resemble a
+real location fix on an emergency screen or become a saved user waypoint.
+
+The printable planning page uses a white paper surface, the map palette and
+platform sans-serif fallback. Its maps distinguish numbered circular junctions
+from square POI markers and dashed informal tracks. An enlarged village map
+keeps dense junction labels readable. Keep the unverified-content notice,
+source credit, revision, scale and estimated-time wording in printed output.
+See [the printable-map workflow](printable-map.md).
+
 ## Asset inventory and workflow
 
 | Asset | Source | Output |
@@ -431,6 +447,10 @@ One step needs a maintainer with admin rights: upload
 `docs/brand/social-preview.png` under **Settings → General → Social preview**.
 
 ## References
+
+Trip planning uses the existing rainforest app bar with cream selected tab text,
+mist unselected text and a sand indicator. Plan/Photos tab labels stay short at
+large text sizes. Gallery captions, credits and permission text are always shown.
 
 - #90 — finishing the identity (this revision)
 - #88 — brand identity review

@@ -8,6 +8,7 @@ import 'map_options.dart';
 import 'map_palette.dart';
 import 'poi_groups.dart';
 import 'poi_photo_card.dart';
+import 'source_link.dart';
 
 /// Bottom sheets for the map's tappable features: junctions, POIs and tracks.
 
@@ -303,9 +304,13 @@ class PoiSheet extends StatelessWidget {
                 ],
               ),
             ),
-            if (poi.unverified) const UnverifiedChip(),
           ],
         ),
+        if (poi.unverified)
+          const Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: UnverifiedChip(),
+          ),
         if (poi.summary != null) ...[
           const SizedBox(height: 16),
           Text(poi.summary!, style: theme.textTheme.titleMedium),
@@ -322,15 +327,7 @@ class PoiSheet extends StatelessWidget {
           const SizedBox(height: 16),
           const _SectionTitle('Sources'),
           for (final source in sources)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 4),
-              child: Text(
-                source.url == null
-                    ? source.label
-                    : '${source.label} — ${source.url}',
-                style: theme.textTheme.bodySmall,
-              ),
-            ),
+            SourceLink(label: source.label, url: source.url),
         ],
       ],
     );

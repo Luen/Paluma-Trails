@@ -3,15 +3,23 @@ import 'package:flutter/material.dart';
 import '../brand/brand.dart';
 import '../brand/theme.dart';
 import '../content/bundle_repository.dart';
+import '../deep_links.dart';
 import '../map/map_options.dart';
 import '../map/map_screen.dart';
 import '../pmtiles_protocol.dart';
 
 /// Root of the Paluma Trails app.
 class PalumaTrailsApp extends StatefulWidget {
-  const PalumaTrailsApp({super.key, required this.repository});
+  const PalumaTrailsApp({
+    super.key,
+    required this.repository,
+    this.initialLink,
+  });
 
   final BundleRepository repository;
+
+  /// A POI from a QR code or shared link, opened on top of the map at launch.
+  final DeepLink? initialLink;
 
   @override
   State<PalumaTrailsApp> createState() => _PalumaTrailsAppState();
@@ -43,7 +51,10 @@ class _PalumaTrailsAppState extends State<PalumaTrailsApp> {
           // Sunlight mode is for a bright day, so it overrides a dark system
           // theme rather than following it.
           themeMode: _options.sunlight ? ThemeMode.light : ThemeMode.system,
-          home: _BundleLoader(repository: widget.repository),
+          home: _BundleLoader(
+            repository: widget.repository,
+            initialLink: widget.initialLink,
+          ),
         ),
       ),
     );
@@ -54,9 +65,10 @@ class _PalumaTrailsAppState extends State<PalumaTrailsApp> {
 /// to be registered before the map resolves its style, which is why it happens
 /// here rather than in `main`.
 class _BundleLoader extends StatefulWidget {
-  const _BundleLoader({required this.repository});
+  const _BundleLoader({required this.repository, this.initialLink});
 
   final BundleRepository repository;
+  final DeepLink? initialLink;
 
   @override
   State<_BundleLoader> createState() => _BundleLoaderState();
@@ -77,7 +89,12 @@ class _BundleLoaderState extends State<_BundleLoader> {
       future: _bundle,
       builder: (context, snapshot) {
         final bundle = snapshot.data;
-        if (bundle != null) return MapScreen(bundle: bundle);
+        if (bundle != null) {
+          return MapScreen(
+            bundle: bundle,
+            initialPoiId: widget.initialLink?.poiId,
+          );
+        }
         if (snapshot.hasError) {
           return _BundleError(
             error: snapshot.error!,
