@@ -466,7 +466,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   /// from another version still leaves the walker on the map.
   void _openInitialPoi() {
     final id = widget.initialPoiId;
-    if (id == null || _initialPoiHandled) return;
+    if (!mounted || id == null || _initialPoiHandled) return;
     _initialPoiHandled = true;
 
     final poi = widget.bundle.pois[id];

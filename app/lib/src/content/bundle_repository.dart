@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
 
+import '../web_resources.dart';
 import 'bundle_storage.dart';
 import 'models.dart';
 import 'trip_planning.dart';
@@ -254,7 +255,7 @@ class BundleRepository {
         assetsBaseUri: basemap.toString().replaceFirst(RegExp(r'/$'), ''),
       );
     }
-    final base = Uri.base.resolve('assets/$_assetRoot/basemap').toString();
+    final base = siteResourceUri('assets/$_assetRoot/basemap').toString();
     return (pmtilesUri: '$base/paluma.pmtiles', assetsBaseUri: base);
   }
 }

@@ -9,7 +9,8 @@ import 'package:flutter/foundation.dart';
 /// ```
 ///
 /// The origin is a deployment input, never part of the contract: only the path
-/// and the id are read, so moving the site leaves printed codes working.
+/// and the id are read. Old printed origins still need to be retained or
+/// redirected when hosting moves.
 @immutable
 class DeepLink {
   const DeepLink.poi(this.poiId);

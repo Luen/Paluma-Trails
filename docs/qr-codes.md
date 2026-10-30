@@ -20,8 +20,8 @@ existing sign points at.
 
 There is no second sequence in `qr_id`, no query string identity, no shortener
 and no custom app-only scheme in the code. The origin is a **deployment input**:
-the app ignores it, so moving the site leaves printed codes working, but the
-origin still has to be chosen and kept for the life of the signs.
+the path parser ignores it. The printed origin must still be retained or
+redirected when hosting moves, and kept for the life of the signs.
 
 ## What the app does
 
@@ -37,9 +37,11 @@ once. Extra segments, encoded separators, traversal and ids outside the content
 grammar are rejected, and the map opens instead. Case is normalised because ids
 are stored lowercase and a hand-typed link cannot collide with another POI.
 
-Everything after the launch is offline. The link itself needs a connection only
-because the browser has to load the website the first time; a walker with the
-app installed and the bundle downloaded does not need one.
+The POI content comes from the packaged bundle. A browser needs a connection
+to load the website the first time; prepared offline-browser operation needs
+its own tested cache/install flow. This implementation handles browser launch
+URLs. Installing the native app does not yet make camera scans open it offline:
+verified native App Links/Universal Links remain outstanding below.
 
 ## What hosting must do
 
@@ -47,6 +49,8 @@ The origin must serve `/poi/<id>` itself, not redirect it to `/?poi=<id>` and
 not drop the id on an SPA fallback. The Caddy image in `app/Dockerfile` serves
 `index.html` for unknown paths, so the Flutter app receives the original URL;
 a host that only redirects to `/` needs fixing before a sign is printed.
+The current deployment is at the origin root. Basemap/font/sprite requests and
+the printable-map link must resolve from that root, not relative to `/poi/`.
 
 The offline caveat is real: a first scan without reception cannot download the
 website, and the ADR requires signs to tell walkers to prepare the app or map
