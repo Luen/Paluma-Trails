@@ -2,8 +2,7 @@ import 'package:flutter/foundation.dart';
 
 /// Where a printed QR code or a shared link asks the app to open.
 ///
-/// One printed form, as decided in
-/// [ADR 0009](../../docs/decisions/0009-poi-urls.md):
+/// One printed form, as decided in `docs/decisions/0009-poi-urls.md`:
 ///
 /// ```
 /// https://<origin>/poi/<poi-id>
