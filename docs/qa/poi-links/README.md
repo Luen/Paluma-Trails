@@ -11,6 +11,8 @@ a fresh browser visit to `/poi/gardes-lookout`: the correct offline sheet opens
 over a rendered basemap with place labels, without requesting GPS. Local QA
 uses the same SPA fallback behavior as Caddy and supports byte-range responses;
 the actual production Caddy image is separately smoke-tested in release CI.
+That smoke test now checks the direct-path HTML fallback, its no-cache header
+and the root PMTiles range response before publishing the image.
 
 The launch docs now describe browser routing accurately. Native verified App
 Links/Universal Links and prepared offline-browser cache coverage are still

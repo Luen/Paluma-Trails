@@ -103,6 +103,17 @@ jobs:
             sleep 2
           done
           grep -q "Paluma Trails" /tmp/paluma-index.html
+          # A printed POI URL must retain its path while serving the app shell.
+          curl -fsS http://127.0.0.1:8080/poi/gardes-lookout > /tmp/paluma-poi.html
+          cmp /tmp/paluma-index.html /tmp/paluma-poi.html
+          curl -fsSI http://127.0.0.1:8080/poi/gardes-lookout \
+            | grep -qi "cache-control: no-cache"
+          # MapLibre needs archive byte ranges, including after a POI launch.
+          curl -fsS -D /tmp/paluma-range.headers --range 0-7 \
+            http://127.0.0.1:8080/assets/assets/bundle/basemap/paluma.pmtiles \
+            -o /tmp/paluma-range.bin
+          grep -q '206' /tmp/paluma-range.headers
+          test "$(wc -c < /tmp/paluma-range.bin)" -eq 8
           curl -fsSI http://127.0.0.1:8080/flutter_service_worker.js \
             | grep -qi "cache-control: no-cache"
           docker rm -f paluma-web
