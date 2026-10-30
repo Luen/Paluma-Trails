@@ -39,9 +39,9 @@ field verification where indicated.
 - Shortlist and research POIs; content with citations (#24)
 - Offline POI detail pages with historic photos and credits (#26, #28)
 - Toggleable marker groups so the map stays readable (#56)
-- QR URL scheme so codes never change (#25) — **shipped** for the link form the
-  app and website accept; see `docs/qr-codes.md`. The printed host, the QR
-  images and native app links are still open
+- QR URL scheme so codes never change (#25) — **shipped** as `/poi/<id>`, which
+  the app opens at launch (ADR 0009, `docs/qr-codes.md`). Origin selection,
+  association files, aliases, QR images and signage are still open
 - Sign design, permissions, installation (#27, #44)
 
 ## Milestone 3 — Offline-first track issue reporting

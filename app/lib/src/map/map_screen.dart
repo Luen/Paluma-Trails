@@ -23,6 +23,7 @@ import 'location_overlay.dart';
 import 'map_options.dart';
 import 'map_palette.dart';
 import 'poi_groups.dart';
+import 'poi_link_sheet.dart';
 import 'route_sheet.dart';
 import 'sheets.dart';
 import 'waypoint_sheets.dart';
@@ -461,7 +462,8 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   }
 
   /// Opens the POI a QR code or shared link asked for, once the map can show
-  /// it. An id the bundle does not have is reported, not guessed at.
+  /// it. An id the bundle does not have gets the not-found sheet, so a sign
+  /// from another version still leaves the walker on the map.
   void _openInitialPoi() {
     final id = widget.initialPoiId;
     if (id == null || _initialPoiHandled) return;
@@ -469,15 +471,11 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
     final poi = widget.bundle.pois[id];
     if (poi == null) {
+      // After the first frame, so the map is behind the sheet and dismissing
+      // it is map access rather than a blank screen.
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'That point of interest is not in this version of the map.',
-            ),
-          ),
-        );
+        showPoiLinkNotFoundSheet(context, poiId: id);
       });
       return;
     }

@@ -3,72 +3,69 @@ import 'package:paluma_trails/src/deep_links.dart';
 
 void main() {
   group('parseDeepLink', () {
-    test('reads a POI from the usual path', () {
+    test('reads a POI from the printed form', () {
       final link = parseDeepLink(
-        Uri.parse('https://paluma.example/poi/gold-creek-falls'),
+        Uri.parse('https://paluma.example/poi/buttercup-lookout'),
       );
 
-      expect(link?.poiId, 'gold-creek-falls');
+      expect(link?.poiId, 'buttercup-lookout');
     });
 
-    test('ignores the host, so moving the site keeps old codes working', () {
-      final link = parseDeepLink(
-        Uri.parse('https://some-other-host.example/poi/gold-creek-falls'),
-      );
-
-      expect(link?.poiId, 'gold-creek-falls');
+    test('ignores the origin, so moving the site keeps old codes working', () {
+      for (final origin in [
+        'https://paluma.example',
+        'https://some-other-host.example',
+        'http://localhost:8080',
+      ]) {
+        final link = parseDeepLink(Uri.parse('$origin/poi/buttercup-lookout'));
+        expect(link?.poiId, 'buttercup-lookout', reason: origin);
+      }
     });
 
-    test('accepts the query form for hosts without a rewrite rule', () {
-      final link = parseDeepLink(
-        Uri.parse('https://paluma.example/?poi=gold-creek-falls'),
-      );
-
-      expect(link?.poiId, 'gold-creek-falls');
-    });
-
-    test('accepts a trailing slash and campaign parameters', () {
+    test('accepts path capitals and a trailing slash', () {
       expect(
-        parseDeepLink(Uri.parse('https://paluma.example/poi/gold-creek-falls/'))
-            ?.poiId,
-        'gold-creek-falls',
+        parseDeepLink(
+          Uri.parse('https://paluma.example/poi/Buttercup-Lookout/'),
+        )?.poiId,
+        'buttercup-lookout',
       );
+    });
+
+    test('ignores campaign parameters', () {
       expect(
         parseDeepLink(
           Uri.parse(
-            'https://paluma.example/poi/gold-creek-falls?utm_source=sign',
+            'https://paluma.example/poi/buttercup-lookout?utm_source=sign',
           ),
         )?.poiId,
-        'gold-creek-falls',
+        'buttercup-lookout',
       );
     });
 
-    test('accepts the app scheme so native links need no new codes', () {
+    test('rejects the query form: the printed path must be served', () {
       expect(
-        parseDeepLink(Uri.parse('paluma://poi/gold-creek-falls'))?.poiId,
-        'gold-creek-falls',
+        parseDeepLink(
+          Uri.parse('https://paluma.example/?poi=buttercup-lookout'),
+        ),
+        isNull,
       );
-    });
-
-    test('normalises case', () {
       expect(
-        parseDeepLink(Uri.parse('https://paluma.example/poi/Gold-Creek-Falls'))
-            ?.poiId,
-        'gold-creek-falls',
+        parseDeepLink(
+          Uri.parse('https://paluma.example/other?poi=buttercup-lookout'),
+        ),
+        isNull,
       );
     });
 
-    test('ignores paths and schemes that are not POI links', () {
+    test('rejects app-only schemes and non-web schemes', () {
       for (final uri in [
-        'https://paluma.example/',
+        'paluma://poi/buttercup-lookout',
+        'file:///C:/notes.txt',
+        'mailto:someone@example.com',
         'https://paluma.example/about',
-        'https://paluma.example/other?poi=gold-creek-falls',
         'https://paluma.example/poi/',
         'https://paluma.example/poi',
         'https://paluma.example/poi/a/b',
-        'paluma://junction/7',
-        'file:///C:/notes.txt',
-        'mailto:someone@example.com',
       ]) {
         expect(parseDeepLink(Uri.parse(uri)), isNull, reason: uri);
       }
@@ -78,11 +75,13 @@ void main() {
       for (final id in [
         '..',
         '%2E%2E',
+        '%252E%252E',
         'gold%2Fcreek',
         'gold creek',
         'gold_creek',
         '-gold',
         'gold-',
+        'gold--creek',
       ]) {
         expect(
           parseDeepLink(Uri.parse('https://paluma.example/poi/$id')),
