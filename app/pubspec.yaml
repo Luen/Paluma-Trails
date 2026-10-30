@@ -1,7 +1,7 @@
 name: paluma_trails
 description: Offline trail map for Paluma Range National Park.
 publish_to: 'none'
-version: 0.3.0 # x-release-please-version
+version: 0.4.0 # x-release-please-version
 
 environment:
   sdk: ^3.13.5

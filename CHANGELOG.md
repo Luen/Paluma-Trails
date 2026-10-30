@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.4.0](https://github.com/Luen/Paluma-Trails/compare/v0.3.0...v0.4.0) (2026-10-30)
+
+
+### Features
+
+* **map:** open a point of interest from a /poi/&lt;id&gt; link ([#130](https://github.com/Luen/Paluma-Trails/issues/130)) ([07118c8](https://github.com/Luen/Paluma-Trails/commit/07118c893cf2934840f5f062457690ca6ae667fd))
+* **planning:** add offline trip notes and credited photo gallery ([#127](https://github.com/Luen/Paluma-Trails/issues/127)) ([50ccf6c](https://github.com/Luen/Paluma-Trails/commit/50ccf6c7ff20452034eb5bfe5a2d715d79219727))
+* **planning:** preview walks with isolated simulated positions ([#123](https://github.com/Luen/Paluma-Trails/issues/123)) ([0912d6c](https://github.com/Luen/Paluma-Trails/commit/0912d6c3d38a1f261414b7048533c6b2a9a967a5))
+* **poi:** open attributed source guides with online labels ([#112](https://github.com/Luen/Paluma-Trails/issues/112)) ([e4357d4](https://github.com/Luen/Paluma-Trails/commit/e4357d486dd34636708f78ab8f5db365b62a0bf8))
+* **web:** add a printable offline planning map ([#121](https://github.com/Luen/Paluma-Trails/issues/121)) ([51530fe](https://github.com/Luen/Paluma-Trails/commit/51530febfb587491cbcff73360294cc6f0a0a456))
+
+
+### Bug Fixes
+
+* **a11y:** expose named map controls to screen readers ([#114](https://github.com/Luen/Paluma-Trails/issues/114)) ([eaa7681](https://github.com/Luen/Paluma-Trails/commit/eaa7681aceceb9b952704514f40419b38c610e34))
+* **ci:** respect branch protection in nightly dependency updates ([#126](https://github.com/Luen/Paluma-Trails/issues/126)) ([7a4f08f](https://github.com/Luen/Paluma-Trails/commit/7a4f08fbda259d3970404a5b02ba2f7f7bf8ae54))
+* **ci:** target main explicitly in Release Please ([#116](https://github.com/Luen/Paluma-Trails/issues/116)) ([d3a201d](https://github.com/Luen/Paluma-Trails/commit/d3a201d988c0158c91f1c56176f910044cc9e753))
+* **content:** validate photograph provenance and permission records ([#122](https://github.com/Luen/Paluma-Trails/issues/122)) ([7d628a5](https://github.com/Luen/Paluma-Trails/commit/7d628a50cd52750cce5c93544077a04dc8942a64))
+* **safety:** clarify emergency calls and direct SMS guidance ([#125](https://github.com/Luen/Paluma-Trails/issues/125)) ([77d1c90](https://github.com/Luen/Paluma-Trails/commit/77d1c9082b7a9c83bd424d2eed95cb004d5a807b))
+* **web:** resolve POI launch resources from the site root ([#131](https://github.com/Luen/Paluma-Trails/issues/131)) ([b17d41c](https://github.com/Luen/Paluma-Trails/commit/b17d41c825a4c2c84b0c52eae19e54950876670e))
+
 ## [0.3.0](https://github.com/Luen/Paluma-Trails/compare/v0.2.0...v0.3.0) (2026-10-29)
 
 
