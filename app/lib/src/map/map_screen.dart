@@ -23,6 +23,7 @@ import 'location_overlay.dart';
 import 'map_options.dart';
 import 'map_palette.dart';
 import 'poi_groups.dart';
+import 'poi_link_sheet.dart';
 import 'route_sheet.dart';
 import 'sheets.dart';
 import 'waypoint_sheets.dart';
@@ -31,13 +32,21 @@ import 'walk_preview.dart';
 /// The offline map: basemap from the bundled PMTiles archive, trail content
 /// from the bundled GeoJSON, and tap-to-inspect sheets on top.
 class MapScreen extends StatefulWidget {
-  const MapScreen({super.key, required this.bundle, this.simulation});
+  const MapScreen({
+    super.key,
+    required this.bundle,
+    this.simulation,
+    this.initialPoiId,
+  });
 
   final LoadedBundle bundle;
 
   /// Owned and disposed by this screen. A preview uses no platform GPS and
   /// cannot share coordinates with safety screens or saved waypoints.
   final WalkSimulation? simulation;
+
+  /// A POI id from a QR code or shared link, opened once the map is ready.
+  final String? initialPoiId;
 
   @override
   State<MapScreen> createState() => _MapScreenState();
@@ -61,6 +70,10 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
   MapLibreMapController? _controller;
   var _layersAdded = false;
+
+  /// A link is followed once per screen, so a rebuild or a style reload cannot
+  /// reopen the sheet the walker has already dismissed.
+  var _initialPoiHandled = false;
 
   MapOptions? _options;
   var _sunlight = false;
@@ -445,6 +458,30 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       }
     }
     if (mounted) setState(() => _layersAdded = true);
+    _openInitialPoi();
+  }
+
+  /// Opens the POI a QR code or shared link asked for, once the map can show
+  /// it. An id the bundle does not have gets the not-found sheet, so a sign
+  /// from another version still leaves the walker on the map.
+  void _openInitialPoi() {
+    final id = widget.initialPoiId;
+    if (id == null || _initialPoiHandled) return;
+    _initialPoiHandled = true;
+
+    final poi = widget.bundle.pois[id];
+    if (poi == null) {
+      // After the first frame, so the map is behind the sheet and dismissing
+      // it is map access rather than a blank screen.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        showPoiLinkNotFoundSheet(context, poiId: id);
+      });
+      return;
+    }
+
+    unawaited(_focusOnPoi(poi));
+    showPoiSheet(context, bundle: widget.bundle, poi: poi);
   }
 
   /// Re-paints the overlay with the current display options once the layers
@@ -984,6 +1021,17 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     await _controller?.moveCamera(
       CameraUpdate.newLatLngZoom(
         LatLng(junction.location.lat, junction.location.lon),
+        15,
+      ),
+    );
+  }
+
+  /// Jumps to a point of interest at a walking zoom, for a tap or a QR link.
+  Future<void> _focusOnPoi(Poi poi) async {
+    if (_following) setState(() => _following = false);
+    await _controller?.moveCamera(
+      CameraUpdate.newLatLngZoom(
+        LatLng(poi.location.lat, poi.location.lon),
         15,
       ),
     );
