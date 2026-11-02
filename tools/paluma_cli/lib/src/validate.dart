@@ -49,6 +49,10 @@ class ContentValidator {
       }
       data[entry.key] = json;
 
+      if (entry.key == 'pois.json') {
+        problems.addAll(_retiredPoiFields(json));
+      }
+
       final schema = JsonSchema.create(schemaFile.readAsStringSync());
       final result = schema.validate(json);
       if (!result.isValid) {
@@ -67,6 +71,28 @@ class ContentValidator {
       repo,
       (data['pois.json']!['pois'] as List).cast<Map<String, Object?>>(),
     ));
+    return problems;
+  }
+
+  /// `qr_id` was retired in #139: the stable POI id *is* the printed code
+  /// (ADR 0009), so a second sequence must not exist. Remove it before schema
+  /// validation so the failure names the replacement instead of only reporting
+  /// an unknown property.
+  List<String> _retiredPoiFields(Map<String, Object?> poisFile) {
+    final problems = <String>[];
+    final pois = (poisFile['pois'] as List?) ?? const [];
+    for (var i = 0; i < pois.length; i++) {
+      final poi = pois[i];
+      if (poi is! Map<String, Object?> || !poi.containsKey('qr_id')) continue;
+      poi.remove('qr_id');
+      final id = poi['id'];
+      final label = id is String ? 'poi $id' : 'poi #${i + 1}';
+      problems.add(
+        'pois.json /pois/$i: $label carries "qr_id", which is retired. '
+        'The stable POI id is the printed /poi/<id> code (ADR 0009); '
+        'remove qr_id instead of adding a second sequence.',
+      );
+    }
     return problems;
   }
 
@@ -89,7 +115,6 @@ class ContentValidator {
     }
 
     final poiIds = <String>{};
-    final qrIds = <String>{};
     for (final poi
         in (data['pois.json']!['pois'] as List).cast<Map<String, Object?>>()) {
       final id = poi['id']! as String;
@@ -100,10 +125,6 @@ class ContentValidator {
         if (!File(p.join(repo.contentDir, 'photos', file)).existsSync()) {
           problems.add('poi $id references missing photo: $file');
         }
-      }
-      final qr = poi['qr_id'];
-      if (qr is String && !qrIds.add(qr)) {
-        problems.add('duplicate poi qr_id: $qr');
       }
     }
 

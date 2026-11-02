@@ -43,9 +43,14 @@ check date. Older bundles without the optional asset show an explanatory fallbac
 and retain their gallery. See [trip planning](trip-planning.md).
 
 - **IDs** are lowercase slugs: `gardes-clearing`, `pbr-track`, `j7`. They are
-  permanent — QR codes encode them (#25), so renaming an id breaks a sign on a
-  track. Add new ids rather than reusing old ones. The link form and the rules
-  a sign relies on are in [qr-codes.md](qr-codes.md).
+  permanent — the readable id is the printed code (`/poi/<id>`, #25), so
+  renaming an id breaks a sign on a track. Add new ids rather than reusing old
+  ones. The link form and the rules a sign relies on are in
+  [qr-codes.md](qr-codes.md). The former optional `qr_id` field was retired in
+  #139: a second sequence would let a sign and the content drift apart, which
+  [ADR 0009](decisions/0009-poi-urls.md) rules out. Validation rejects a record
+  that carries it again, and CI fails when a `/poi/<id>` example in `docs/` or
+  `content/` names an id that `pois.json` does not have.
 - **Coordinates** are WGS84. GeoJSON uses `[longitude, latitude]`; JSON objects
   use `{"lat": …, "lon": …}`.
 - **Distances** in metres, times in whole minutes.

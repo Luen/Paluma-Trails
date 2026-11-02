@@ -24,10 +24,6 @@
           "location": { "$ref": "#/$defs/location" },
           "summary": { "type": ["string", "null"], "description": "One line shown on the map card" },
           "description": { "type": ["string", "null"], "description": "Markdown, shown on the offline POI page" },
-          "qr_id": {
-            "type": ["string", "null"],
-            "description": "Stable id encoded in a physical QR sign. Never change once installed."
-          },
           "photos": {
             "type": "array",
             "items": {

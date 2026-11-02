@@ -41,9 +41,10 @@ promise that a maintenance team or emergency service will see it.
 
 Start a branch from `dev`, edit only the relevant source JSON under
 `content/data/paluma/`, and submit a PR back to `dev`. A maintainer can help with
-the generated bundle before merge. Do not change an existing `id` or `qr_id`:
-physical signs and references may depend on it. Do not edit generated files
-under `app/assets/bundle/` or `segments.json` by hand.
+the generated bundle before merge. Do not change an existing `id`: physical
+signs and references may depend on it. The readable id is the printed code and
+`qr_id` was retired (#139); do not add another sequence. Do not edit generated
+files under `app/assets/bundle/` or `segments.json` by hand.
 
 For a simple text correction, preserve the surrounding object and edit `name`,
 `summary` or `description` as appropriate. JSON text uses double quotes; a quote

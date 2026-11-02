@@ -10,8 +10,10 @@ there is no independent bundle downloader yet (#17, #87).
 
 1. Start a short-lived `content/…` or `fix/…` branch from the latest `dev`.
 2. Edit the source files described in [the content model](content-model.md).
-   Keep existing IDs and QR IDs stable. Include evidence for new facts in the
-   POI's `sources` and record source provenance/licensing in `sources.json`.
+   Keep existing POI IDs stable; the readable id is the printed code, and the
+   retired `qr_id` field must not return (#139). Include evidence for new facts
+   in the POI's `sources` and record source provenance/licensing in
+   `sources.json`.
    Keep uncertain imported content marked `unverified`; a recent edit is not
    field verification. Do not add unsupported safety or reception claims.
 3. Set `park.json`'s `updated` to the content revision date (`YYYY-MM-DD`,

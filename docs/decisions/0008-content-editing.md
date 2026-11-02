@@ -23,7 +23,7 @@ or a runtime service beyond GitHub.
 The form asks for the affected place/ID, current and proposed content, evidence,
 observation date/uncertainty and image permissions when applicable. No request
 bypasses source review, schema validation or bundle freshness checks. Existing
-IDs/QR IDs stay stable; the current source and generated-asset contracts remain
+IDs stay stable; the current source and generated-asset contracts remain
 as described in ADR 0005.
 
 ## Alternatives
