@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "bundle_version": "2026-10-30-04c0da3b",
+  "bundle_version": "2026-10-30-0113fc54",
   "generator": "paluma_cli 0.1.0",
   "park": "paluma-range",
   "files": [
@@ -91,8 +91,8 @@
     },
     {
       "path": "content/pois.json",
-      "bytes": 34672,
-      "sha256": "43b118c7484f7581edabd4962cfd90d44ed894706f64ec1a12d42fa4982b743a"
+      "bytes": 33580,
+      "sha256": "d1bd7d52a4d8fffe50c33ba0f2c9dc6fac97c6bd06889451ee60b8203b4e22aa"
     },
     {
       "path": "content/safety.json",
@@ -147,6 +147,6 @@
   ],
   "totals": {
     "files": 28,
-    "bytes": 3879333
+    "bytes": 3878241
   }
 }

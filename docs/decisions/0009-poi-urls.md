@@ -17,8 +17,9 @@ Use `https://<maintainer-controlled-origin>/poi/<poi-id>` as the canonical
 public address. The origin is a deployment input, not a placeholder to print.
 Use the existing stable `id` from `content/data/paluma/pois.json`: for example
 `/poi/gardes-lookout` and `/poi/shays-clearing`. Display-name/spelling corrections
-must not regenerate IDs. The visible fallback code is the same POI ID; do not
-create a second sequence in the currently optional `qr_id` field.
+must not regenerate IDs. The visible fallback code is the same POI ID; the
+formerly optional `qr_id` field was retired in #139 and must not be
+reintroduced as a second sequence.
 
 Choose one HTTPS origin the maintainer can retain and redirect for the lifetime
 of installed signs. Do not use a release tag, bundle version, URL shortener,

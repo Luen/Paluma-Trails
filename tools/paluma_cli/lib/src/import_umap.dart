@@ -120,7 +120,6 @@ class UmapImport {
         'location': _locationOf(geometry),
         'summary': null,
         'description': description,
-        'qr_id': null,
         'photos': <Object?>[],
         'sources': <Object?>[],
         'unverified': true,

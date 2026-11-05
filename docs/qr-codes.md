@@ -18,10 +18,16 @@ are permanent (see [content-model.md](content-model.md)); a display-name
 correction never changes an id, because a reused id would quietly change what an
 existing sign points at.
 
-There is no second sequence in `qr_id`, no query string identity, no shortener
-and no custom app-only scheme in the code. The origin is a **deployment input**:
-the path parser ignores it. The printed origin must still be retained or
-redirected when hosting moves, and kept for the life of the signs.
+There is no second sequence in `qr_id` — retired in #139, and validation
+rejects it if it comes back — no query string identity, no shortener and no
+custom app-only scheme in the code. The origin is a **deployment input**: the
+path parser ignores it. The printed origin must still be retained or redirected
+when hosting moves, and kept for the life of the signs.
+
+CI reads every `/poi/<id>` example in `docs/` and `content/`, skips the
+`<id>`/`<poi-id>` placeholders, and fails with the file and line when the id is
+missing from `pois.json`. A content rename therefore cannot leave this page or
+future sign copy pointing at a dead link.
 
 ## What the app does
 

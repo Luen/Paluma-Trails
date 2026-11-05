@@ -224,7 +224,6 @@ class Poi {
     required this.location,
     this.summary,
     this.description,
-    this.qrId,
     this.unverified = false,
     this.sources = const [],
     this.photos = const [],
@@ -236,7 +235,6 @@ class Poi {
   final GeoPoint location;
   final String? summary;
   final String? description;
-  final String? qrId;
   final bool unverified;
   final List<PoiSource> sources;
   final List<PoiPhoto> photos;
@@ -248,7 +246,6 @@ class Poi {
     location: GeoPoint.fromJson(json['location']! as Map<String, Object?>),
     summary: json['summary'] as String?,
     description: json['description'] as String?,
-    qrId: json['qr_id'] as String?,
     unverified: (json['unverified'] as bool?) ?? false,
     photos: ((json['photos'] as List?) ?? const [])
         .cast<Map<String, Object?>>()
